@@ -1,14 +1,22 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "Z:\\unity\\CS_377_Winter_2026\\",
+  "WorkspaceRootPath": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|Z:\\unity\\CS_377_Winter_2026\\assets\\scripts\\gamestatemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gamestatemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\assets\\scripts\\inputmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\inputmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|z:\\unity\\cs_377_winter_2026\\assets\\scripts\\inputmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\inputmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|z:\\unity\\cs_377_winter_2026_game\\cs_377_winter_2026\\assets\\scripts\\uimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\uimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\assets\\scripts\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\assets\\scripts\\gamestatemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gamestatemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,30 +26,56 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "UIManager.cs",
+              "DocumentMoniker": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\UIManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\UIManager.cs",
+              "ToolTip": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\UIManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\UIManager.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAACAAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-14T02:51:31.204Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PlayerController.cs",
+              "DocumentMoniker": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\PlayerController.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\PlayerController.cs",
+              "ToolTip": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\PlayerController.cs",
+              "RelativeToolTip": "Assets\\Scripts\\PlayerController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-14T00:13:22.167Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
               "Title": "InputManager.cs",
-              "DocumentMoniker": "Z:\\unity\\CS_377_Winter_2026\\Assets\\Scripts\\InputManager.cs",
+              "DocumentMoniker": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\InputManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\InputManager.cs",
-              "ToolTip": "Z:\\unity\\CS_377_Winter_2026\\Assets\\Scripts\\InputManager.cs",
+              "ToolTip": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\InputManager.cs",
               "RelativeToolTip": "Assets\\Scripts\\InputManager.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAABwAAAAAAAAAAAAgwCoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-13T04:41:49.696Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "GameStateManager.cs",
-              "DocumentMoniker": "Z:\\unity\\CS_377_Winter_2026\\Assets\\Scripts\\GameStateManager.cs",
+              "DocumentMoniker": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\GameStateManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\GameStateManager.cs",
-              "ToolTip": "Z:\\unity\\CS_377_Winter_2026\\Assets\\Scripts\\GameStateManager.cs",
+              "ToolTip": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\GameStateManager.cs",
               "RelativeToolTip": "Assets\\Scripts\\GameStateManager.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC0AAAA2AAAAAAAAAA==",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAACIAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-13T04:12:52.531Z",
               "EditorCaption": ""

@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,11 +6,17 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager instance;
 
-    private static bool player1Joined = false;
-    private static bool player2Joined = false;
-    public GameObject playerPrefab;
+    public static bool player1Joined = false;
+    public static bool player2Joined = false;
 
-    [SerializeField] private Vector3 player1SpawnPosition = new Vector3(-3.0f, 0.0f, -0.25f);
+    public static PlayerInputManager playerInputManager;
+
+    [SerializeField] public static Vector3 player1SpawnPosition = new Vector3(-3.0f, 0.0f, -0.25f);
+    [SerializeField] public static Vector3 player2SpawnPosition = new Vector3(3.0f, 0.0f, -0.25f);
+    [SerializeField] public GameObject player1;
+    [SerializeField] public GameObject player2;
+    public static PlayerInput player1Input;
+    public static PlayerInput player2Input;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -24,28 +31,29 @@ public class InputManager : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
         }
 
-        playerPrefab = this.GetComponent<PlayerInputManager>().playerPrefab;
+        playerInputManager = this.GetComponent<PlayerInputManager>();
+        playerInputManager.DisableJoining();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (GameStateManager.inGameplay)
-        {
 
-        }
     }
 
-    private void OnSubmit(InputAction.CallbackContext context)
+    public void OnPlayerJoined(PlayerInput playerInput)
     {
-        if (GameStateManager.waitingForPlayersToJoin)
+        if (!player1Joined)
         {
-            if (!player1Joined)
-            {
-                player1Joined = true;
-                Debug.Log("Player 1 joined.");
-                //Instantiate(playerPrefab, player1SpawnPosition);
-            }
+            player1Joined = true;
+            playerInput.transform.position = player1SpawnPosition;
+            Debug.Log("Player 1 joined.");
+        }
+        else if (!player2Joined)
+        {
+            player2Joined = true;
+            playerInput.transform.position = player2SpawnPosition;
+            Debug.Log("Player 2 joined.");
         }
     }
 }

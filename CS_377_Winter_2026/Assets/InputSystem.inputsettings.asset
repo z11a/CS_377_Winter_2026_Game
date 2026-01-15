@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: InputSystem.inputsettings
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputSettings
   m_SupportedDevices:
-  - XInputController
   - Keyboard
+  - XInputController
   - Mouse
   m_UpdateMode: 1
   m_ScrollDeltaBehavior: 0
