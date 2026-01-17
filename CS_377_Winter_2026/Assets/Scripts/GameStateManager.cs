@@ -6,7 +6,16 @@ using UnityEngine.SceneManagement;
 public class GameStateManager : MonoBehaviour
 {
     public static GameStateManager instance;
-    public static bool inGameplay = false;
+
+    public enum GameState
+    {
+        mainMenu,
+        pauseMenu,
+        loadingScreen,
+        inGame
+    }
+
+    public static GameState _gameState;
     public static bool waitingForPlayersToJoin = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -36,6 +45,7 @@ public class GameStateManager : MonoBehaviour
     {
         yield return null;
 
+        _gameState = GameState.loadingScreen;
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Scenes/GameplayScene");
         asyncLoad.allowSceneActivation = false;
 

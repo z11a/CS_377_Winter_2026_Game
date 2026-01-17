@@ -5,16 +5,16 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 639038732279789271
-    m_Hash: 3739699787
+      ticks: 639039618947670010
+    m_Hash: 947986373
   m_LockFileStatus:
     m_FilePath: Z:/unity/CS_377_Winter_2026_Game/CS_377_Winter_2026/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 639038732871324369
-    m_Hash: 1780567246
+      ticks: 639039618947679988
+    m_Hash: 3654245270
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_LocalPackages:
@@ -665,9 +665,11 @@ m_ResolvedPackages:
     - 1.15.0
     - 1.16.0
     - 1.17.0
+    - 1.18.0
     compatible:
     - 1.16.0
     - 1.17.0
+    - 1.18.0
     recommended: 1.16.0
     deprecated: []
   dependencies:
