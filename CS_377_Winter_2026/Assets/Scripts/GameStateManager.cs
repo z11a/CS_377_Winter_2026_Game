@@ -18,12 +18,12 @@ public class GameStateManager : MonoBehaviour
     public static GameState _gameState;
     public static bool waitingForPlayersToJoin = false;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
-        if (instance != null && instance == this)
+        if (instance != null && instance != this)
         {
             Destroy(this.gameObject);
+            Debug.Log("Destroyed extra GameStateManager");
         }
         else
         {
@@ -32,16 +32,19 @@ public class GameStateManager : MonoBehaviour
         }
     }
 
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            StartCoroutine(loadGameplaySceneAsync());
-        }
+        
     }
 
-    IEnumerator loadGameplaySceneAsync()
+    public static IEnumerator LoadGameplaySceneAsync()
     {
         yield return null;
 
