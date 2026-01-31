@@ -439,7 +439,7 @@
 -analyzer:"Z:/Unity new version/Editor/Data/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll"
 "Assets/Scripts/GameStateManager.cs"
 "Assets/Scripts/InputManager.cs"
-"Assets/Scripts/PlayerController.cs"
+"Assets/Scripts/PlayerHandler.cs"
 "Assets/Scripts/UIManager.cs"
 "Assets/TutorialInfo/Scripts/Readme.cs"
 -langversion:9.0
