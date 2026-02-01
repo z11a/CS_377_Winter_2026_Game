@@ -44,7 +44,6 @@ public class PlayerHandler : MonoBehaviour
 
     private void MovementHandler()
     {
-        Debug.Log("Waiting for movement input.");
         Vector3 movement = new Vector3(moveAmount.x, 0, moveAmount.y);
 
         if (movement != Vector3.zero)
@@ -64,6 +63,7 @@ public class PlayerHandler : MonoBehaviour
         switch (_playerState)
         {
             case playerState.Idle:
+                animator.SetBool("Running", false);
                 break;
             case playerState.Running:
                 animator.SetBool("Running", true);
