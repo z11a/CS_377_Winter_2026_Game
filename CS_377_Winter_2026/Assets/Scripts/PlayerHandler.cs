@@ -11,7 +11,7 @@ public class PlayerHandler : MonoBehaviour
     private Animator animator;
 
     public float playerSpeed = 10.0f;
-    public float gravity = -2.0f;
+    //public float gravity = -2.0f;
     public static playerState _playerState;
 
     public enum playerState 

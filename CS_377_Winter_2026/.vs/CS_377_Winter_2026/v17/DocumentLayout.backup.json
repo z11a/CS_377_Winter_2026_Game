@@ -36,7 +36,7 @@
               "RelativeDocumentMoniker": "Assets\\Scripts\\PlayerHandler.cs",
               "ToolTip": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\PlayerHandler.cs",
               "RelativeToolTip": "Assets\\Scripts\\PlayerHandler.cs",
-              "ViewState": "AgIAADIAAAAAAAAAAAAuwEQAAAAQAAAAAAAAAA==",
+              "ViewState": "AgIAACIAAAAAAAAAAAAcwEQAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-30T21:57:38.445Z",
               "EditorCaption": ""
@@ -51,8 +51,7 @@
               "RelativeToolTip": "Assets\\Scripts\\UIManager.cs",
               "ViewState": "AgIAABMAAAAAAAAAAAAgwA4AAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-14T02:51:31.204Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-14T02:51:31.204Z"
             },
             {
               "$type": "Document",
@@ -64,8 +63,7 @@
               "RelativeToolTip": "Assets\\Scripts\\InputManager.cs",
               "ViewState": "AgIAABQAAAAAAAAAAIA7wEwAAABBAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-13T04:41:49.696Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-13T04:41:49.696Z"
             },
             {
               "$type": "Document",
@@ -77,8 +75,7 @@
               "RelativeToolTip": "Assets\\Scripts\\GameStateManager.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAFkAAABZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-13T04:12:52.531Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-13T04:12:52.531Z"
             }
           ]
         }
