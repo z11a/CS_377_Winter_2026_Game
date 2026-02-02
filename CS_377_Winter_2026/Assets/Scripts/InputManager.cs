@@ -65,6 +65,7 @@ public class InputManager : MonoBehaviour
             Debug.Log("Player 1 joined.");
             player1Joined = true;
             player1Input = playerInput;
+            player1Input.GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.Player1;
             player1Input.transform.position = player1SpawnPosition;
         }
         else if (!player2Joined)
@@ -72,6 +73,7 @@ public class InputManager : MonoBehaviour
             Debug.Log("Player 2 joined.");
             player2Joined = true;
             player2Input = playerInput;
+            player2Input.GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.Player2;
             player2Input.transform.position = player2SpawnPosition;
 
             UIManager.startGameButton.gameObject.SetActive(true);

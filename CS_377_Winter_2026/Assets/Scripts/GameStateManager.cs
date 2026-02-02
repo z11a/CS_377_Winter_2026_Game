@@ -12,13 +12,15 @@ public class GameStateManager : MonoBehaviour
         mainMenu,
         pauseMenu,
         loadingScreen,
-        inGame
+        inGame,
+        intermission // in between rounds / before the first round starts.
     }
 
     public static GameState _gameState;
     public static bool waitingForPlayersToJoin = false;
 
     private static float countdownTime = 3.0f;
+    private static float roundTime = 90.0f;
 
     [SerializeField] private Transform player1GameplaySpawnPosition; 
     [SerializeField] private Transform player2GameplaySpawnPosition;
@@ -40,7 +42,7 @@ public class GameStateManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("GameplayScene"))
+        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("GameplayScene"))    // this is for when we don't start the game from the MainMenu scene.
         {
             _gameState = GameState.inGame;
         }
@@ -56,32 +58,51 @@ public class GameStateManager : MonoBehaviour
 
     }
 
-    public static IEnumerator StartCountdown()
+    private static IEnumerator StartRoundTimer()
     {
         yield return null;
 
-        countdownTime = 3.0f;
+        float _roundTime = roundTime;
+
+        while (true)
+        {
+            yield return new WaitForSeconds(1.0f);
+
+            _roundTime -= 1.0f;
+
+            if (_roundTime <= 0.0f)
+            {
+                Debug.Log("Round over.");
+                _gameState = GameState.intermission;
+                break;
+            }
+        }
+        yield return null;
+    }
+
+    public static IEnumerator StartPreRoundCountdown()
+    {
+        yield return null;
+
+        float _countdownTime = countdownTime;
 
         Debug.Log("Countdown started.");
 
-        bool countingDown = true;
-
-        while (countingDown)
+        while (true)
         {
-            Debug.Log("Countdown: " + countdownTime);
+            Debug.Log("Countdown: " + _countdownTime);
 
             yield return new WaitForSeconds(1.0f);
 
-            countdownTime -= 1.0f;
+            _countdownTime -= 1.0f;
 
-            if (countdownTime <= 0.0f)
+            if (_countdownTime <= 0.0f)
             {
                 Debug.Log("Countdown ended.");
                 _gameState = GameState.inGame;
                 break;
             }
         }
-
         yield return null;
     }
     private static void gameplaySceneStart()
@@ -89,7 +110,7 @@ public class GameStateManager : MonoBehaviour
         Instantiate(InputManager.player1Input.gameObject, new Vector3(-5.0f, 3.2f, -7.75f), Quaternion.identity);
         Instantiate(InputManager.player1Input.gameObject, new Vector3(8.5f, 3.0f, -6.75f), Quaternion.identity);
 
-        instance.StartCoroutine(StartCountdown());
+        instance.StartCoroutine(StartPreRoundCountdown());
     }
     public static IEnumerator LoadGameplaySceneAsync()
     {

@@ -437,6 +437,8 @@
 -analyzer:"Z:/Unity new version/Editor/Data/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll"
 -analyzer:"Z:/Unity new version/Editor/Data/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 -analyzer:"Z:/Unity new version/Editor/Data/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll"
+"Assets/Scripts/CheeseCollector.cs"
+"Assets/Scripts/CheeseHandler.cs"
 "Assets/Scripts/GameStateManager.cs"
 "Assets/Scripts/InputManager.cs"
 "Assets/Scripts/PlayerHandler.cs"

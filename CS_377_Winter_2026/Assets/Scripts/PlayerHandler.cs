@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+using UnityEditor;
 
 public class PlayerHandler : MonoBehaviour
 {
@@ -10,16 +12,26 @@ public class PlayerHandler : MonoBehaviour
     private CharacterController controller;
     private Animator animator;
 
-    public float playerSpeed = 10.0f;
-    //public float gravity = -2.0f;
-    public static playerState _playerState;
-
-    public enum playerState 
+    public enum PlayerNumber
+    {
+        Player1, 
+        Player2
+    }
+    public enum playerState
     {
         Idle,
         Running,
         Aiming
     }
+
+    public PlayerNumber playerNumber;
+    public float playerHealth = 50.0f;
+    public float playerSpeed = 10.0f;
+    //public float gravity = -2.0f; // not sure if we need this yet.
+    public static playerState _playerState;
+    public int playerCurrentRoundScore;
+    public List<GameObject> playerCurrentHoldingCheeses;
+    public int playerTotalRoundScore;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -32,7 +44,6 @@ public class PlayerHandler : MonoBehaviour
     }   
 
     // Update is called once per frame
-
     void Update()
     {
         if (GameStateManager._gameState == GameStateManager.GameState.inGame)
@@ -75,5 +86,30 @@ public class PlayerHandler : MonoBehaviour
     {
         moveAmount = value.Get<Vector2>();
         Debug.Log("Moving...");
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        // collecting cheeses from the ground
+        CheeseHandler cheeseHandler = hit.gameObject.GetComponent<CheeseHandler>();
+
+        if (cheeseHandler != null)
+        {
+            switch (cheeseHandler._CheeseType)
+            {
+                case CheeseHandler.CheeseType.Swiss:
+                    break;
+                case CheeseHandler.CheeseType.Brie:
+                    break;
+                case CheeseHandler.CheeseType.Mozzarella:
+                    break;
+                case CheeseHandler.CheeseType.American:
+                    break;
+            }
+            playerCurrentHoldingCheeses.Add(Instantiate(cheeseHandler.gameObject, new Vector3(-100.0f, -100.0f, -100.0f), Quaternion.identity));    // create a copy of the cheese gameObject and store it far away, we can bring it back if the player loses all their health and drops them.
+            Debug.Log("Cheese Type: " + cheeseHandler._CheeseType);
+            Destroy(cheeseHandler.gameObject);
+            return;
+        }
     }
 }
