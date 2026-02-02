@@ -90,26 +90,5 @@ public class PlayerHandler : MonoBehaviour
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        // collecting cheeses from the ground
-        CheeseHandler cheeseHandler = hit.gameObject.GetComponent<CheeseHandler>();
-
-        if (cheeseHandler != null)
-        {
-            switch (cheeseHandler._CheeseType)
-            {
-                case CheeseHandler.CheeseType.Swiss:
-                    break;
-                case CheeseHandler.CheeseType.Brie:
-                    break;
-                case CheeseHandler.CheeseType.Mozzarella:
-                    break;
-                case CheeseHandler.CheeseType.American:
-                    break;
-            }
-            playerCurrentHoldingCheeses.Add(Instantiate(cheeseHandler.gameObject, new Vector3(-100.0f, -100.0f, -100.0f), Quaternion.identity));    // create a copy of the cheese gameObject and store it far away, we can bring it back if the player loses all their health and drops them.
-            Debug.Log("Cheese Type: " + cheeseHandler._CheeseType);
-            Destroy(cheeseHandler.gameObject);
-            return;
-        }
     }
 }
