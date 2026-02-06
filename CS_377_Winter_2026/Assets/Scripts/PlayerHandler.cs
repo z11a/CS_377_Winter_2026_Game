@@ -17,21 +17,33 @@ public class PlayerHandler : MonoBehaviour
         Player1, 
         Player2
     }
-    public enum playerState
+    public enum PlayerState
     {
         Idle,
         Running,
         Aiming
     }
 
+    public enum WeaponEquippedID
+    {
+        Hammer,
+        Glock,
+        MetalPipe
+    }
+
     public PlayerNumber playerNumber;
     public float playerHealth = 50.0f;
     public float playerSpeed = 10.0f;
     //public float gravity = -2.0f; // not sure if we need this yet.
-    public static playerState _playerState;
+    public static PlayerState _playerState;
+    public Transform rightHandTransform;    // this is needed for when the player is holding a weapon
+
     public int playerCurrentRoundScore;
     public List<GameObject> playerCurrentHoldingCheeses;
     public int playerTotalRoundScore;
+
+    [HideInInspector] public GameObject weaponEquippedObject;
+    [HideInInspector] public WeaponEquippedID _WeaponEquippedID;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -40,7 +52,7 @@ public class PlayerHandler : MonoBehaviour
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
 
-        _playerState = playerState.Idle;
+        _playerState = PlayerState.Idle;
     }   
 
     // Update is called once per frame
@@ -61,11 +73,11 @@ public class PlayerHandler : MonoBehaviour
         {
             controller.Move(movement * playerSpeed * Time.deltaTime);
             transform.forward = movement;
-            _playerState = playerState.Running;
+            _playerState = PlayerState.Running;
         }
         else
         {
-            _playerState = playerState.Idle;
+            _playerState = PlayerState.Idle;
         }
     }
 
@@ -73,10 +85,10 @@ public class PlayerHandler : MonoBehaviour
     {
         switch (_playerState)
         {
-            case playerState.Idle:
+            case PlayerState.Idle:
                 animator.SetBool("Running", false);
                 break;
-            case playerState.Running:
+            case PlayerState.Running:
                 animator.SetBool("Running", true);
                 break;
         }
@@ -85,10 +97,30 @@ public class PlayerHandler : MonoBehaviour
     public void OnMove(InputValue value)
     {
         moveAmount = value.Get<Vector2>();
-        Debug.Log("Moving...");
+    }
+
+    public void OnAttack()
+    {
+        if (weaponEquippedObject != null) {
+            switch (_WeaponEquippedID)
+            {
+                case WeaponEquippedID.Hammer:
+                    StartCoroutine(weaponEquippedObject.GetComponent<HammerHandler>().SwingHammer());
+                    break;
+                case WeaponEquippedID.MetalPipe:
+                    break;
+                case WeaponEquippedID.Glock:
+                    break;
+            }
+        }
+        else
+        {
+            Debug.Log(playerNumber + " trying to attack with no weapon equipped.");
+        }
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
+
     }
 }
