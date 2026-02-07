@@ -55,7 +55,6 @@ public class InputManager : MonoBehaviour
                 player2Input.SwitchCurrentActionMap("UI");
             }
         }
-        
     }
 
     public void OnPlayerJoined(PlayerInput playerInput)

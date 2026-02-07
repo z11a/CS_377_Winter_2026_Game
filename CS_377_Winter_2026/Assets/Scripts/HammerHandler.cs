@@ -18,6 +18,7 @@ public class HammerHandler : Weapon
     private Vector3 startingPosition;
     public float floatingAnimationRotationSpeed = 30.0f;
     public float swingCooldown = 0.15f;
+    public float hammerDamage = 50.0f;
     private bool canSwing = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -94,12 +95,12 @@ public class HammerHandler : Weapon
             return;
         }
 
-        if (_WeaponState == WeaponState.Equipped)
+        if (_WeaponState == WeaponState.Equipped)   // player is swinging the hammer
         {
-            if (playerHit != null && playerHit != owner)  // player hits another player
+            if (playerHit != null && playerHit != owner)
             {
-                Debug.Log("Hitting: " + playerHit.GetComponent<PlayerHandler>().playerNumber);
-                playerHit.GetComponent<PlayerHandler>().playerHealth = 0.0f;
+                Debug.Log("Hitting " + playerHit.GetComponent<PlayerHandler>().playerNumber + " for " + hammerDamage + " damage.");
+                playerHit.GetComponent<PlayerHandler>().playerHealth -= hammerDamage;
             }
         } 
     }

@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEditor;
 
 public class PlayerHandler : MonoBehaviour
@@ -31,19 +32,22 @@ public class PlayerHandler : MonoBehaviour
         MetalPipe
     }
 
-    public PlayerNumber playerNumber;
     public float playerHealth = 50.0f;
-    public float playerSpeed = 10.0f;
+    public float playerSpeed = 5.0f;
     //public float gravity = -2.0f; // not sure if we need this yet.
     public static PlayerState _playerState;
     public Transform rightHandTransform;    // this is needed for when the player is holding a weapon
+    public float respawnTime = 3.0f;
+    public float invincibilityTime = 3.0f;
 
-    public int playerCurrentRoundScore;
-    public List<GameObject> playerCurrentHoldingCheeses;
-    public int playerTotalRoundScore;
-
+    [HideInInspector] public int playerCurrentRoundScore;
+    [HideInInspector] public List<GameObject> playerCurrentHoldingCheeses;
+    [HideInInspector] public int playerTotalRoundScore;
+    [HideInInspector] public PlayerNumber playerNumber;
     [HideInInspector] public GameObject weaponEquippedObject;
     [HideInInspector] public WeaponEquippedID _WeaponEquippedID;
+
+    private Coroutine deathCoroutine;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -53,6 +57,8 @@ public class PlayerHandler : MonoBehaviour
         animator = GetComponent<Animator>();
 
         _playerState = PlayerState.Idle;
+
+        StartCoroutine(DeathHandler());
     }   
 
     // Update is called once per frame
@@ -63,6 +69,27 @@ public class PlayerHandler : MonoBehaviour
             MovementHandler();
             AnimationHandler();
         }
+    }
+
+    private IEnumerator DeathHandler()
+    {
+        yield return null;
+
+        while (true)
+        {
+            if (playerHealth <= 0.0f)
+            {
+                Debug.Log(playerNumber + " died.");
+
+                GetComponent<PlayerInput>().DeactivateInput();
+                yield return new WaitForSeconds(respawnTime);
+                GetComponent<PlayerInput>().ActivateInput();
+                playerHealth = 50.0f;
+                yield return new WaitForSeconds(invincibilityTime);
+                yield return null;
+            }
+            yield return null;
+        } 
     }
 
     private void MovementHandler()
@@ -79,6 +106,12 @@ public class PlayerHandler : MonoBehaviour
         {
             _playerState = PlayerState.Idle;
         }
+
+        if (!controller.isGrounded)
+        {
+            controller.Move(new Vector3(0.0f, -0.2f, 0.0f));
+        }
+
     }
 
     private void AnimationHandler()

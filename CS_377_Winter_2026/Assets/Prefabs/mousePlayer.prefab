@@ -121,8 +121,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e633ba575a664047a03852410eba5f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHandler
-  playerSpeed: 10
-  gravity: -2
+  playerHealth: 50
+  playerSpeed: 5
+  rightHandTransform: {fileID: 0}
+  playerCurrentRoundScore: 0
+  playerCurrentHoldingCheeses: []
+  playerTotalRoundScore: 0
+  respawnTime: 3
+  playerNumber: 0
+  weaponEquippedObject: {fileID: 0}
+  _WeaponEquippedID: 0
 --- !u!143 &5626916028857114179
 CharacterController:
   m_ObjectHideFlags: 0
