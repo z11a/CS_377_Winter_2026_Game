@@ -136,16 +136,7 @@ public class PlayerHandler : MonoBehaviour
     public void OnAttack()
     {
         if (weaponEquippedObject != null) {
-            switch (_WeaponEquippedID)
-            {
-                case WeaponEquippedID.Hammer:
-                    StartCoroutine(weaponEquippedObject.GetComponent<HammerHandler>().SwingHammer());
-                    break;
-                case WeaponEquippedID.MetalPipe:
-                    break;
-                case WeaponEquippedID.Glock:
-                    break;
-            }
+            weaponEquippedObject.GetComponent<Weapon>().Attack();
         }
         else
         {

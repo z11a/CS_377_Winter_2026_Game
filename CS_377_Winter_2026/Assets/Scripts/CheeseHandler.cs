@@ -10,7 +10,7 @@ public interface Item
         Collected
     }
 
-    ItemState State {  get; set; }
+    ItemState _ItemState {  get; set; }
 }
 
 public class CheeseHandler : MonoBehaviour, Item
@@ -28,12 +28,7 @@ public class CheeseHandler : MonoBehaviour, Item
     private Vector3 startingPosition;
     [HideInInspector] public int cheeseValue;
 
-    [HideInInspector] public Item.ItemState _ItemState;
-    [HideInInspector] public Item.ItemState State
-    {
-        get => _ItemState;
-        set => _ItemState = value;
-    }
+    [HideInInspector] public Item.ItemState _ItemState { get; set; }
 
     [HideInInspector] 
 

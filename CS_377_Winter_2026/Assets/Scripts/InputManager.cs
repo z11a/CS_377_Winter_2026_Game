@@ -1,3 +1,4 @@
+using System.Collections;
 using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -64,9 +65,16 @@ public class InputManager : MonoBehaviour
             player2Input.transform.position = player2SpawnPosition.position;
             player2Input.SwitchCurrentActionMap("UI");
 
-            UIManager.startGameButton.gameObject.SetActive(true);
-            EventSystem.current.SetSelectedGameObject(UIManager.startGameButton.gameObject);
-            playerInputManager.DisableJoining();
+            StartCoroutine(enableStartButton());
         }
+    }
+
+    private IEnumerator enableStartButton()     // This is in a coroutine because we need to pause one frame before enabling the start button. This is because clicking Submit on my Xbox controller to join the game also instantly presses the start button. 
+    {
+        yield return null;
+
+        UIManager.startGameButton.gameObject.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(UIManager.startGameButton.gameObject);
+        playerInputManager.DisableJoining();
     }
 }

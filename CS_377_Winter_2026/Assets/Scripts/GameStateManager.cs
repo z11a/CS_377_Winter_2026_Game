@@ -114,7 +114,7 @@ public class GameStateManager : MonoBehaviour
 
                 if (possibleItemSpawnDictionary.ContainsKey(possibleItemSpawnLocations[newSpawnIndex]))
                 {
-                    if (possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]] != null && possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]].GetComponent<Item>().State == Item.ItemState.NotCollected)
+                    if (possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]] != null && possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]].GetComponent<Item>()._ItemState == Item.ItemState.NotCollected)
                     {
                         yield return null;
                         continue;

@@ -1,19 +1,20 @@
 using System.Collections;
 using UnityEngine;
 
-public class HammerHandler : MonoBehaviour, Item
+public interface Weapon : Item
+{
+    Coroutine attackCoroutine { get; set; }
+
+    void Attack();
+}
+
+public class HammerHandler : MonoBehaviour, Weapon
 {
     private GameObject owner;
     private BoxCollider unequippedCollider;
     private CapsuleCollider equippedCollider;
-    
-    [HideInInspector] public Item.ItemState _ItemState;
-
-    [HideInInspector] public Item.ItemState State
-    {
-        get => _ItemState;
-        set => _ItemState = value;
-    }
+    [HideInInspector] public Item.ItemState _ItemState {  get; set; }
+    [HideInInspector] public Coroutine attackCoroutine { get; set; }
 
     private Vector3 startingPosition;
     public float floatingAnimationRotationSpeed = 30.0f;
@@ -54,6 +55,11 @@ public class HammerHandler : MonoBehaviour, Item
         }
     }
 
+    public void Attack()
+    {
+        attackCoroutine = StartCoroutine(SwingHammer());
+    }
+
     public IEnumerator SwingHammer()
     {
         yield return null;
@@ -63,10 +69,10 @@ public class HammerHandler : MonoBehaviour, Item
             canSwing = false;
             Debug.Log("Swinging hammer.");
 
-            // TODO: play swinging animation
+            owner.GetComponent<Animator>().SetTrigger("HammerSwing");
 
             equippedCollider.enabled = true;
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(0.5f);
             equippedCollider.enabled = false;
 
             yield return new WaitForSeconds(swingCooldown);
@@ -86,13 +92,21 @@ public class HammerHandler : MonoBehaviour, Item
             unequippedCollider.enabled = false;
             _ItemState = Item.ItemState.Collected;
 
+            if (playerHit.GetComponent<PlayerHandler>().weaponEquippedObject != null)
+            {
+                if (playerHit.GetComponent<PlayerHandler>().weaponEquippedObject.GetComponent<Weapon>().attackCoroutine != null)       // stop swinging the hammer if we're already
+                {
+                    StopCoroutine(playerHit.GetComponent<PlayerHandler>().weaponEquippedObject.GetComponent<Weapon>().attackCoroutine);
+                }
+            }
+
             Destroy(playerHit.GetComponent<PlayerHandler>().weaponEquippedObject);
             playerHit.GetComponent<PlayerHandler>().weaponEquippedObject = this.gameObject;
             playerHit.GetComponent<PlayerHandler>()._WeaponEquippedID = PlayerHandler.WeaponEquippedID.Hammer;
 
             this.transform.parent = playerHit.GetComponent<PlayerHandler>().rightHandTransform;
-            this.transform.localPosition = new Vector3(-0.123f, 0.243f, -0.206f);
-            this.transform.localRotation = Quaternion.Euler(new Vector3(48.962f, 35.461f, 4.582f));
+            this.transform.localPosition = new Vector3(0.1925644f, 0.2693896f, 0.1922832f);
+            this.transform.localRotation = Quaternion.Euler(new Vector3(-53.415f, 43.635f, -84.826f));
             return;
         }
 
