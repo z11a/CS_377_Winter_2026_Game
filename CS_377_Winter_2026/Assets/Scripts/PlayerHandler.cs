@@ -36,7 +36,7 @@ public class PlayerHandler : MonoBehaviour
     public float playerSpeed = 5.0f;
     //public float gravity = -2.0f; // not sure if we need this yet.
     public static PlayerState _playerState;
-    public Transform rightHandTransform;    // this is needed for when the player is holding a weapon
+    public Transform rightHandTransform;    // this is needed for when the player is holding a weapon, there might be a better way of finding this bone though.
     public float respawnTime = 3.0f;
     public float invincibilityTime = 3.0f;
 

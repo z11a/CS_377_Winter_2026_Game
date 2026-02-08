@@ -1,20 +1,20 @@
 using System.Collections;
 using UnityEngine;
 
-public class Weapon : MonoBehaviour
-{
-    public enum WeaponState
-    {
-        Equipped,
-        Unequipped
-    }
-}
-public class HammerHandler : Weapon
+public class HammerHandler : MonoBehaviour, Item
 {
     private GameObject owner;
     private BoxCollider unequippedCollider;
     private CapsuleCollider equippedCollider;
-    private WeaponState _WeaponState;
+    
+    [HideInInspector] public Item.ItemState _ItemState;
+
+    [HideInInspector] public Item.ItemState State
+    {
+        get => _ItemState;
+        set => _ItemState = value;
+    }
+
     private Vector3 startingPosition;
     public float floatingAnimationRotationSpeed = 30.0f;
     public float swingCooldown = 0.15f;
@@ -29,7 +29,7 @@ public class HammerHandler : Weapon
         equippedCollider = GetComponent<CapsuleCollider>();
         equippedCollider.enabled = false;
 
-        _WeaponState = WeaponState.Unequipped;
+        _ItemState = Item.ItemState.NotCollected;
         startingPosition = transform.position;
 
         StartCoroutine(AnimationHandler());
@@ -43,7 +43,7 @@ public class HammerHandler : Weapon
 
     private IEnumerator AnimationHandler()
     {
-        while (_WeaponState == WeaponState.Unequipped)
+        while (_ItemState == Item.ItemState.NotCollected)
         {
             transform.position = new Vector3(startingPosition.x,
                                  startingPosition.y + (Mathf.Sin(Time.time) * 0.25f),
@@ -79,13 +79,14 @@ public class HammerHandler : Weapon
     {
         GameObject playerHit = collider.gameObject;
 
-        if (_WeaponState == WeaponState.Unequipped)   // player is equipping hammer
+        if (_ItemState == Item.ItemState.NotCollected)   // player is equipping hammer
         {
             Debug.Log("Picking up hammer.");
             owner = playerHit;
             unequippedCollider.enabled = false;
-            _WeaponState = WeaponState.Equipped;
+            _ItemState = Item.ItemState.Collected;
 
+            Destroy(playerHit.GetComponent<PlayerHandler>().weaponEquippedObject);
             playerHit.GetComponent<PlayerHandler>().weaponEquippedObject = this.gameObject;
             playerHit.GetComponent<PlayerHandler>()._WeaponEquippedID = PlayerHandler.WeaponEquippedID.Hammer;
 
@@ -95,7 +96,7 @@ public class HammerHandler : Weapon
             return;
         }
 
-        if (_WeaponState == WeaponState.Equipped)   // player is swinging the hammer
+        if (_ItemState == Item.ItemState.Collected)   // player is swinging the hammer
         {
             if (playerHit != null && playerHit != owner)
             {

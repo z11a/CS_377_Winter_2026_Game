@@ -7,28 +7,28 @@
       "RelativeMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\playerhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\assets\\scripts\\hammerhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\hammerhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\assets\\scripts\\inputmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\inputmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\assets\\scripts\\gamestatemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gamestatemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\assets\\scripts\\cheesecollector.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\cheesecollector.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\assets\\scripts\\inputmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\inputmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\assets\\scripts\\uimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\uimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\assets\\scripts\\cheesehandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\cheesehandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\assets\\scripts\\hammerhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\hammerhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\assets\\scripts\\gamestatemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gamestatemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\assets\\scripts\\cheesehandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{15ABFF96-3376-6B15-8D51-7481726119EA}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\cheesehandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -38,19 +38,32 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 5,
               "Title": "HammerHandler.cs",
               "DocumentMoniker": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\HammerHandler.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\HammerHandler.cs",
               "ToolTip": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\HammerHandler.cs",
               "RelativeToolTip": "Assets\\Scripts\\HammerHandler.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAADwAAAAUAAAAAAAAAA==",
+              "ViewState": "AgIAAEAAAAAAAAAAAAAcwFgAAABSAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-06T06:28:42.592Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "CheeseHandler.cs",
+              "DocumentMoniker": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\CheeseHandler.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\CheeseHandler.cs",
+              "ToolTip": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\CheeseHandler.cs",
+              "RelativeToolTip": "Assets\\Scripts\\CheeseHandler.cs",
+              "ViewState": "AgIAAEoAAAAAAAAAAAAuwGIAAABGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-02T21:19:52.964Z",
               "EditorCaption": ""
             },
             {
@@ -61,14 +74,14 @@
               "RelativeDocumentMoniker": "Assets\\Scripts\\PlayerHandler.cs",
               "ToolTip": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\PlayerHandler.cs",
               "RelativeToolTip": "Assets\\Scripts\\PlayerHandler.cs",
-              "ViewState": "AgIAAFEAAAAAAAAAAAAmwG8AAAAyAAAAAAAAAA==",
+              "ViewState": "AgIAACMAAAAAAAAAAAAwwDsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-30T21:57:38.445Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "CheeseCollector.cs",
               "DocumentMoniker": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\CheeseCollector.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\CheeseCollector.cs",
@@ -77,19 +90,6 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAABuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-02T21:43:06.855Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "CheeseHandler.cs",
-              "DocumentMoniker": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\CheeseHandler.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\CheeseHandler.cs",
-              "ToolTip": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\CheeseHandler.cs",
-              "RelativeToolTip": "Assets\\Scripts\\CheeseHandler.cs",
-              "ViewState": "AgIAAAoAAAAAAAAAAAAgwC4AAAAXAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-02T21:19:52.964Z",
               "EditorCaption": ""
             },
             {
@@ -107,26 +107,26 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "InputManager.cs",
               "DocumentMoniker": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\InputManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\InputManager.cs",
               "ToolTip": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\InputManager.cs",
               "RelativeToolTip": "Assets\\Scripts\\InputManager.cs",
-              "ViewState": "AgIAAB8AAAAAAAAAAAAgwDkAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAADUAAAAAAAAAAAAwwA4AAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-13T04:41:49.696Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 2,
               "Title": "GameStateManager.cs",
               "DocumentMoniker": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\GameStateManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\GameStateManager.cs",
               "ToolTip": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\GameStateManager.cs",
               "RelativeToolTip": "Assets\\Scripts\\GameStateManager.cs",
-              "ViewState": "AgIAAC8AAAAAAAAAAAAwwDwAAAAeAAAAAAAAAA==",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAlwHAAAAA/AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-13T04:12:52.531Z",
               "EditorCaption": ""

@@ -1,8 +1,19 @@
 using UnityEngine;
 using System.Collections;
+using NUnit.Framework.Internal.Execution;
 
+public interface Item
+{
+    public enum ItemState
+    {
+        NotCollected,
+        Collected
+    }
 
-public class CheeseHandler : MonoBehaviour
+    ItemState State {  get; set; }
+}
+
+public class CheeseHandler : MonoBehaviour, Item
 {
     public enum CheeseType
     {
@@ -16,6 +27,15 @@ public class CheeseHandler : MonoBehaviour
     public float floatingAnimationRotationSpeed = 30.0f;
     private Vector3 startingPosition;
     [HideInInspector] public int cheeseValue;
+
+    [HideInInspector] public Item.ItemState _ItemState;
+    [HideInInspector] public Item.ItemState State
+    {
+        get => _ItemState;
+        set => _ItemState = value;
+    }
+
+    [HideInInspector] 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -36,6 +56,7 @@ public class CheeseHandler : MonoBehaviour
                 break;
         }
         startingPosition = transform.position;
+        _ItemState = Item.ItemState.NotCollected;
         StartCoroutine(FloatingAnimation());
     }
 
@@ -75,9 +96,10 @@ public class CheeseHandler : MonoBehaviour
                 case CheeseType.American:
                     break;
             }
-            playerHandler.playerCurrentHoldingCheeses.Add(Instantiate(this.gameObject, new Vector3(-100.0f, -100.0f, -100.0f), Quaternion.identity));    // create a copy of the cheese gameObject and store it far away, we can bring it back if the player loses all their health and drops them.
+            startingPosition = new Vector3(-100.0f, -100.0f, -100.0f);
+            playerHandler.playerCurrentHoldingCheeses.Add(this.gameObject); // store it far away, we can bring it back if the player loses all their health and drops them.
+            _ItemState = Item.ItemState.Collected;
             Debug.Log("Cheese Type: " + this._CheeseType);
-            Destroy(this.gameObject);
         }
     }
 }

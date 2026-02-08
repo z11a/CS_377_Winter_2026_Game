@@ -12,8 +12,8 @@ public class InputManager : MonoBehaviour
 
     public static PlayerInputManager playerInputManager;
 
-    [SerializeField] public Vector3 player1SpawnPosition = new Vector3(-3.0f, 0.0f, -0.25f);
-    [SerializeField] public Vector3 player2SpawnPosition = new Vector3(3.0f, 0.0f, -0.25f);
+    [SerializeField] public Transform player1SpawnPosition;
+    [SerializeField] public Transform player2SpawnPosition;
 
     public static PlayerInput player1Input;
     public static PlayerInput player2Input;
@@ -36,25 +36,25 @@ public class InputManager : MonoBehaviour
     void Start()
     {
         playerInputManager = this.GetComponent<PlayerInputManager>();
-        playerInputManager.DisableJoining();
+        //playerInputManager.DisableJoining();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (player1Joined && player2Joined)
-        {
-            if (GameStateManager._gameState == GameStateManager.GameState.inGame)
-            {
-                player1Input.SwitchCurrentActionMap("Player");
-                player2Input.SwitchCurrentActionMap("Player");
-            }
-            else
-            {
-                player1Input.SwitchCurrentActionMap("UI");
-                player2Input.SwitchCurrentActionMap("UI");
-            }
-        }
+        //if (player1Joined && player2Joined)
+        //{
+        //    if (GameStateManager._gameState == GameStateManager.GameState.inGame)
+        //    {
+        //        player1Input.SwitchCurrentActionMap("Player");
+        //        player2Input.SwitchCurrentActionMap("Player");
+        //    }
+        //    else
+        //    {
+        //        player1Input.SwitchCurrentActionMap("UI");
+        //        player2Input.SwitchCurrentActionMap("UI");
+        //    }
+        //}
     }
 
     public void OnPlayerJoined(PlayerInput playerInput)
@@ -65,7 +65,7 @@ public class InputManager : MonoBehaviour
             player1Joined = true;
             player1Input = playerInput;
             player1Input.GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.Player1;
-            player1Input.transform.position = player1SpawnPosition;
+            player1Input.SwitchCurrentActionMap("Player");
         }
         else if (!player2Joined)
         {
@@ -73,10 +73,11 @@ public class InputManager : MonoBehaviour
             player2Joined = true;
             player2Input = playerInput;
             player2Input.GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.Player2;
-            player2Input.transform.position = player2SpawnPosition;
+            player2Input.transform.position = player2SpawnPosition.position;
+            player2Input.SwitchCurrentActionMap("Player");
 
-            UIManager.startGameButton.gameObject.SetActive(true);
-            EventSystem.current.SetSelectedGameObject(UIManager.startGameButton.gameObject);
+            //UIManager.startGameButton.gameObject.SetActive(true);
+            //EventSystem.current.SetSelectedGameObject(UIManager.startGameButton.gameObject);
             playerInputManager.DisableJoining();
         }
     }

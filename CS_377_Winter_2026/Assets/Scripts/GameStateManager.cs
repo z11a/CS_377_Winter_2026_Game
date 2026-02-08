@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,11 +20,19 @@ public class GameStateManager : MonoBehaviour
     public static GameState _gameState;
     public static bool waitingForPlayersToJoin = false;
 
-    private static float countdownTime = 3.0f;
-    private static float roundTime = 90.0f;
+    public static float countdownTime = 3.0f;
+    public static float roundTime = 90.0f;
+
+    public bool itemsSpawning;
+    public float itemSpawnCooldown = 7.5f;
+    public List<Transform> possibleItemSpawnLocations;     // first transform will be the first spawn
+    public List<GameObject> possibleItemSpawnObjects;
+    private Dictionary<Transform, GameObject> possibleItemSpawnDictionary = new Dictionary<Transform, GameObject>();
 
     [SerializeField] private Transform player1GameplaySpawnPosition; 
     [SerializeField] private Transform player2GameplaySpawnPosition;
+
+    private Coroutine itemSpawningCoroutine;
 
     void Awake()
     {
@@ -45,6 +54,8 @@ public class GameStateManager : MonoBehaviour
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("GameplayScene"))    // this is for when we don't start the game from the MainMenu scene.
         {
             _gameState = GameState.inGame;
+            itemsSpawning = true;
+            itemSpawningCoroutine = StartCoroutine(itemSpawning());
         }
         else
         {
@@ -55,7 +66,10 @@ public class GameStateManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (!itemsSpawning)
+        {
+            StopCoroutine(itemSpawningCoroutine);
+        }
     }
 
     private static IEnumerator StartRoundTimer()
@@ -78,6 +92,50 @@ public class GameStateManager : MonoBehaviour
             }
         }
         yield return null;
+    }
+
+    private IEnumerator itemSpawning()
+    {
+        yield return null;
+
+        GameObject firstItem = Instantiate(possibleItemSpawnObjects[Random.Range(0, possibleItemSpawnObjects.Count)], possibleItemSpawnLocations[0].position, Quaternion.identity);    // first transform will be the first spawn
+
+        possibleItemSpawnDictionary[possibleItemSpawnLocations[0]] = firstItem;
+
+        while (itemsSpawning)
+        {
+            yield return new WaitForSeconds(itemSpawnCooldown);
+
+            while (true)
+            {
+                if (possibleItemSpawnDictionary.Count == possibleItemSpawnLocations.Count)
+                {
+                    Debug.Log("All possible spawns are full.");
+                    yield return new WaitForSeconds(4.0f);
+                }
+
+                int newSpawnIndex = Random.Range(0, possibleItemSpawnLocations.Count);
+
+                if (possibleItemSpawnDictionary.ContainsKey(possibleItemSpawnLocations[newSpawnIndex]))
+                {
+                    if (possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]].GetComponent<Item>().State == Item.ItemState.NotCollected)
+                    {
+                        continue;
+                    }
+                    possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]] = Instantiate(possibleItemSpawnObjects[Random.Range(0, possibleItemSpawnObjects.Count)], 
+                                                                                                         possibleItemSpawnLocations[newSpawnIndex].position, 
+                                                                                                         Quaternion.identity);
+                    break;
+                }
+                else
+                {
+                    possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]] = Instantiate(possibleItemSpawnObjects[Random.Range(0, possibleItemSpawnObjects.Count)],
+                                                                                                         possibleItemSpawnLocations[newSpawnIndex].position,
+                                                                                                         Quaternion.identity);
+                    break;
+                }
+            }
+        }
     }
 
     public static IEnumerator StartPreRoundCountdown()
@@ -107,8 +165,8 @@ public class GameStateManager : MonoBehaviour
     }
     private static void gameplaySceneStart()
     {
-        Instantiate(InputManager.player1Input.gameObject, new Vector3(-5.0f, 3.2f, -7.75f), Quaternion.identity);
-        Instantiate(InputManager.player1Input.gameObject, new Vector3(8.5f, 3.0f, -6.75f), Quaternion.identity);
+        //Instantiate(InputManager.player1Input.gameObject, new Vector3(-5.0f, 3.2f, -7.75f), Quaternion.identity);
+        //Instantiate(InputManager.player2Input.gameObject, new Vector3(8.5f, 3.0f, -6.75f), Quaternion.identity);
 
         instance.StartCoroutine(StartPreRoundCountdown());
     }
