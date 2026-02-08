@@ -439,6 +439,7 @@
 -analyzer:"Z:/Unity new version/Editor/Data/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll"
 "Assets/Scripts/CheeseCollector.cs"
 "Assets/Scripts/CheeseHandler.cs"
+"Assets/Scripts/GameplaySceneReferences.cs"
 "Assets/Scripts/GameStateManager.cs"
 "Assets/Scripts/HammerHandler.cs"
 "Assets/Scripts/InputManager.cs"

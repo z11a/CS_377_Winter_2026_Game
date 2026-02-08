@@ -56,6 +56,8 @@ public class GameStateManager : MonoBehaviour
             _gameState = GameState.inGame;
             itemsSpawning = true;
             itemSpawningCoroutine = StartCoroutine(itemSpawning());
+            InputManager.instance.player1Input.SwitchCurrentActionMap("Player");
+            InputManager.instance.player2Input.SwitchCurrentActionMap("Player");
         }
         else
         {
@@ -66,7 +68,7 @@ public class GameStateManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!itemsSpawning)
+        if (itemSpawningCoroutine != null && _gameState != GameState.inGame)
         {
             StopCoroutine(itemSpawningCoroutine);
         }
@@ -108,18 +110,13 @@ public class GameStateManager : MonoBehaviour
 
             while (true)
             {
-                if (possibleItemSpawnDictionary.Count == possibleItemSpawnLocations.Count)
-                {
-                    Debug.Log("All possible spawns are full.");
-                    yield return new WaitForSeconds(4.0f);
-                }
-
                 int newSpawnIndex = Random.Range(0, possibleItemSpawnLocations.Count);
 
                 if (possibleItemSpawnDictionary.ContainsKey(possibleItemSpawnLocations[newSpawnIndex]))
                 {
-                    if (possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]].GetComponent<Item>().State == Item.ItemState.NotCollected)
+                    if (possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]] != null && possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]].GetComponent<Item>().State == Item.ItemState.NotCollected)
                     {
+                        yield return null;
                         continue;
                     }
                     possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]] = Instantiate(possibleItemSpawnObjects[Random.Range(0, possibleItemSpawnObjects.Count)], 
@@ -138,7 +135,7 @@ public class GameStateManager : MonoBehaviour
         }
     }
 
-    public static IEnumerator StartPreRoundCountdown()
+    private IEnumerator StartPreRoundCountdown()
     {
         yield return null;
 
@@ -158,24 +155,29 @@ public class GameStateManager : MonoBehaviour
             {
                 Debug.Log("Countdown ended.");
                 _gameState = GameState.inGame;
+                InputManager.instance.player1Input.SwitchCurrentActionMap("Player");
+                InputManager.instance.player2Input.SwitchCurrentActionMap("Player");
+                
+                itemsSpawning = true;
+                StartCoroutine(itemSpawning());
                 break;
             }
         }
         yield return null;
     }
-    private static void gameplaySceneStart()
+    private void gameplaySceneStart()
     {
-        //Instantiate(InputManager.player1Input.gameObject, new Vector3(-5.0f, 3.2f, -7.75f), Quaternion.identity);
-        //Instantiate(InputManager.player2Input.gameObject, new Vector3(8.5f, 3.0f, -6.75f), Quaternion.identity);
+        InputManager.instance.player1Input.gameObject.transform.position = new Vector3(-6.21835f, 0.7f, -3.8f);
+        InputManager.instance.player2Input.gameObject.transform.position = new Vector3(6.21835f, 0.7f, -3.8f);
 
         instance.StartCoroutine(StartPreRoundCountdown());
     }
-    public static IEnumerator LoadGameplaySceneAsync()
+    public IEnumerator LoadGameplaySceneAsync()
     {
         yield return null;
 
         _gameState = GameState.loadingScreen;
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Scenes/GameplayScene");
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Scenes/GameplayScene", LoadSceneMode.Additive);
         asyncLoad.allowSceneActivation = false;
 
         while (!asyncLoad.isDone)
@@ -187,6 +189,18 @@ public class GameStateManager : MonoBehaviour
                 Debug.Log("Loaded! Starting game in 2 seconds...");
                 yield return new WaitForSeconds(2.0f);
                 asyncLoad.allowSceneActivation = true;
+
+                yield return null;
+
+                SceneManager.MoveGameObjectToScene(InputManager.instance.player1Input.gameObject, SceneManager.GetSceneByName("GameplayScene"));
+                SceneManager.MoveGameObjectToScene(InputManager.instance.player2Input.gameObject, SceneManager.GetSceneByName("GameplayScene"));
+                SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
+
+                var refs = GameplaySceneReferences.Instance;
+                player1GameplaySpawnPosition = refs.player1Spawn;
+                player1GameplaySpawnPosition = refs.player2Spawn;
+                possibleItemSpawnLocations = refs.itemSpawnLocations;
+
                 gameplaySceneStart();
             }
 

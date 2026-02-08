@@ -36,7 +36,6 @@ public class PlayerHandler : MonoBehaviour
     public float playerSpeed = 5.0f;
     //public float gravity = -2.0f; // not sure if we need this yet.
     public static PlayerState _playerState;
-    public Transform rightHandTransform;    // this is needed for when the player is holding a weapon, there might be a better way of finding this bone though.
     public float respawnTime = 3.0f;
     public float invincibilityTime = 3.0f;
 
@@ -46,6 +45,7 @@ public class PlayerHandler : MonoBehaviour
     [HideInInspector] public PlayerNumber playerNumber;
     [HideInInspector] public GameObject weaponEquippedObject;
     [HideInInspector] public WeaponEquippedID _WeaponEquippedID;
+    [HideInInspector] public Transform rightHandTransform;    // this is needed for when the player is holding a weapon, there might be a better way of finding this bone though.
 
     private Coroutine deathCoroutine;
 
@@ -57,6 +57,7 @@ public class PlayerHandler : MonoBehaviour
         animator = GetComponent<Animator>();
 
         _playerState = PlayerState.Idle;
+        rightHandTransform = transform.Find("mouse_rig/spine/spine_01/arm_r/forearm_r/forearm_r_end");
 
         StartCoroutine(DeathHandler());
     }   

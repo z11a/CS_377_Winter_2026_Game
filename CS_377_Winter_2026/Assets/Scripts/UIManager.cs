@@ -48,6 +48,6 @@ public class UIManager : MonoBehaviour
         Debug.Log("Start Game button pressed.");
 
         startGameButton.gameObject.SetActive(false);
-        StartCoroutine(GameStateManager.LoadGameplaySceneAsync());
+        StartCoroutine(GameStateManager.instance.LoadGameplaySceneAsync());
     }
 }
