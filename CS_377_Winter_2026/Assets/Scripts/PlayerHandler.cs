@@ -11,6 +11,7 @@ public class PlayerHandler : MonoBehaviour
     private PlayerInput playerInput;
     private Vector2 moveAmount;
     private CharacterController controller;
+    private Rigidbody rb;
     private Animator animator;
 
     public enum PlayerNumber
@@ -22,29 +23,22 @@ public class PlayerHandler : MonoBehaviour
     {
         Idle,
         Running,
+        Knockback,
         Aiming
-    }
-
-    public enum WeaponEquippedID
-    {
-        Hammer,
-        Glock,
-        MetalPipe
     }
 
     public float playerHealth = 50.0f;
     public float playerSpeed = 5.0f;
     //public float gravity = -2.0f; // not sure if we need this yet.
-    public static PlayerState _playerState;
     public float respawnTime = 3.0f;
     public float invincibilityTime = 3.0f;
-
+    
+    [HideInInspector] public PlayerState _playerState;
     [HideInInspector] public int playerCurrentRoundScore;
     [HideInInspector] public List<GameObject> playerCurrentHoldingCheeses;
     [HideInInspector] public int playerTotalRoundScore;
     [HideInInspector] public PlayerNumber playerNumber;
     [HideInInspector] public GameObject weaponEquippedObject;
-    [HideInInspector] public WeaponEquippedID _WeaponEquippedID;
     [HideInInspector] public Transform rightHandTransform;    // this is needed for when the player is holding a weapon, there might be a better way of finding this bone though.
 
     private Coroutine deathCoroutine;
@@ -55,6 +49,8 @@ public class PlayerHandler : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody>();
+        rb.isKinematic = false;
 
         _playerState = PlayerState.Idle;
         rightHandTransform = transform.Find("mouse_rig/spine/spine_01/arm_r/forearm_r/forearm_r_end");
@@ -67,8 +63,16 @@ public class PlayerHandler : MonoBehaviour
     {
         if (GameStateManager._gameState == GameStateManager.GameState.inGame)
         {
-            MovementHandler();
+            //MovementHandlerCharacterController();
             AnimationHandler();
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (GameStateManager._gameState == GameStateManager.GameState.inGame)
+        {
+            MovementHandlerRigidbody();
         }
     }
 
@@ -93,7 +97,35 @@ public class PlayerHandler : MonoBehaviour
         } 
     }
 
-    private void MovementHandler()
+    private void MovementHandlerRigidbody()
+    {
+        Vector3 movement = new Vector3(moveAmount.x, 0, moveAmount.y);
+
+        rb.angularVelocity = Vector3.zero;
+
+        if (movement != Vector3.zero)
+        {
+            if (_playerState == PlayerState.Knockback)
+            {
+                rb.AddForce(movement * playerSpeed * Time.deltaTime * 5, ForceMode.Force);
+            }
+            else
+            {
+                rb.linearVelocity = movement * playerSpeed * Time.deltaTime;
+                _playerState = PlayerState.Running;
+            }
+            rb.MoveRotation(Quaternion.LookRotation(movement));
+        }
+        else
+        {
+            if (_playerState != PlayerState.Knockback) { 
+                rb.linearVelocity = Vector3.zero;
+                _playerState = PlayerState.Idle;
+            }
+        }
+    }
+
+    private void MovementHandlerCharacterController()
     {
         Vector3 movement = new Vector3(moveAmount.x, 0, moveAmount.y);
 
@@ -136,7 +168,7 @@ public class PlayerHandler : MonoBehaviour
     public void OnAttack()
     {
         if (weaponEquippedObject != null) {
-            weaponEquippedObject.GetComponent<Weapon>().Attack();
+            weaponEquippedObject.GetComponent<IWeapon>().Attack();
         }
         else
         {

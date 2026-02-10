@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class GameplaySceneReferences : MonoBehaviour
 {
-    public static GameplaySceneReferences Instance;
+    public static GameplaySceneReferences instance;
 
     public Transform player1Spawn;
     public Transform player2Spawn;
@@ -11,6 +11,6 @@ public class GameplaySceneReferences : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        instance = this;
     }
 }

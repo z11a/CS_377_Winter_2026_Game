@@ -1,25 +1,20 @@
 using System.Collections;
 using UnityEngine;
 
-public interface Weapon : Item
-{
-    Coroutine attackCoroutine { get; set; }
-
-    void Attack();
-}
-
-public class HammerHandler : MonoBehaviour, Weapon
+public class HammerHandler : MonoBehaviour, IWeapon
 {
     private GameObject owner;
     private BoxCollider unequippedCollider;
     private CapsuleCollider equippedCollider;
-    [HideInInspector] public Item.ItemState _ItemState {  get; set; }
+    [HideInInspector] public IItem.ItemState _ItemState {  get; set; }
     [HideInInspector] public Coroutine attackCoroutine { get; set; }
 
     private Vector3 startingPosition;
     public float floatingAnimationRotationSpeed = 30.0f;
     public float swingCooldown = 0.15f;
     public float hammerDamage = 50.0f;
+    public float hammerKnockbackStrength = 50.0f;
+    public float hammerknockbackDuration = 1.0f;
     private bool canSwing = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -30,7 +25,7 @@ public class HammerHandler : MonoBehaviour, Weapon
         equippedCollider = GetComponent<CapsuleCollider>();
         equippedCollider.enabled = false;
 
-        _ItemState = Item.ItemState.NotCollected;
+        _ItemState = IItem.ItemState.NotCollected;
         startingPosition = transform.position;
 
         StartCoroutine(AnimationHandler());
@@ -44,7 +39,7 @@ public class HammerHandler : MonoBehaviour, Weapon
 
     private IEnumerator AnimationHandler()
     {
-        while (_ItemState == Item.ItemState.NotCollected)
+        while (_ItemState == IItem.ItemState.NotCollected)
         {
             transform.position = new Vector3(startingPosition.x,
                                  startingPosition.y + (Mathf.Sin(Time.time) * 0.25f),
@@ -83,40 +78,53 @@ public class HammerHandler : MonoBehaviour, Weapon
 
     private void OnTriggerEnter(Collider collider)
     {
-        GameObject playerHit = collider.gameObject;
+        PlayerHandler playerHitPlayerHandler = collider.gameObject.GetComponent<PlayerHandler>();
 
-        if (_ItemState == Item.ItemState.NotCollected)   // player is equipping hammer
+        if (_ItemState == IItem.ItemState.NotCollected)   // player is equipping hammer
         {
             Debug.Log("Picking up hammer.");
-            owner = playerHit;
+            owner = playerHitPlayerHandler.gameObject;
             unequippedCollider.enabled = false;
-            _ItemState = Item.ItemState.Collected;
+            _ItemState = IItem.ItemState.Collected;
 
-            if (playerHit.GetComponent<PlayerHandler>().weaponEquippedObject != null)
+            if (playerHitPlayerHandler.weaponEquippedObject != null)
             {
-                if (playerHit.GetComponent<PlayerHandler>().weaponEquippedObject.GetComponent<Weapon>().attackCoroutine != null)       // stop swinging the hammer if we're already
+                if (playerHitPlayerHandler.weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine != null)       // stop swinging the hammer if we're already
                 {
-                    StopCoroutine(playerHit.GetComponent<PlayerHandler>().weaponEquippedObject.GetComponent<Weapon>().attackCoroutine);
+                    StopCoroutine(playerHitPlayerHandler.weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine);
                 }
             }
 
-            Destroy(playerHit.GetComponent<PlayerHandler>().weaponEquippedObject);
-            playerHit.GetComponent<PlayerHandler>().weaponEquippedObject = this.gameObject;
-            playerHit.GetComponent<PlayerHandler>()._WeaponEquippedID = PlayerHandler.WeaponEquippedID.Hammer;
+            Destroy(playerHitPlayerHandler.weaponEquippedObject);
+            playerHitPlayerHandler.weaponEquippedObject = this.gameObject;
 
-            this.transform.parent = playerHit.GetComponent<PlayerHandler>().rightHandTransform;
+            this.transform.parent = playerHitPlayerHandler.rightHandTransform;
             this.transform.localPosition = new Vector3(0.1925644f, 0.2693896f, 0.1922832f);
             this.transform.localRotation = Quaternion.Euler(new Vector3(-53.415f, 43.635f, -84.826f));
             return;
         }
 
-        if (_ItemState == Item.ItemState.Collected)   // player is swinging the hammer
+        if (_ItemState == IItem.ItemState.Collected)   // player is swinging the hammer
         {
-            if (playerHit != null && playerHit != owner)
+            if (playerHitPlayerHandler != null && playerHitPlayerHandler.gameObject != owner)
             {
-                Debug.Log("Hitting " + playerHit.GetComponent<PlayerHandler>().playerNumber + " for " + hammerDamage + " damage.");
-                playerHit.GetComponent<PlayerHandler>().playerHealth -= hammerDamage;
+                Debug.Log("Hitting " + playerHitPlayerHandler.playerNumber + " for " + hammerDamage + " damage.");
+                StartCoroutine(ApplyKnockback(playerHitPlayerHandler.GetComponent<Rigidbody>(), (playerHitPlayerHandler.transform.position - owner.transform.position).normalized));
+                //playerHitPlayerHandler.playerHealth -= hammerDamage;
             }
         } 
+    }
+
+    private IEnumerator ApplyKnockback(Rigidbody rb, Vector3 direction)
+    {
+        rb.GetComponent<PlayerHandler>()._playerState = PlayerHandler.PlayerState.Knockback;
+        rb.linearVelocity = Vector3.zero;   
+        rb.angularVelocity = Vector3.zero;
+
+        rb.linearVelocity += direction * hammerKnockbackStrength;
+        rb.angularVelocity = Vector3.zero;
+
+        yield return new WaitForSeconds(hammerknockbackDuration);
+        rb.GetComponent<PlayerHandler>()._playerState = PlayerHandler.PlayerState.Idle;
     }
 }

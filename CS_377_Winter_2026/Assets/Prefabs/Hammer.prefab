@@ -128,6 +128,8 @@ MonoBehaviour:
   floatingAnimationRotationSpeed: 30
   swingCooldown: 0.1
   hammerDamage: 50
+  hammerKnockbackStrength: 10
+  hammerknockbackDuration: 0.5
 --- !u!136 &2263650266750804342
 CapsuleCollider:
   m_ObjectHideFlags: 0

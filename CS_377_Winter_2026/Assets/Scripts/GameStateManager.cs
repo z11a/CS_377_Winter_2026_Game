@@ -114,7 +114,7 @@ public class GameStateManager : MonoBehaviour
 
                 if (possibleItemSpawnDictionary.ContainsKey(possibleItemSpawnLocations[newSpawnIndex]))
                 {
-                    if (possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]] != null && possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]].GetComponent<Item>()._ItemState == Item.ItemState.NotCollected)
+                    if (possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]] != null && possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]].GetComponent<IItem>()._ItemState == IItem.ItemState.NotCollected)
                     {
                         yield return null;
                         continue;
@@ -157,7 +157,6 @@ public class GameStateManager : MonoBehaviour
                 _gameState = GameState.inGame;
                 InputManager.instance.player1Input.SwitchCurrentActionMap("Player");
                 InputManager.instance.player2Input.SwitchCurrentActionMap("Player");
-                
                 itemsSpawning = true;
                 StartCoroutine(itemSpawning());
                 break;
@@ -196,7 +195,7 @@ public class GameStateManager : MonoBehaviour
                 SceneManager.MoveGameObjectToScene(InputManager.instance.player2Input.gameObject, SceneManager.GetSceneByName("GameplayScene"));
                 SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
 
-                var refs = GameplaySceneReferences.Instance;
+                var refs = GameplaySceneReferences.instance;
                 player1GameplaySpawnPosition = refs.player1Spawn;
                 player1GameplaySpawnPosition = refs.player2Spawn;
                 possibleItemSpawnLocations = refs.itemSpawnLocations;

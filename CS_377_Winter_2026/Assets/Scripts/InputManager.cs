@@ -37,6 +37,7 @@ public class InputManager : MonoBehaviour
     void Start()
     {
         playerInputManager = this.GetComponent<PlayerInputManager>();
+        EventSystem.current.SetSelectedGameObject(UIManager.instance.startMenuButton.gameObject);
     }
 
     // Update is called once per frame
@@ -53,7 +54,7 @@ public class InputManager : MonoBehaviour
             player1Joined = true;
             player1Input = playerInput;
             player1Input.GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.Player1;
-            player1Input.transform.position = player1SpawnPosition.position;
+            player1Input.GetComponent<Rigidbody>().MovePosition(player1SpawnPosition.position);
             player1Input.SwitchCurrentActionMap("UI");
         }
         else if (!player2Joined)
@@ -62,7 +63,8 @@ public class InputManager : MonoBehaviour
             player2Joined = true;
             player2Input = playerInput;
             player2Input.GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.Player2;
-            player2Input.transform.position = player2SpawnPosition.position;
+            player2Input.GetComponent<Rigidbody>().MovePosition(player2SpawnPosition.position);
+
             player2Input.SwitchCurrentActionMap("UI");
 
             StartCoroutine(enableStartButton());
@@ -73,8 +75,8 @@ public class InputManager : MonoBehaviour
     {
         yield return null;
 
-        UIManager.startGameButton.gameObject.SetActive(true);
-        EventSystem.current.SetSelectedGameObject(UIManager.startGameButton.gameObject);
+        UIManager.instance.startGameButton.gameObject.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(UIManager.instance.startGameButton.gameObject);
         playerInputManager.DisableJoining();
     }
 }

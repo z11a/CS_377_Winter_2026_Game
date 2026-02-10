@@ -6,7 +6,7 @@ public class UIManager : MonoBehaviour
     public static UIManager instance;
 
     [SerializeField] public Button startMenuButton;
-    public static Button startGameButton;           // this button has to be static because it has to be accessed by InputManager and is only enabled after player2 joins.
+    [SerializeField] public Button startGameButton;           
     void Awake()
     {
         if (instance != null && instance != this)
@@ -24,8 +24,6 @@ public class UIManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        startGameButton = GameObject.Find("StartGameButton").GetComponent<Button>();
-
         startGameButton.gameObject.SetActive(false);
         startMenuButton.gameObject.SetActive(true);
     }

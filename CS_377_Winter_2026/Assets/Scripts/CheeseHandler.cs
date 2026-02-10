@@ -2,18 +2,8 @@ using UnityEngine;
 using System.Collections;
 using NUnit.Framework.Internal.Execution;
 
-public interface Item
-{
-    public enum ItemState
-    {
-        NotCollected,
-        Collected
-    }
 
-    ItemState _ItemState {  get; set; }
-}
-
-public class CheeseHandler : MonoBehaviour, Item
+public class CheeseHandler : MonoBehaviour, IItem
 {
     public enum CheeseType
     {
@@ -28,7 +18,7 @@ public class CheeseHandler : MonoBehaviour, Item
     private Vector3 startingPosition;
     [HideInInspector] public int cheeseValue;
 
-    [HideInInspector] public Item.ItemState _ItemState { get; set; }
+    [HideInInspector] public IItem.ItemState _ItemState { get; set; }
 
     [HideInInspector] 
 
@@ -51,7 +41,7 @@ public class CheeseHandler : MonoBehaviour, Item
                 break;
         }
         startingPosition = transform.position;
-        _ItemState = Item.ItemState.NotCollected;
+        _ItemState = IItem.ItemState.NotCollected;
         StartCoroutine(FloatingAnimation());
     }
 
@@ -93,7 +83,7 @@ public class CheeseHandler : MonoBehaviour, Item
             }
             startingPosition = new Vector3(-100.0f, -100.0f, -100.0f);
             playerHandler.playerCurrentHoldingCheeses.Add(this.gameObject); // store it far away, we can bring it back if the player loses all their health and drops them.
-            _ItemState = Item.ItemState.Collected;
+            _ItemState = IItem.ItemState.Collected;
             Debug.Log("Cheese Type: " + this._CheeseType);
         }
     }
