@@ -107,7 +107,7 @@ public class PlayerHandler : MonoBehaviour
         {
             if (_playerState == PlayerState.Knockback)
             {
-                rb.AddForce(movement * playerSpeed * Time.deltaTime * 5, ForceMode.Force);
+                rb.AddForce(movement * playerSpeed * Time.deltaTime * 3, ForceMode.Force);
             }
             else
             {

@@ -67,7 +67,7 @@ public class HammerHandler : MonoBehaviour, IWeapon
             owner.GetComponent<Animator>().SetTrigger("HammerSwing");
 
             equippedCollider.enabled = true;
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.35f);
             equippedCollider.enabled = false;
 
             yield return new WaitForSeconds(swingCooldown);
@@ -79,6 +79,11 @@ public class HammerHandler : MonoBehaviour, IWeapon
     private void OnTriggerEnter(Collider collider)
     {
         PlayerHandler playerHitPlayerHandler = collider.gameObject.GetComponent<PlayerHandler>();
+
+        if (playerHitPlayerHandler == null)
+        {
+            return;
+        }
 
         if (_ItemState == IItem.ItemState.NotCollected)   // player is equipping hammer
         {
@@ -104,9 +109,10 @@ public class HammerHandler : MonoBehaviour, IWeapon
             return;
         }
 
+
         if (_ItemState == IItem.ItemState.Collected)   // player is swinging the hammer
         {
-            if (playerHitPlayerHandler != null && playerHitPlayerHandler.gameObject != owner)
+            if (playerHitPlayerHandler.gameObject != owner)
             {
                 Debug.Log("Hitting " + playerHitPlayerHandler.playerNumber + " for " + hammerDamage + " damage.");
                 StartCoroutine(ApplyKnockback(playerHitPlayerHandler.GetComponent<Rigidbody>(), (playerHitPlayerHandler.transform.position - owner.transform.position).normalized));
@@ -121,7 +127,8 @@ public class HammerHandler : MonoBehaviour, IWeapon
         rb.linearVelocity = Vector3.zero;   
         rb.angularVelocity = Vector3.zero;
 
-        rb.linearVelocity += direction * hammerKnockbackStrength;
+        //rb.linearVelocity += direction * hammerKnockbackStrength;
+        rb.AddForce(direction * hammerKnockbackStrength, ForceMode.Impulse); 
         rb.angularVelocity = Vector3.zero;
 
         yield return new WaitForSeconds(hammerknockbackDuration);
