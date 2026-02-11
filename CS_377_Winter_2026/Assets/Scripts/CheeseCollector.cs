@@ -35,6 +35,13 @@ public class CheeseCollector : MonoBehaviour
                 }
                 playerHandler.playerCurrentHoldingCheeses = new List<GameObject>();
                 Debug.Log("New " + playerHandler.playerNumber + " score: " + playerHandler.playerCurrentRoundScore);
+
+                if (playerHandler.playerCurrentRoundScore == GameStateManager.instance.roundOneScoreRequirement)
+                {
+                    Debug.Log(playerHandler.playerNumber + " wins!");
+                    Time.timeScale = 0.0f;
+                }
+
                 return;
             }
         }

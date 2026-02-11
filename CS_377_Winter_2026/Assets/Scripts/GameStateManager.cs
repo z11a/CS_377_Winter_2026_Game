@@ -23,7 +23,12 @@ public class GameStateManager : MonoBehaviour
     public static float countdownTime = 3.0f;
     public static float roundTime = 90.0f;
 
-    public bool itemsSpawning;
+    public int roundOneScoreRequirement = 50;
+    public int roundTwoScoreRequirement = 100;
+    public int roundThreeScoreRequirement = 150;
+
+    [HideInInspector] public bool itemsSpawning;
+
     public float itemSpawnCooldown = 7.5f;
     public List<Transform> possibleItemSpawnLocations;     // first transform will be the first spawn
     public List<GameObject> possibleItemSpawnObjects;
