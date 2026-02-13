@@ -67,7 +67,7 @@ public class HammerHandler : MonoBehaviour, IWeapon
             owner.GetComponent<Animator>().SetTrigger("HammerSwing");
 
             equippedCollider.enabled = true;
-            yield return new WaitForSeconds(0.35f);
+            yield return new WaitForSeconds(0.2f);
             equippedCollider.enabled = false;
 
             yield return new WaitForSeconds(swingCooldown);
@@ -116,7 +116,7 @@ public class HammerHandler : MonoBehaviour, IWeapon
             {
                 Debug.Log("Hitting " + playerHitPlayerHandler.playerNumber + " for " + hammerDamage + " damage.");
                 StartCoroutine(ApplyKnockback(playerHitPlayerHandler.GetComponent<Rigidbody>(), (playerHitPlayerHandler.transform.position - owner.transform.position).normalized));
-                //playerHitPlayerHandler.playerHealth -= hammerDamage;
+                StartCoroutine(playerHitPlayerHandler.TakeDamage(hammerDamage));
             }
         } 
     }

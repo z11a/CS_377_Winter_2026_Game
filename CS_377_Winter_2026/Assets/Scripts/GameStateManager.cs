@@ -17,11 +17,19 @@ public class GameStateManager : MonoBehaviour
         intermission // in between rounds / before the first round starts.
     }
 
-    public static GameState _gameState;
-    public static bool waitingForPlayersToJoin = false;
+    public enum RoundNumber
+    {
+        One,
+        Two,
+        Three
+    }
 
-    public static float countdownTime = 3.0f;
-    public static float roundTime = 90.0f;
+    public GameState _gameState;
+
+    public bool waitingForPlayersToJoin = false;
+
+    public float countdownTime = 3.0f;
+    public float roundTime = 90.0f;
 
     public int roundOneScoreRequirement = 50;
     public int roundTwoScoreRequirement = 100;
@@ -79,7 +87,7 @@ public class GameStateManager : MonoBehaviour
         }
     }
 
-    private static IEnumerator StartRoundTimer()
+    private IEnumerator StartRoundTimer()
     {
         yield return null;
 

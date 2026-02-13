@@ -13,6 +13,7 @@ public class PlayerHandler : MonoBehaviour
     private CharacterController controller;
     private Rigidbody rb;
     private Animator animator;
+    private SkinnedMeshRenderer playerRenderer;
 
     public enum PlayerNumber
     {
@@ -32,7 +33,9 @@ public class PlayerHandler : MonoBehaviour
     //public float gravity = -2.0f; // not sure if we need this yet.
     public float respawnTime = 3.0f;
     public float invincibilityTime = 3.0f;
-    
+    public Material flashMaterial;
+    private Material defaultMaterial;
+
     [HideInInspector] public PlayerState _playerState;
     [HideInInspector] public int playerCurrentRoundScore;
     [HideInInspector] public List<GameObject> playerCurrentHoldingCheeses;
@@ -40,8 +43,6 @@ public class PlayerHandler : MonoBehaviour
     [HideInInspector] public PlayerNumber playerNumber;
     [HideInInspector] public GameObject weaponEquippedObject;
     [HideInInspector] public Transform rightHandTransform;    // this is needed for when the player is holding a weapon, there might be a better way of finding this bone though.
-
-    private Coroutine deathCoroutine;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -51,17 +52,17 @@ public class PlayerHandler : MonoBehaviour
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
         rb.isKinematic = false;
+        playerRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
+        defaultMaterial = playerRenderer.material;
 
         _playerState = PlayerState.Idle;
         rightHandTransform = transform.Find("mouse_rig/spine/spine_01/arm_r/forearm_r/forearm_r_end");
-
-        StartCoroutine(DeathHandler());
     }   
 
     // Update is called once per frame
     void Update()
     {
-        if (GameStateManager._gameState == GameStateManager.GameState.inGame)
+        if (GameStateManager.instance._gameState == GameStateManager.GameState.inGame)
         {
             //MovementHandlerCharacterController();
             AnimationHandler();
@@ -70,31 +71,10 @@ public class PlayerHandler : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (GameStateManager._gameState == GameStateManager.GameState.inGame)
+        if (GameStateManager.instance._gameState == GameStateManager.GameState.inGame)
         {
             MovementHandlerRigidbody();
         }
-    }
-
-    private IEnumerator DeathHandler()
-    {
-        yield return null;
-
-        while (true)
-        {
-            if (playerHealth <= 0.0f)
-            {
-                Debug.Log(playerNumber + " died.");
-
-                GetComponent<PlayerInput>().DeactivateInput();
-                yield return new WaitForSeconds(respawnTime);
-                GetComponent<PlayerInput>().ActivateInput();
-                playerHealth = 50.0f;
-                yield return new WaitForSeconds(invincibilityTime);
-                yield return null;
-            }
-            yield return null;
-        } 
     }
 
     private void MovementHandlerRigidbody()
@@ -176,8 +156,26 @@ public class PlayerHandler : MonoBehaviour
         }
     }
 
-    private void OnControllerColliderHit(ControllerColliderHit hit)
+    public IEnumerator TakeDamage(float damageAmount)
     {
+        playerHealth -= damageAmount;
 
+        // flashing the player white
+        playerRenderer.material = flashMaterial;
+        yield return new WaitForSeconds(0.1f);
+        playerRenderer.material = defaultMaterial;
+
+        // check death
+        if (playerHealth <= 0.0f)
+        {
+            Debug.Log(playerNumber + " died.");
+
+            GetComponent<PlayerInput>().DeactivateInput();
+            yield return new WaitForSeconds(respawnTime);
+            GetComponent<PlayerInput>().ActivateInput();
+            playerHealth = 50.0f;
+            yield return new WaitForSeconds(invincibilityTime);
+            yield return null;
+        }
     }
 }
