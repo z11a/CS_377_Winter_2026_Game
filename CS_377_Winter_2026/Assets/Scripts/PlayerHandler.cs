@@ -154,12 +154,9 @@ public class PlayerHandler : MonoBehaviour
 
     public void OnAttack()
     {
-        if (weaponEquippedObject != null) {
-            weaponEquippedObject.GetComponent<IWeapon>().Attack();
-        }
-        else
+        if (weaponEquippedObject != null)
         {
-            Debug.Log(playerNumber + " trying to attack with no weapon equipped.");
+            weaponEquippedObject.GetComponent<IWeapon>().Attack();
         }
     }
 
@@ -176,6 +173,7 @@ public class PlayerHandler : MonoBehaviour
 
         GetComponent<PlayerInput>().DeactivateInput();
         rb.constraints = RigidbodyConstraints.None;
+        animator.SetTrigger("Death");
 
         yield return new WaitForSeconds(respawnTime);
 
@@ -184,6 +182,7 @@ public class PlayerHandler : MonoBehaviour
         rb.constraints = RigidbodyConstraints.FreezeRotationZ;
         rb.rotation = Quaternion.identity;
         rb.linearVelocity = Vector3.zero;
+        animator.SetTrigger("Idle");
         knockedBack = false;
         playerHealth = 50.0f;
         _playerState = PlayerState.Idle;

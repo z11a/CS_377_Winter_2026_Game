@@ -62,8 +62,7 @@
               "RelativeToolTip": "Assets\\Scripts\\IWeaponInterface.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-10T00:13:46.291Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-10T00:13:46.291Z"
             },
             {
               "$type": "Document",
@@ -75,8 +74,7 @@
               "RelativeToolTip": "Assets\\Scripts\\IItemInterface.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-10T00:13:08.877Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-10T00:13:08.877Z"
             },
             {
               "$type": "Document",
@@ -88,8 +86,7 @@
               "RelativeToolTip": "Assets\\Scripts\\GameplaySceneReferences.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-08T02:24:37.891Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-08T02:24:37.891Z"
             },
             {
               "$type": "Document",
@@ -101,8 +98,7 @@
               "RelativeToolTip": "Assets\\Scripts\\HammerHandler.cs",
               "ViewState": "AgIAAGAAAAAAAAAAAADwv4UAAAA8AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-06T06:28:42.592Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-06T06:28:42.592Z"
             },
             {
               "$type": "Document",
@@ -125,7 +121,7 @@
               "RelativeDocumentMoniker": "Assets\\Scripts\\PlayerHandler.cs",
               "ToolTip": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\PlayerHandler.cs",
               "RelativeToolTip": "Assets\\Scripts\\PlayerHandler.cs",
-              "ViewState": "AgIAAK0AAAAAAAAAAAAuwLUAAAA0AAAAAAAAAA==",
+              "ViewState": "AgIAAIgAAAAAAAAAAIA7wJ8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-30T21:57:38.445Z",
               "EditorCaption": ""
@@ -140,8 +136,7 @@
               "RelativeToolTip": "Assets\\Scripts\\CheeseCollector.cs",
               "ViewState": "AgIAACMAAAAAAAAAAIBJwCYAAABNAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-02T21:43:06.855Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-02T21:43:06.855Z"
             },
             {
               "$type": "Document",
@@ -153,8 +148,7 @@
               "RelativeToolTip": "Assets\\Scripts\\UIManager.cs",
               "ViewState": "AgIAABwAAAAAAAAAAAAtwCcAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-14T02:51:31.204Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-14T02:51:31.204Z"
             },
             {
               "$type": "Document",
@@ -166,8 +160,7 @@
               "RelativeToolTip": "Assets\\Scripts\\InputManager.cs",
               "ViewState": "AgIAADsAAAAAAAAAAAAIwBMAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-13T04:41:49.696Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-13T04:41:49.696Z"
             },
             {
               "$type": "Document",
@@ -177,7 +170,7 @@
               "RelativeDocumentMoniker": "Assets\\Scripts\\GameStateManager.cs",
               "ToolTip": "Z:\\unity\\CS_377_Winter_2026_Game\\CS_377_Winter_2026\\Assets\\Scripts\\GameStateManager.cs",
               "RelativeToolTip": "Assets\\Scripts\\GameStateManager.cs",
-              "ViewState": "AgIAAKEAAAAAAAAAAAAhwLYAAABEAAAAAAAAAA==",
+              "ViewState": "AgIAAIEAAAAAAAAAAAASwLYAAABEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-13T04:12:52.531Z",
               "EditorCaption": ""
