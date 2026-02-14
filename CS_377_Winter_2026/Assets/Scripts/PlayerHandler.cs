@@ -24,10 +24,10 @@ public class PlayerHandler : MonoBehaviour
     {
         Idle,
         Running,
-        Knockback,
-        Aiming
+        Aiming,
+        Dead
     }
-
+    
     public float playerHealth = 50.0f;
     public float playerSpeed = 5.0f;
     //public float gravity = -2.0f; // not sure if we need this yet.
@@ -36,6 +36,8 @@ public class PlayerHandler : MonoBehaviour
     public Material flashMaterial;
     private Material defaultMaterial;
 
+    [HideInInspector] public bool knockedBack = false;
+    [HideInInspector] public Transform currentSpawnPosition;
     [HideInInspector] public PlayerState _playerState;
     [HideInInspector] public int playerCurrentRoundScore;
     [HideInInspector] public List<GameObject> playerCurrentHoldingCheeses;
@@ -79,13 +81,18 @@ public class PlayerHandler : MonoBehaviour
 
     private void MovementHandlerRigidbody()
     {
+        if (_playerState == PlayerState.Dead)
+        {
+            return;
+        }
+
         Vector3 movement = new Vector3(moveAmount.x, 0, moveAmount.y);
 
         rb.angularVelocity = Vector3.zero;
 
         if (movement != Vector3.zero)
         {
-            if (_playerState == PlayerState.Knockback)
+            if (knockedBack)
             {
                 rb.AddForce(movement * playerSpeed * Time.deltaTime * 3, ForceMode.Force);
             }
@@ -98,7 +105,7 @@ public class PlayerHandler : MonoBehaviour
         }
         else
         {
-            if (_playerState != PlayerState.Knockback) { 
+            if (!knockedBack) { 
                 rb.linearVelocity = Vector3.zero;
                 _playerState = PlayerState.Idle;
             }
@@ -156,26 +163,51 @@ public class PlayerHandler : MonoBehaviour
         }
     }
 
-    public IEnumerator TakeDamage(float damageAmount)
+    private IEnumerator HitFlash()
     {
-        playerHealth -= damageAmount;
-
-        // flashing the player white
         playerRenderer.material = flashMaterial;
         yield return new WaitForSeconds(0.1f);
         playerRenderer.material = defaultMaterial;
+    }
 
-        // check death
+    private IEnumerator RespawnHandler()
+    {
+        Debug.Log(playerNumber + " died.");
+
+        GetComponent<PlayerInput>().DeactivateInput();
+        rb.constraints = RigidbodyConstraints.None;
+
+        yield return new WaitForSeconds(respawnTime);
+
+        rb.position = currentSpawnPosition.position;
+        rb.constraints = RigidbodyConstraints.FreezeRotationX;
+        rb.constraints = RigidbodyConstraints.FreezeRotationZ;
+        rb.rotation = Quaternion.identity;
+        rb.linearVelocity = Vector3.zero;
+        knockedBack = false;
+        playerHealth = 50.0f;
+        _playerState = PlayerState.Idle;
+        Destroy(weaponEquippedObject);
+        GetComponent<PlayerInput>().ActivateInput();
+        //yield return new WaitForSeconds(invincibilityTime);
+    }
+
+    public void TakeDamage(float damageAmount)
+    {
+        if (_playerState == PlayerState.Dead)
+        {
+            Debug.Log("Player is already dead.");
+            return;
+        }
+
+        playerHealth -= damageAmount;
+        StartCoroutine(HitFlash());
+
         if (playerHealth <= 0.0f)
         {
-            Debug.Log(playerNumber + " died.");
-
-            GetComponent<PlayerInput>().DeactivateInput();
-            yield return new WaitForSeconds(respawnTime);
-            GetComponent<PlayerInput>().ActivateInput();
-            playerHealth = 50.0f;
-            yield return new WaitForSeconds(invincibilityTime);
-            yield return null;
+            _playerState = PlayerState.Dead;
+            Debug.Log("Setting player to dead.");
+            StartCoroutine(RespawnHandler());
         }
     }
 }

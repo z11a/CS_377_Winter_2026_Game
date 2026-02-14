@@ -16,8 +16,8 @@ public class InputManager : MonoBehaviour
     [SerializeField] public Transform player1SpawnPosition;
     [SerializeField] public Transform player2SpawnPosition;
 
-    public PlayerInput player1Input;
-    public PlayerInput player2Input;
+    [HideInInspector] public PlayerInput player1Input;
+    [HideInInspector] public PlayerInput player2Input;
 
     void Awake()
     {

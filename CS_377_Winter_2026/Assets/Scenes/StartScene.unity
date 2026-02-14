@@ -1660,7 +1660,7 @@ PrefabInstance:
     - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
       propertyPath: 'possibleItemSpawnObjects.Array.data[1]'
       value: 
-      objectReference: {fileID: 3191871613573236219, guid: 4fea14bd2d93eb841b1802757e425a51, type: 3}
+      objectReference: {fileID: 3191871613573236219, guid: e63bf65ace570f54e96b243a2f0f7b1b, type: 3}
     - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
       propertyPath: 'possibleItemSpawnLocations.Array.data[0]'
       value: 

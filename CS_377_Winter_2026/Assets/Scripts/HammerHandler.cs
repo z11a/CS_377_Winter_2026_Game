@@ -116,22 +116,21 @@ public class HammerHandler : MonoBehaviour, IWeapon
             {
                 Debug.Log("Hitting " + playerHitPlayerHandler.playerNumber + " for " + hammerDamage + " damage.");
                 StartCoroutine(ApplyKnockback(playerHitPlayerHandler.GetComponent<Rigidbody>(), (playerHitPlayerHandler.transform.position - owner.transform.position).normalized));
-                StartCoroutine(playerHitPlayerHandler.TakeDamage(hammerDamage));
+                playerHitPlayerHandler.TakeDamage(hammerDamage);
             }
         } 
     }
 
     private IEnumerator ApplyKnockback(Rigidbody rb, Vector3 direction)
     {
-        rb.GetComponent<PlayerHandler>()._playerState = PlayerHandler.PlayerState.Knockback;
+        rb.GetComponent<PlayerHandler>().knockedBack = true;
         rb.linearVelocity = Vector3.zero;   
         rb.angularVelocity = Vector3.zero;
 
-        //rb.linearVelocity += direction * hammerKnockbackStrength;
         rb.AddForce(direction * hammerKnockbackStrength, ForceMode.Impulse); 
         rb.angularVelocity = Vector3.zero;
 
         yield return new WaitForSeconds(hammerknockbackDuration);
-        rb.GetComponent<PlayerHandler>()._playerState = PlayerHandler.PlayerState.Idle;
+        rb.GetComponent<PlayerHandler>().knockedBack = false;
     }
 }
