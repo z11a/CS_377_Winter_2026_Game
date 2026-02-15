@@ -80,7 +80,7 @@ public class HammerHandler : MonoBehaviour, IWeapon
     {
         PlayerHandler playerHitPlayerHandler = collider.gameObject.GetComponent<PlayerHandler>();
 
-        if (playerHitPlayerHandler == null)
+        if (playerHitPlayerHandler == null || playerHitPlayerHandler._playerState == PlayerHandler.PlayerState.Dead)
         {
             return;
         }

@@ -68,23 +68,25 @@ public class CheeseHandler : MonoBehaviour, IItem
         // player collecting cheeses
         PlayerHandler playerHandler = collider.GetComponent<PlayerHandler>();
 
-        if (playerHandler != null)
+        if (playerHandler == null || playerHandler._playerState == PlayerHandler.PlayerState.Dead)
         {
-            switch (_CheeseType)
-            {
-                case CheeseType.Swiss:
-                    break;
-                case CheeseType.Brie:
-                    break;
-                case CheeseType.Mozzarella:
-                    break;
-                case CheeseType.American:
-                    break;
-            }
-            startingPosition = new Vector3(-100.0f, -100.0f, -100.0f);
-            playerHandler.playerCurrentHoldingCheeses.Add(this.gameObject); // store it far away, we can bring it back if the player loses all their health and drops them.
-            _ItemState = IItem.ItemState.Collected;
-            Debug.Log("Cheese Type: " + this._CheeseType);
+            return;
         }
+
+        switch (_CheeseType)
+        {
+            case CheeseType.Swiss:
+                break;
+            case CheeseType.Brie:
+                break;
+            case CheeseType.Mozzarella:
+                break;
+            case CheeseType.American:
+                break;
+        }
+        startingPosition = new Vector3(-100.0f, -100.0f, -100.0f);
+        playerHandler.playerCurrentHoldingCheeses.Add(this.gameObject); // store it far away, we can bring it back if the player loses all their health and drops them.
+        _ItemState = IItem.ItemState.Collected;
+        Debug.Log("Cheese Type: " + this._CheeseType);
     }
 }
