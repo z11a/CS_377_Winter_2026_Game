@@ -178,9 +178,9 @@ public class PlayerHandler : MonoBehaviour
         yield return new WaitForSeconds(respawnTime);
 
         rb.position = currentSpawnPosition.position;
+        rb.rotation = Quaternion.identity;
         rb.constraints = RigidbodyConstraints.FreezeRotationX;
         rb.constraints = RigidbodyConstraints.FreezeRotationZ;
-        rb.rotation = Quaternion.identity;
         rb.linearVelocity = Vector3.zero;
         animator.SetTrigger("Idle");
         knockedBack = false;

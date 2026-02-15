@@ -659,7 +659,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 1, z: -2.34}
+  m_LocalPosition: {x: 8.07, y: 1, z: -2.34}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -734,7 +734,7 @@ Transform:
   m_GameObject: {fileID: 341043289}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: -1.01, y: 0.2, z: -4.77}
+  m_LocalPosition: {x: 7.0599995, y: 1.07, z: -4.77}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -832,7 +832,7 @@ Transform:
   m_GameObject: {fileID: 410087039}
   serializedVersion: 2
   m_LocalRotation: {x: 0.86174226, y: -0.3602674, z: 0.29001242, w: 0.20856787}
-  m_LocalPosition: {x: -2.54, y: 3, z: 0}
+  m_LocalPosition: {x: 5.53, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1158,79 +1158,12 @@ Transform:
   m_GameObject: {fileID: 1000108242}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -5.64625}
+  m_LocalPosition: {x: 8.07, y: 0, z: -5.64625}
   m_LocalScale: {x: 5.9154, y: 0.24427, z: 5.4556894}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1034614668
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1978897532}
-    m_Modifications:
-    - target: {fileID: 3870107951770407585, guid: f1137dca555fc54449dd573ab925663c, type: 3}
-      propertyPath: m_UseGravity
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8414507582165911443, guid: f1137dca555fc54449dd573ab925663c, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -5.66
-      objectReference: {fileID: 0}
-    - target: {fileID: 8414507582165911443, guid: f1137dca555fc54449dd573ab925663c, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8414507582165911443, guid: f1137dca555fc54449dd573ab925663c, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 5.33
-      objectReference: {fileID: 0}
-    - target: {fileID: 8414507582165911443, guid: f1137dca555fc54449dd573ab925663c, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8414507582165911443, guid: f1137dca555fc54449dd573ab925663c, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8414507582165911443, guid: f1137dca555fc54449dd573ab925663c, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8414507582165911443, guid: f1137dca555fc54449dd573ab925663c, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8414507582165911443, guid: f1137dca555fc54449dd573ab925663c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8414507582165911443, guid: f1137dca555fc54449dd573ab925663c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8414507582165911443, guid: f1137dca555fc54449dd573ab925663c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9191150560712383785, guid: f1137dca555fc54449dd573ab925663c, type: 3}
-      propertyPath: m_Name
-      value: mousePlayer
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: -7201093463217172178, guid: f1137dca555fc54449dd573ab925663c, type: 3}
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: f1137dca555fc54449dd573ab925663c, type: 3}
---- !u!4 &1034614669 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8414507582165911443, guid: f1137dca555fc54449dd573ab925663c, type: 3}
-  m_PrefabInstance: {fileID: 1034614668}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1348295580
 GameObject:
   m_ObjectHideFlags: 0
@@ -1400,7 +1333,7 @@ Transform:
   m_GameObject: {fileID: 1444621355}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 1.04, y: 0.21800001, z: -4.84}
+  m_LocalPosition: {x: 9.11, y: 1.088, z: -4.84}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1585,8 +1518,7 @@ Transform:
   m_LocalPosition: {x: 4.13334, y: 0, z: -4.32008}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1034614669}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1997303280
@@ -1660,7 +1592,7 @@ PrefabInstance:
     - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
       propertyPath: 'possibleItemSpawnObjects.Array.data[1]'
       value: 
-      objectReference: {fileID: 3191871613573236219, guid: e63bf65ace570f54e96b243a2f0f7b1b, type: 3}
+      objectReference: {fileID: 2186262415711309002, guid: f4a06f44735f9124a889b39c08ab6f8d, type: 3}
     - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
       propertyPath: 'possibleItemSpawnLocations.Array.data[0]'
       value: 
@@ -1753,7 +1685,7 @@ PrefabInstance:
     - target: {fileID: 3640763839705548023, guid: 9eaefdbbc84ad97499dbdf987fef1046, type: 3}
       propertyPath: m_PlayerPrefab
       value: 
-      objectReference: {fileID: 9191150560712383785, guid: f1137dca555fc54449dd573ab925663c, type: 3}
+      objectReference: {fileID: 1851747289199441563, guid: 2685a4c542937fc45b7e39bc68ba2ed2, type: 3}
     - target: {fileID: 3640763839705548023, guid: 9eaefdbbc84ad97499dbdf987fef1046, type: 3}
       propertyPath: m_JoinAction.m_Reference
       value: 

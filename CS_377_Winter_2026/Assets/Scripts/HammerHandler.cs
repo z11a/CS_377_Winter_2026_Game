@@ -104,8 +104,8 @@ public class HammerHandler : MonoBehaviour, IWeapon
             playerHitPlayerHandler.weaponEquippedObject = this.gameObject;
 
             this.transform.parent = playerHitPlayerHandler.rightHandTransform;
-            this.transform.localPosition = new Vector3(0.1925644f, 0.2693896f, 0.1922832f);
-            this.transform.localRotation = Quaternion.Euler(new Vector3(-53.415f, 43.635f, -84.826f));
+            this.transform.localPosition = Vector3.zero;
+            this.transform.localRotation = Quaternion.Euler(30.864f, -8.384f, -38.901f);
             return;
         }
 

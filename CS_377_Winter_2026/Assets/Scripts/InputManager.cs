@@ -54,7 +54,7 @@ public class InputManager : MonoBehaviour
             player1Joined = true;
             player1Input = playerInput;
             player1Input.GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.Player1;
-            player1Input.GetComponent<Rigidbody>().MovePosition(player1SpawnPosition.position);
+            player1Input.GetComponent<Rigidbody>().position = player1SpawnPosition.position;
             player1Input.SwitchCurrentActionMap("UI");
         }
         else if (!player2Joined)
@@ -63,7 +63,7 @@ public class InputManager : MonoBehaviour
             player2Joined = true;
             player2Input = playerInput;
             player2Input.GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.Player2;
-            player2Input.GetComponent<Rigidbody>().MovePosition(player2SpawnPosition.position);
+            player2Input.GetComponent<Rigidbody>().position = player2SpawnPosition.position;
 
             player2Input.SwitchCurrentActionMap("UI");
 

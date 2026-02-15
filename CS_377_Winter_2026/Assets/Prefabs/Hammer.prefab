@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3191871613573236219
+--- !u!1 &2186262415711309002
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,12 +8,12 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 289652479652438805}
-  - component: {fileID: 4014339658161199094}
-  - component: {fileID: 6391824173376906288}
-  - component: {fileID: 8190787090056148242}
-  - component: {fileID: 5762712017371114215}
-  - component: {fileID: 2263650266750804342}
+  - component: {fileID: 1521366450528507504}
+  - component: {fileID: 2500378693918906837}
+  - component: {fileID: 385012023599901983}
+  - component: {fileID: 6388551830464052596}
+  - component: {fileID: 7225673623014873640}
+  - component: {fileID: -8471437491584164887}
   m_Layer: 0
   m_Name: Hammer
   m_TagString: Untagged
@@ -21,36 +21,36 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &289652479652438805
+--- !u!4 &1521366450528507504
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3191871613573236219}
+  m_GameObject: {fileID: 2186262415711309002}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.5606875, y: 0.29415607, z: -7.640162}
-  m_LocalScale: {x: 0.18462786, y: 0.15950559, z: 1.2984}
+  m_LocalRotation: {x: -0, y: 0.7071067, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -1.6213901, y: 0.12213504, z: -4.0530963}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &4014339658161199094
+--- !u!33 &2500378693918906837
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3191871613573236219}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &6391824173376906288
+  m_GameObject: {fileID: 2186262415711309002}
+  m_Mesh: {fileID: -5495902117074765545, guid: 98a046732ec9613488ae59c73564d593, type: 3}
+--- !u!23 &385012023599901983
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3191871613573236219}
+  m_GameObject: {fileID: 2186262415711309002}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -92,13 +92,30 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &8190787090056148242
+--- !u!114 &6388551830464052596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2186262415711309002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c40a1f73686c32a408d4a60e8353120b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HammerHandler
+  floatingAnimationRotationSpeed: 30
+  swingCooldown: 0.05
+  hammerDamage: 25
+  hammerKnockbackStrength: 7.5
+  hammerknockbackDuration: 0.35
+--- !u!65 &7225673623014873640
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3191871613573236219}
+  m_GameObject: {fileID: 2186262415711309002}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -111,32 +128,15 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3.8562977, y: 1, z: 1.3096935}
-  m_Center: {x: -0.0714168, y: 0, z: 0.017459951}
---- !u!114 &5762712017371114215
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3191871613573236219}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c40a1f73686c32a408d4a60e8353120b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HammerHandler
-  floatingAnimationRotationSpeed: 30
-  swingCooldown: 0.05
-  hammerDamage: 25
-  hammerKnockbackStrength: 7.5
-  hammerknockbackDuration: 0.35
---- !u!136 &2263650266750804342
+  m_Size: {x: 0.95293987, y: 1.5862613, z: 0.8550707}
+  m_Center: {x: 0.0029467347, y: 0.4160955, z: -0.010749609}
+--- !u!136 &-8471437491584164887
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3191871613573236219}
+  m_GameObject: {fileID: 2186262415711309002}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -149,7 +149,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 2.07
-  m_Height: 1.38
-  m_Direction: 2
-  m_Center: {x: 0, y: 0, z: 0.16}
+  m_Radius: 0.58
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.86, z: 0}
