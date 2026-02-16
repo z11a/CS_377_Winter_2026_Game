@@ -1,7 +1,7 @@
-# This .gitignore file should be placed at the root of your Unity project directory
-#
-# Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
-#
+CS_377_Winter_2026/Library/ArtifactDB
+
+CS_377_Winter_2026/Library/PackageCache
+
 .utmp/
 /[Ll]ibrary/
 /[Tt]emp/
