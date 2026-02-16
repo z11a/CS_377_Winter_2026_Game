@@ -75,8 +75,8 @@ public class InputManager : MonoBehaviour
     {
         yield return null;
 
-        //UIManager.instance.startGameButton.gameObject.SetActive(true);
-        //EventSystem.current.SetSelectedGameObject(UIManager.instance.startGameButton.gameObject);
+        UIManager.instance.startGameButton.gameObject.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(UIManager.instance.startGameButton.gameObject);
         playerInputManager.DisableJoining();
     }
 }
