@@ -1,7 +1,3 @@
-CS_377_Winter_2026/Library/ArtifactDB
-
-CS_377_Winter_2026/Library/PackageCache
-
 .utmp/
 /[Ll]ibrary/
 /[Tt]emp/
@@ -97,3 +93,6 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+CS_377_Winter_2026/Library/ArtifactDB
+CS_377_Winter_2026/Library/PackageCache
