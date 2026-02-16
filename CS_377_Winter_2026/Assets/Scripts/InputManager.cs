@@ -37,7 +37,7 @@ public class InputManager : MonoBehaviour
     void Start()
     {
         playerInputManager = this.GetComponent<PlayerInputManager>();
-        EventSystem.current.SetSelectedGameObject(UIManager.instance.startMenuButton.gameObject);
+        //EventSystem.current.SetSelectedGameObject(UIManager.instance.startMenuButton.gameObject);
     }
 
     // Update is called once per frame
@@ -75,8 +75,8 @@ public class InputManager : MonoBehaviour
     {
         yield return null;
 
-        UIManager.instance.startGameButton.gameObject.SetActive(true);
-        EventSystem.current.SetSelectedGameObject(UIManager.instance.startGameButton.gameObject);
+        //UIManager.instance.startGameButton.gameObject.SetActive(true);
+        //EventSystem.current.SetSelectedGameObject(UIManager.instance.startGameButton.gameObject);
         playerInputManager.DisableJoining();
     }
 }
