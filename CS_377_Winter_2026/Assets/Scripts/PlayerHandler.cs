@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.Collections;
 using UnityEditor;
+using static PlayerHandler;
 
 public class PlayerHandler : MonoBehaviour
 {
@@ -40,6 +41,8 @@ public class PlayerHandler : MonoBehaviour
     [HideInInspector] public PlayerNumber playerNumber;
     [HideInInspector] public GameObject weaponEquippedObject;
     [HideInInspector] public Transform rightHandTransform;    // this is needed for when the player is holding a weapon, there might be a better way of finding this bone though.
+    [HideInInspector] public StatTracker stats = new StatTracker();
+
 
     private Coroutine deathCoroutine;
 
@@ -85,6 +88,7 @@ public class PlayerHandler : MonoBehaviour
             if (playerHealth <= 0.0f)
             {
                 Debug.Log(playerNumber + " died.");
+                stats.deaths++;
 
                 GetComponent<PlayerInput>().DeactivateInput();
                 yield return new WaitForSeconds(respawnTime);
@@ -169,6 +173,7 @@ public class PlayerHandler : MonoBehaviour
     {
         if (weaponEquippedObject != null) {
             weaponEquippedObject.GetComponent<IWeapon>().Attack();
+            stats.timesAttack++;
         }
         else
         {
