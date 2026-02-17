@@ -65,14 +65,10 @@ public class MeleeHandler : MonoBehaviour, IWeapon
             canSwing = false;
             Debug.Log("Swinging weapon.");
 
-            owner.GetComponent<Animator>().SetTrigger("HammerSwing");
+            owner.GetComponent<Animator>().SetTrigger("WeaponSwing");
 
             equippedCollider.enabled = true;
-<<<<<<< HEAD:CS_377_Winter_2026/Assets/Scripts/HammerHandler.cs
-            yield return new WaitForSeconds(0.2f);
-=======
             yield return new WaitForSeconds(1.0f / swingSpeed);
->>>>>>> jack:CS_377_Winter_2026/Assets/Scripts/MeleeHandler.cs
             equippedCollider.enabled = false;
 
             yield return new WaitForSeconds(swingCooldown);
@@ -108,7 +104,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
             Destroy(playerHitPlayerHandler.weaponEquippedObject);
             playerHitPlayerHandler.weaponEquippedObject = this.gameObject;
 
-            owner.GetComponent<Animator>().SetFloat("SwingSpeed", swingSpeed);
+            owner.GetComponent<Animator>().SetFloat("WeaponSwingSpeed", swingSpeed);
             this.transform.parent = playerHitPlayerHandler.rightHandTransform;
             this.transform.localPosition = Vector3.zero;
             this.transform.localRotation = Quaternion.Euler(30.864f, -8.384f, -38.901f);
@@ -122,11 +118,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
             {
                 Debug.Log("Hitting " + playerHitPlayerHandler.playerNumber + " for " + weaponDamage + " damage.");
                 StartCoroutine(ApplyKnockback(playerHitPlayerHandler.GetComponent<Rigidbody>(), (playerHitPlayerHandler.transform.position - owner.transform.position).normalized));
-<<<<<<< HEAD:CS_377_Winter_2026/Assets/Scripts/HammerHandler.cs
-                playerHitPlayerHandler.TakeDamage(hammerDamage);
-=======
-                //playerHitPlayerHandler.playerHealth -= weaponDamage;
->>>>>>> jack:CS_377_Winter_2026/Assets/Scripts/MeleeHandler.cs
+                playerHitPlayerHandler.TakeDamage(weaponDamage);
             }
         } 
     }
@@ -137,19 +129,10 @@ public class MeleeHandler : MonoBehaviour, IWeapon
         rb.linearVelocity = Vector3.zero;   
         rb.angularVelocity = Vector3.zero;
 
-<<<<<<< HEAD:CS_377_Winter_2026/Assets/Scripts/HammerHandler.cs
-        rb.AddForce(direction * hammerKnockbackStrength, ForceMode.Impulse); 
-        rb.angularVelocity = Vector3.zero;
-
-        yield return new WaitForSeconds(hammerknockbackDuration);
-        rb.GetComponent<PlayerHandler>().knockedBack = false;
-=======
-        //rb.linearVelocity += direction * weaponKnockbackStrength;
         rb.AddForce(direction * weaponKnockbackStrength, ForceMode.Impulse); 
         rb.angularVelocity = Vector3.zero;
 
-        yield return new WaitForSeconds(weaponknockbackDuration);
-        rb.GetComponent<PlayerHandler>()._playerState = PlayerHandler.PlayerState.Idle;
->>>>>>> jack:CS_377_Winter_2026/Assets/Scripts/MeleeHandler.cs
+        yield return new WaitForSeconds(weaponKnockbackStrength);
+        rb.GetComponent<PlayerHandler>().knockedBack = false;
     }
 }

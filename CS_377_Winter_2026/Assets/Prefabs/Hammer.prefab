@@ -101,14 +101,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 2186262415711309002}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c40a1f73686c32a408d4a60e8353120b, type: 3}
+  m_Script: {fileID: 11500000, guid: 79d9a79f2d27abe47a05bf6f62c7055b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HammerHandler
   floatingAnimationRotationSpeed: 30
-  swingCooldown: 0.05
-  hammerDamage: 25
-  hammerKnockbackStrength: 7.5
-  hammerknockbackDuration: 0.35
+  swingSpeed: 1
+  swingCooldown: 0.15
+  weaponDamage: 25
+  weaponKnockbackStrength: 50
+  weaponknockbackDuration: 1
 --- !u!65 &7225673623014873640
 BoxCollider:
   m_ObjectHideFlags: 0
