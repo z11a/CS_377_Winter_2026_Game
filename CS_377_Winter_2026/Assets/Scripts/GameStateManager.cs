@@ -123,24 +123,26 @@ public class GameStateManager : MonoBehaviour
             while (true)
             {
                 int newSpawnIndex = Random.Range(0, possibleItemSpawnLocations.Count);
+                GameObject randomObject = possibleItemSpawnObjects[Random.Range(0, possibleItemSpawnObjects.Count)];
 
                 if (possibleItemSpawnDictionary.ContainsKey(possibleItemSpawnLocations[newSpawnIndex]))
                 {
+
                     if (possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]] != null && possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]].GetComponent<IItem>()._ItemState == IItem.ItemState.NotCollected)
                     {
                         yield return null;
                         continue;
                     }
-                    possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]] = Instantiate(possibleItemSpawnObjects[Random.Range(0, possibleItemSpawnObjects.Count)], 
-                                                                                                         possibleItemSpawnLocations[newSpawnIndex].position, 
-                                                                                                         Quaternion.identity);
+                    possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]] = Instantiate(randomObject, 
+                                                                                                         possibleItemSpawnLocations[newSpawnIndex].position,
+                                                                                                         randomObject.transform.rotation);
                     break;
                 }
                 else
                 {
-                    possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]] = Instantiate(possibleItemSpawnObjects[Random.Range(0, possibleItemSpawnObjects.Count)],
+                    possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]] = Instantiate(randomObject,
                                                                                                          possibleItemSpawnLocations[newSpawnIndex].position,
-                                                                                                         Quaternion.identity);
+                                                                                                         randomObject.transform.rotation);
                     break;
                 }
             }

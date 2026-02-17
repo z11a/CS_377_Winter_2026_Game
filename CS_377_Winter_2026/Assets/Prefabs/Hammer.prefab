@@ -106,10 +106,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HammerHandler
   floatingAnimationRotationSpeed: 30
   swingSpeed: 1
-  swingCooldown: 0.15
+  swingCooldown: 0.75
   weaponDamage: 25
-  weaponKnockbackStrength: 50
-  weaponknockbackDuration: 1
+  weaponKnockbackStrength: 7
+  weaponknockbackDuration: 0.4
 --- !u!65 &7225673623014873640
 BoxCollider:
   m_ObjectHideFlags: 0

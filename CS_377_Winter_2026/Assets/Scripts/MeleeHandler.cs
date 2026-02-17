@@ -68,12 +68,11 @@ public class MeleeHandler : MonoBehaviour, IWeapon
             owner.GetComponent<Animator>().SetTrigger("WeaponSwing");
 
             equippedCollider.enabled = true;
-            yield return new WaitForSeconds(1.0f / swingSpeed);
+            yield return new WaitForSeconds(swingCooldown / 2);
             equippedCollider.enabled = false;
 
-            yield return new WaitForSeconds(swingCooldown);
-            canSwing = true;
             yield return null;
+            canSwing = true;
         }
     }
 
@@ -105,7 +104,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
             playerHitPlayerHandler.weaponEquippedObject = this.gameObject;
 
             owner.GetComponent<Animator>().SetFloat("WeaponSwingSpeed", swingSpeed);
-            this.transform.parent = playerHitPlayerHandler.rightHandTransform;
+            this.transform.parent = playerHitPlayerHandler.weaponPlaceholderTransform;
             this.transform.localPosition = Vector3.zero;
             this.transform.localRotation = Quaternion.Euler(30.864f, -8.384f, -38.901f);
             return;
