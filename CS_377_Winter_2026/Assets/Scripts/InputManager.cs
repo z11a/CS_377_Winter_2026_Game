@@ -37,7 +37,7 @@ public class InputManager : MonoBehaviour
     void Start()
     {
         playerInputManager = this.GetComponent<PlayerInputManager>();
-        EventSystem.current.SetSelectedGameObject(UIManager.instance.startMenuButton.gameObject);
+        //EventSystem.current.SetSelectedGameObject(UIManager.instance.startMenuButton.gameObject);
     }
 
     // Update is called once per frame

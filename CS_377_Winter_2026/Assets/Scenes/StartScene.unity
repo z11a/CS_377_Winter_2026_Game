@@ -1579,7 +1579,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
       propertyPath: possibleItemSpawnObjects.Array.size
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
       propertyPath: possibleItemSpawnLocations.Array.size
@@ -1593,6 +1593,14 @@ PrefabInstance:
       propertyPath: 'possibleItemSpawnObjects.Array.data[1]'
       value: 
       objectReference: {fileID: 2186262415711309002, guid: f4a06f44735f9124a889b39c08ab6f8d, type: 3}
+    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
+      propertyPath: 'possibleItemSpawnObjects.Array.data[2]'
+      value: 
+      objectReference: {fileID: 3191871613573236219, guid: c9a21b9ac93c21a459c5bd42efcc8c4f, type: 3}
+    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
+      propertyPath: 'possibleItemSpawnObjects.Array.data[3]'
+      value: 
+      objectReference: {fileID: 3191871613573236219, guid: 5f2a489a36b416543870e4117859dc19, type: 3}
     - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
       propertyPath: 'possibleItemSpawnLocations.Array.data[0]'
       value: 
