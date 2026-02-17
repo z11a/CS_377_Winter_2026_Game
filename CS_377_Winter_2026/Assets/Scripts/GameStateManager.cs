@@ -17,25 +17,32 @@ public class GameStateManager : MonoBehaviour
         intermission // in between rounds / before the first round starts.
     }
 
-    public static GameState _gameState;
-    public static bool waitingForPlayersToJoin = false;
+    public enum RoundNumber
+    {
+        One,
+        Two,
+        Three
+    }
 
-    public static float countdownTime = 3.0f;
-    public static float roundTime = 90.0f;
+    public GameState _gameState;
+
+    public bool waitingForPlayersToJoin = false;
+
+    public float countdownTime = 3.0f;
+    public float roundTime = 90.0f;
 
     public int roundOneScoreRequirement = 50;
     public int roundTwoScoreRequirement = 100;
     public int roundThreeScoreRequirement = 150;
 
     [HideInInspector] public bool itemsSpawning;
-
     public float itemSpawnCooldown = 7.5f;
     public List<Transform> possibleItemSpawnLocations;     // first transform will be the first spawn
     public List<GameObject> possibleItemSpawnObjects;
     private Dictionary<Transform, GameObject> possibleItemSpawnDictionary = new Dictionary<Transform, GameObject>();
 
-    [SerializeField] private Transform player1GameplaySpawnPosition; 
-    [SerializeField] private Transform player2GameplaySpawnPosition;
+    [HideInInspector] public Transform player1GameplaySpawnPosition;
+    [HideInInspector] public Transform player2GameplaySpawnPosition;
 
     private Coroutine itemSpawningCoroutine;
 
@@ -79,7 +86,7 @@ public class GameStateManager : MonoBehaviour
         }
     }
 
-    private static IEnumerator StartRoundTimer()
+    private IEnumerator StartRoundTimer()
     {
         yield return null;
 
@@ -171,8 +178,10 @@ public class GameStateManager : MonoBehaviour
     }
     private void gameplaySceneStart()
     {
-        InputManager.instance.player1Input.gameObject.transform.position = new Vector3(-6.21835f, 0.7f, -3.8f);
-        InputManager.instance.player2Input.gameObject.transform.position = new Vector3(6.21835f, 0.7f, -3.8f);
+        InputManager.instance.player1Input.GetComponent<Rigidbody>().position = player1GameplaySpawnPosition.position;
+        InputManager.instance.player1Input.GetComponent<PlayerHandler>().currentSpawnPosition = player1GameplaySpawnPosition;
+        InputManager.instance.player2Input.GetComponent<Rigidbody>().position = player2GameplaySpawnPosition.position;
+        InputManager.instance.player2Input.GetComponent<PlayerHandler>().currentSpawnPosition = player2GameplaySpawnPosition;
 
         instance.StartCoroutine(StartPreRoundCountdown());
     }
@@ -202,7 +211,7 @@ public class GameStateManager : MonoBehaviour
 
                 var refs = GameplaySceneReferences.instance;
                 player1GameplaySpawnPosition = refs.player1Spawn;
-                player1GameplaySpawnPosition = refs.player2Spawn;
+                player2GameplaySpawnPosition = refs.player2Spawn;
                 possibleItemSpawnLocations = refs.itemSpawnLocations;
 
                 gameplaySceneStart();

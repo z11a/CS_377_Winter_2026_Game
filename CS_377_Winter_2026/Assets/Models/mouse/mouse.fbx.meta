@@ -27,7 +27,7 @@ ModelImporter:
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 1
+    animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -122,6 +122,35 @@ ModelImporter:
       maskType: 3
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: mouse_rig|DeathRagdoll
+      takeName: mouse_rig|DeathRagdoll
+      internalID: -2282585531552078071
+      firstFrame: 0
+      lastFrame: 6
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 0
   meshes:
     lODScreenPercentages: []
@@ -148,7 +177,7 @@ ModelImporter:
     maxBonesPerVertex: 4
     minBoneWeight: 0.001
     optimizeBones: 1
-    generateMeshLods: 0
+    generateMeshLods: 1
     meshLodGenerationFlags: 0
     maximumMeshLod: -1
     meshOptimizationFlags: -1
@@ -175,7 +204,102 @@ ModelImporter:
   humanDescription:
     serializedVersion: 3
     human: []
-    skeleton: []
+    skeleton:
+    - name: mouse(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: mouse_rig
+      parentName: mouse(Clone)
+      position: {x: -0.0007393475, y: 0.5917935, z: 0.001941639}
+      rotation: {x: 0, y: -0.00000004371139, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: spine
+      parentName: mouse_rig
+      position: {x: 0.0045808665, y: -0.5393214, z: -0.06995161}
+      rotation: {x: -0.004897353, y: 0.6892775, z: 0.72448045, w: 0.00082155777}
+      scale: {x: 1.0000001, y: 0.9999999, z: 1.0000001}
+    - name: leg_l
+      parentName: spine
+      position: {x: 0.17703941, y: 0.0035276967, z: 0.045706134}
+      rotation: {x: -0.68762743, y: -0.68451446, z: -0.16222487, w: -0.17969875}
+      scale: {x: 1.0000008, y: 0.99999994, z: 0.9999998}
+    - name: foot_l
+      parentName: leg_l
+      position: {x: 0.0000000044237822, y: 0.000000017811544, z: 0.0865454}
+      rotation: {x: 0.19180569, y: 0.15926862, z: -0.12330757, w: 0.9605411}
+      scale: {x: 1.0000001, y: 1.0000001, z: 0.9999998}
+    - name: foot_l_end
+      parentName: foot_l
+      position: {x: 0, y: 0, z: 0.14114563}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: leg_r
+      parentName: spine
+      position: {x: -0.17543833, y: 0.0034264303, z: 0.04570608}
+      rotation: {x: 0.6878243, y: -0.6843168, z: -0.16217276, w: 0.17974514}
+      scale: {x: 0.9999993, y: 0.9999996, z: 0.9999997}
+    - name: foot_r
+      parentName: leg_r
+      position: {x: 0.000000009371433, y: 0.0000000048894435, z: 0.0865454}
+      rotation: {x: 0.19627538, y: -0.1609843, z: 0.12763475, w: 0.9587854}
+      scale: {x: 0.99999994, y: 1.0000001, z: 1.0000001}
+    - name: foot_r_end
+      parentName: foot_r
+      position: {x: 0, y: 0, z: 0.14114563}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: spine_01
+      parentName: spine
+      position: {x: 0, y: 0.000000004663889, z: 0.422419}
+      rotation: {x: 0.00015214494, y: 1.1641531e-10, z: -0.0000001171138, w: 1}
+      scale: {x: 1, y: 1, z: 0.9999999}
+    - name: head
+      parentName: spine_01
+      position: {x: 0.0000000013205863, y: 0.0000000122222445, z: 0.3554204}
+      rotation: {x: -1.45519135e-11, y: 0.0000000011639406, z: -0.0000000013971643, w: 1}
+      scale: {x: 1, y: 1.0000002, z: 1}
+    - name: head_end
+      parentName: head
+      position: {x: 0, y: 0, z: 0.348814}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: arm_l
+      parentName: spine_01
+      position: {x: 0.23100793, y: 0.0078071225, z: 0.20147252}
+      rotation: {x: 0.00010060681, y: -0.7071068, z: -0.00010063064, w: -0.7071068}
+      scale: {x: 1.0000002, y: 1.0000001, z: 0.9999997}
+    - name: forearm_l
+      parentName: arm_l
+      position: {x: -0.000000009778887, y: 0.000000011641532, z: 0.15335247}
+      rotation: {x: -0.00000012653615, y: 0.0000005364417, z: -0.000000044536126, w: 1}
+      scale: {x: 0.9999995, y: 0.99999976, z: 0.9999999}
+    - name: forearm_l_end
+      parentName: forearm_l
+      position: {x: 0, y: 0, z: 0.11627137}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: arm_r
+      parentName: spine_01
+      position: {x: -0.22940928, y: 0.007674746, z: 0.20147254}
+      rotation: {x: 0.00010085321, y: -0.70710665, z: 0.000100947414, w: 0.70710695}
+      scale: {x: 1, y: 1.0000001, z: 0.9999998}
+    - name: forearm_r
+      parentName: arm_r
+      position: {x: -0.000000005995389, y: -0.0000000013969839, z: 0.15335253}
+      rotation: {x: 3.6379785e-11, y: -0.00000020861623, z: -6.257323e-10, w: 1}
+      scale: {x: 1.0000004, y: 1, z: 0.9999999}
+    - name: forearm_r_end
+      parentName: forearm_r
+      position: {x: 0, y: 0, z: 0.11627139}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: mouse
+      parentName: mouse(Clone)
+      position: {x: 0.0026585786, y: -0.0041891336, z: -0.022781726}
+      rotation: {x: 0, y: -0.00000008742278, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
     armTwist: 0.5
     foreArmTwist: 0.5
     upperLegTwist: 0.5
@@ -184,9 +308,9 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     globalScale: 1
-    rootMotionBoneName: spine
+    rootMotionBoneName: 
     hasTranslationDoF: 0
-    hasExtraRoot: 0
+    hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   autoGenerateAvatarMappingIfUnspecified: 1

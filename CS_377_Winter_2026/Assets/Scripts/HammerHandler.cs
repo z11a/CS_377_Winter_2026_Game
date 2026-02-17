@@ -67,7 +67,7 @@ public class HammerHandler : MonoBehaviour, IWeapon
             owner.GetComponent<Animator>().SetTrigger("HammerSwing");
 
             equippedCollider.enabled = true;
-            yield return new WaitForSeconds(0.35f);
+            yield return new WaitForSeconds(0.2f);
             equippedCollider.enabled = false;
 
             yield return new WaitForSeconds(swingCooldown);
@@ -80,7 +80,7 @@ public class HammerHandler : MonoBehaviour, IWeapon
     {
         PlayerHandler playerHitPlayerHandler = collider.gameObject.GetComponent<PlayerHandler>();
 
-        if (playerHitPlayerHandler == null)
+        if (playerHitPlayerHandler == null || playerHitPlayerHandler._playerState == PlayerHandler.PlayerState.Dead)
         {
             return;
         }
@@ -104,8 +104,8 @@ public class HammerHandler : MonoBehaviour, IWeapon
             playerHitPlayerHandler.weaponEquippedObject = this.gameObject;
 
             this.transform.parent = playerHitPlayerHandler.rightHandTransform;
-            this.transform.localPosition = new Vector3(0.1925644f, 0.2693896f, 0.1922832f);
-            this.transform.localRotation = Quaternion.Euler(new Vector3(-53.415f, 43.635f, -84.826f));
+            this.transform.localPosition = Vector3.zero;
+            this.transform.localRotation = Quaternion.Euler(30.864f, -8.384f, -38.901f);
             return;
         }
 
@@ -116,22 +116,21 @@ public class HammerHandler : MonoBehaviour, IWeapon
             {
                 Debug.Log("Hitting " + playerHitPlayerHandler.playerNumber + " for " + hammerDamage + " damage.");
                 StartCoroutine(ApplyKnockback(playerHitPlayerHandler.GetComponent<Rigidbody>(), (playerHitPlayerHandler.transform.position - owner.transform.position).normalized));
-                //playerHitPlayerHandler.playerHealth -= hammerDamage;
+                playerHitPlayerHandler.TakeDamage(hammerDamage);
             }
         } 
     }
 
     private IEnumerator ApplyKnockback(Rigidbody rb, Vector3 direction)
     {
-        rb.GetComponent<PlayerHandler>()._playerState = PlayerHandler.PlayerState.Knockback;
+        rb.GetComponent<PlayerHandler>().knockedBack = true;
         rb.linearVelocity = Vector3.zero;   
         rb.angularVelocity = Vector3.zero;
 
-        //rb.linearVelocity += direction * hammerKnockbackStrength;
         rb.AddForce(direction * hammerKnockbackStrength, ForceMode.Impulse); 
         rb.angularVelocity = Vector3.zero;
 
         yield return new WaitForSeconds(hammerknockbackDuration);
-        rb.GetComponent<PlayerHandler>()._playerState = PlayerHandler.PlayerState.Idle;
+        rb.GetComponent<PlayerHandler>().knockedBack = false;
     }
 }

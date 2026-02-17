@@ -14,6 +14,7 @@ public class PlayerHandler : MonoBehaviour
     private CharacterController controller;
     private Rigidbody rb;
     private Animator animator;
+    private SkinnedMeshRenderer playerRenderer;
 
     public enum PlayerNumber
     {
@@ -24,16 +25,20 @@ public class PlayerHandler : MonoBehaviour
     {
         Idle,
         Running,
-        Knockback,
-        Aiming
+        Aiming,
+        Dead
     }
-
+    
     public float playerHealth = 50.0f;
     public float playerSpeed = 5.0f;
     //public float gravity = -2.0f; // not sure if we need this yet.
     public float respawnTime = 3.0f;
     public float invincibilityTime = 3.0f;
-    
+    public Material flashMaterial;
+    private Material defaultMaterial;
+
+    [HideInInspector] public bool knockedBack = false;
+    [HideInInspector] public Transform currentSpawnPosition;
     [HideInInspector] public PlayerState _playerState;
     [HideInInspector] public int playerCurrentRoundScore;
     [HideInInspector] public List<GameObject> playerCurrentHoldingCheeses;
@@ -44,8 +49,6 @@ public class PlayerHandler : MonoBehaviour
     [HideInInspector] public StatTracker stats = new StatTracker();
 
 
-    private Coroutine deathCoroutine;
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -54,17 +57,17 @@ public class PlayerHandler : MonoBehaviour
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
         rb.isKinematic = false;
+        playerRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
+        defaultMaterial = playerRenderer.material;
 
         _playerState = PlayerState.Idle;
         rightHandTransform = transform.Find("mouse_rig/spine/spine_01/arm_r/forearm_r/forearm_r_end");
-
-        StartCoroutine(DeathHandler());
     }   
 
     // Update is called once per frame
     void Update()
     {
-        if (GameStateManager._gameState == GameStateManager.GameState.inGame)
+        if (GameStateManager.instance._gameState == GameStateManager.GameState.inGame)
         {
             //MovementHandlerCharacterController();
             AnimationHandler();
@@ -73,43 +76,26 @@ public class PlayerHandler : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (GameStateManager._gameState == GameStateManager.GameState.inGame)
+        if (GameStateManager.instance._gameState == GameStateManager.GameState.inGame)
         {
             MovementHandlerRigidbody();
         }
     }
 
-    private IEnumerator DeathHandler()
-    {
-        yield return null;
-
-        while (true)
-        {
-            if (playerHealth <= 0.0f)
-            {
-                Debug.Log(playerNumber + " died.");
-                stats.deaths++;
-
-                GetComponent<PlayerInput>().DeactivateInput();
-                yield return new WaitForSeconds(respawnTime);
-                GetComponent<PlayerInput>().ActivateInput();
-                playerHealth = 50.0f;
-                yield return new WaitForSeconds(invincibilityTime);
-                yield return null;
-            }
-            yield return null;
-        } 
-    }
-
     private void MovementHandlerRigidbody()
     {
+        if (_playerState == PlayerState.Dead)
+        {
+            return;
+        }
+
         Vector3 movement = new Vector3(moveAmount.x, 0, moveAmount.y);
 
         rb.angularVelocity = Vector3.zero;
 
         if (movement != Vector3.zero)
         {
-            if (_playerState == PlayerState.Knockback)
+            if (knockedBack)
             {
                 rb.AddForce(movement * playerSpeed * Time.deltaTime * 3, ForceMode.Force);
             }
@@ -122,7 +108,7 @@ public class PlayerHandler : MonoBehaviour
         }
         else
         {
-            if (_playerState != PlayerState.Knockback) { 
+            if (!knockedBack) { 
                 rb.linearVelocity = Vector3.zero;
                 _playerState = PlayerState.Idle;
             }
@@ -171,18 +157,60 @@ public class PlayerHandler : MonoBehaviour
 
     public void OnAttack()
     {
-        if (weaponEquippedObject != null) {
+        if (weaponEquippedObject != null)
+        {
             weaponEquippedObject.GetComponent<IWeapon>().Attack();
             stats.timesAttack++;
         }
-        else
-        {
-            Debug.Log(playerNumber + " trying to attack with no weapon equipped.");
-        }
     }
 
-    private void OnControllerColliderHit(ControllerColliderHit hit)
+    private IEnumerator HitFlash()
     {
+        playerRenderer.material = flashMaterial;
+        yield return new WaitForSeconds(0.1f);
+        playerRenderer.material = defaultMaterial;
+    }
 
+    private IEnumerator RespawnHandler()
+    {
+        Debug.Log(playerNumber + " died.");
+
+        GetComponent<PlayerInput>().DeactivateInput();
+        rb.constraints = RigidbodyConstraints.None;
+        animator.SetTrigger("Death");
+
+        yield return new WaitForSeconds(respawnTime);
+
+        rb.position = currentSpawnPosition.position;
+        rb.rotation = Quaternion.identity;
+        rb.constraints = RigidbodyConstraints.FreezeRotationX;
+        rb.constraints = RigidbodyConstraints.FreezeRotationZ;
+        rb.linearVelocity = Vector3.zero;
+        animator.SetTrigger("Idle");
+        knockedBack = false;
+        playerHealth = 50.0f;
+        _playerState = PlayerState.Idle;
+        Destroy(weaponEquippedObject);
+        GetComponent<PlayerInput>().ActivateInput();
+        //yield return new WaitForSeconds(invincibilityTime);
+    }
+
+    public void TakeDamage(float damageAmount)
+    {
+        if (_playerState == PlayerState.Dead)
+        {
+            Debug.Log("Player is already dead.");
+            return;
+        }
+
+        playerHealth -= damageAmount;
+        StartCoroutine(HitFlash());
+
+        if (playerHealth <= 0.0f)
+        {
+            _playerState = PlayerState.Dead;
+            Debug.Log("Setting player to dead.");
+            StartCoroutine(RespawnHandler());
+        }
     }
 }

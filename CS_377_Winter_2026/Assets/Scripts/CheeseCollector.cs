@@ -23,27 +23,28 @@ public class CheeseCollector : MonoBehaviour
         // cheese delivery
         PlayerHandler playerHandler = collider.gameObject.GetComponent<PlayerHandler>();
 
-        if (playerHandler != null)
+        if (playerHandler == null || playerHandler._playerState == PlayerHandler.PlayerState.Dead)
         {
-            if (owner == playerHandler.playerNumber)
+            return;
+        }
+
+        if (owner == playerHandler.playerNumber)
+        {
+            Debug.Log("Cheese delivery!");
+            foreach (GameObject cheese in playerHandler.playerCurrentHoldingCheeses)
             {
-                Debug.Log("Cheese delivery!");
-                foreach (GameObject cheese in playerHandler.playerCurrentHoldingCheeses)
-                {
-                    playerHandler.playerCurrentRoundScore += cheese.GetComponent<CheeseHandler>().cheeseValue;
-                    Destroy(cheese);
-                }
-                playerHandler.playerCurrentHoldingCheeses = new List<GameObject>();
-                Debug.Log("New " + playerHandler.playerNumber + " score: " + playerHandler.playerCurrentRoundScore);
-
-                if (playerHandler.playerCurrentRoundScore == GameStateManager.instance.roundOneScoreRequirement)
-                {
-                    Debug.Log(playerHandler.playerNumber + " wins!");
-                    Time.timeScale = 0.0f;
-                }
-
-                return;
+                playerHandler.playerCurrentRoundScore += cheese.GetComponent<CheeseHandler>().cheeseValue;
+                Destroy(cheese);
             }
+            playerHandler.playerCurrentHoldingCheeses = new List<GameObject>();
+            Debug.Log("New " + playerHandler.playerNumber + " score: " + playerHandler.playerCurrentRoundScore);
+
+            if (playerHandler.playerCurrentRoundScore == GameStateManager.instance.roundOneScoreRequirement)
+            {
+                Debug.Log(playerHandler.playerNumber + " wins!");
+                Time.timeScale = 0.0f;
+            }
+
         }
     }
 }
