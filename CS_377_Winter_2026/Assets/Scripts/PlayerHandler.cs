@@ -45,9 +45,9 @@ public class PlayerHandler : MonoBehaviour
     [HideInInspector] public int playerTotalRoundScore;
     [HideInInspector] public PlayerNumber playerNumber;
     [HideInInspector] public GameObject weaponEquippedObject;
-    [HideInInspector] public Transform rightHandTransform;    // this is needed for when the player is holding a weapon, there might be a better way of finding this bone though.
     [HideInInspector] public StatTracker stats = new StatTracker();
 
+    public Transform weaponPlaceholderTransform;    // this is needed for when the player is holding a weapon, there might be a better way of finding this bone though.
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -61,7 +61,6 @@ public class PlayerHandler : MonoBehaviour
         defaultMaterial = playerRenderer.material;
 
         _playerState = PlayerState.Idle;
-        rightHandTransform = transform.Find("mouse_rig/spine/spine_01/arm_r/forearm_r/forearm_r_end");
     }   
 
     // Update is called once per frame

@@ -61,7 +61,6 @@
     <Analyzer Include="Z:\Unity new version\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\HammerHandler.cs" />
     <Compile Include="Assets\Scripts\UIManager.cs" />
     <Compile Include="Assets\Scripts\InputManager.cs" />
     <Compile Include="Assets\Scripts\PlayerHandler.cs" />
@@ -71,6 +70,7 @@
     <Compile Include="Assets\Scripts\CheeseHandler.cs" />
     <Compile Include="Assets\Scripts\IItemInterface.cs" />
     <Compile Include="Assets\Scripts\IWeaponInterface.cs" />
+    <Compile Include="Assets\Scripts\MeleeHandler.cs" />
     <Compile Include="Assets\Scripts\GameplaySceneReferences.cs" />
   </ItemGroup>
   <ItemGroup>
