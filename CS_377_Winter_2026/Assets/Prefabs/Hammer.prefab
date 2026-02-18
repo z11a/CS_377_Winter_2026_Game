@@ -109,8 +109,8 @@ MonoBehaviour:
   swingCooldown: 1.5
   weaponHitboxDuration: 0.1
   weaponDamage: 25
-  weaponKnockbackStrength: 6.5
-  weaponknockbackDuration: 0.3
+  weaponKnockbackStrength: 20
+  weaponknockbackDuration: 2
 --- !u!65 &7225673623014873640
 BoxCollider:
   m_ObjectHideFlags: 0

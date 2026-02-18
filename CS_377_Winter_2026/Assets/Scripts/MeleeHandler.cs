@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Reflection;
 using UnityEngine;
 
 public class MeleeHandler : MonoBehaviour, IWeapon
@@ -118,7 +119,10 @@ public class MeleeHandler : MonoBehaviour, IWeapon
             if (playerHitPlayerHandler.gameObject != owner)
             {
                 Debug.Log("Hitting " + playerHitPlayerHandler.playerNumber + " for " + weaponDamage + " damage.");
+                
                 StartCoroutine(ApplyKnockback(playerHitPlayerHandler.GetComponent<Rigidbody>(), (playerHitPlayerHandler.transform.position - owner.transform.position).normalized));
+                
+                equippedCollider.enabled = false;
                 playerHitPlayerHandler.TakeDamage(weaponDamage);
             }
         } 
@@ -133,7 +137,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
         rb.AddForce(direction * weaponKnockbackStrength, ForceMode.Impulse); 
         rb.angularVelocity = Vector3.zero;
 
-        yield return new WaitForSeconds(weaponKnockbackStrength);
+        yield return new WaitForSeconds(weaponHitboxDuration);
         rb.GetComponent<PlayerHandler>().knockedBack = false;
     }
 }

@@ -131,7 +131,7 @@ MonoBehaviour:
   weaponHitboxDuration: 0.1
   weaponDamage: 20
   weaponKnockbackStrength: 4
-  weaponknockbackDuration: 0.15
+  weaponknockbackDuration: 0.4
 --- !u!136 &2263650266750804342
 CapsuleCollider:
   m_ObjectHideFlags: 0

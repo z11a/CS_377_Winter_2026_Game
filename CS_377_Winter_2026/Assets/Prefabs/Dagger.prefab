@@ -127,7 +127,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HammerHandler
   floatingAnimationRotationSpeed: 30
   swingSpeed: 1.25
-  swingCooldown: 0
+  swingCooldown: 0.1
   weaponHitboxDuration: 0.05
   weaponDamage: 15
   weaponKnockbackStrength: 1
