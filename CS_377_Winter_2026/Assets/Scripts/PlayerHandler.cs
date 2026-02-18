@@ -65,11 +65,16 @@ public class PlayerHandler : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+
     {
+      
         if (GameStateManager.instance._gameState == GameStateManager.GameState.inGame)
         {
             //MovementHandlerCharacterController();
             AnimationHandler();
+
+            
+
         }
     }
 
@@ -196,6 +201,8 @@ public class PlayerHandler : MonoBehaviour
 
     public void TakeDamage(float damageAmount)
     {
+        
+
         if (_playerState == PlayerState.Dead)
         {
             Debug.Log("Player is already dead.");
