@@ -15,8 +15,9 @@ public class CheeseHandler : MonoBehaviour, IItem
 
     public CheeseType _CheeseType;
     public float floatingAnimationRotationSpeed = 30.0f;
-    private Vector3 startingPosition;
     [HideInInspector] public int cheeseValue;
+    private Coroutine floatingAnimationCoroutine;
+    [HideInInspector] public Rigidbody rb;
 
     [HideInInspector] public IItem.ItemState _ItemState { get; set; }
 
@@ -40,9 +41,9 @@ public class CheeseHandler : MonoBehaviour, IItem
                 cheeseValue = 10;
                 break;
         }
-        startingPosition = transform.position;
         _ItemState = IItem.ItemState.NotCollected;
-        StartCoroutine(FloatingAnimation());
+        rb = GetComponent<Rigidbody>();
+        StartFloatingAnimation();
     }
 
     // Update is called once per frame
@@ -50,13 +51,25 @@ public class CheeseHandler : MonoBehaviour, IItem
     {
     }
 
+    public void StartFloatingAnimation()
+    {
+        if (floatingAnimationCoroutine != null)
+        {
+            StopCoroutine(floatingAnimationCoroutine);
+        }
+
+            floatingAnimationCoroutine = StartCoroutine(FloatingAnimation());
+    }
+
     private IEnumerator FloatingAnimation()
     {
+        yield return null;
+        Vector3 animationStartingPosition = rb.position;
         while (true)
         {
-            transform.position = new Vector3(startingPosition.x, 
-                                             startingPosition.y + (Mathf.Sin(Time.time) * 0.25f),
-                                             startingPosition.z);
+            rb.position = new Vector3(animationStartingPosition.x,
+                                             animationStartingPosition.y + (Mathf.Sin(Time.time) * 0.25f),
+                                             animationStartingPosition.z);
 
             transform.Rotate(Vector3.up * floatingAnimationRotationSpeed * Time.deltaTime);
             yield return null;
@@ -73,7 +86,7 @@ public class CheeseHandler : MonoBehaviour, IItem
             return;
         }
 
-        switch (_CheeseType)
+        switch (_CheeseType)        // in case we want anything else to happpen depending on cheese type
         {
             case CheeseType.Swiss:
                 break;
@@ -84,8 +97,10 @@ public class CheeseHandler : MonoBehaviour, IItem
             case CheeseType.American:
                 break;
         }
-        startingPosition = new Vector3(-100.0f, -100.0f, -100.0f);
+
+        rb.position = new Vector3(-100.0f, -100.0f, -100.0f);
         playerHandler.playerCurrentHoldingCheeses.Add(this.gameObject); // store it far away, we can bring it back if the player loses all their health and drops them.
+        StopCoroutine(floatingAnimationCoroutine);
         _ItemState = IItem.ItemState.Collected;
         Debug.Log("Cheese Type: " + this._CheeseType);
     }

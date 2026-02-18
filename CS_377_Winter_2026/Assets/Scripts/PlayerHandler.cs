@@ -175,6 +175,7 @@ public class PlayerHandler : MonoBehaviour
         animator.SetTrigger("Death");
 
         yield return new WaitForSeconds(respawnTime);
+        DropCheeses();
 
         rb.position = currentSpawnPosition.position;
         rb.rotation = Quaternion.identity;
@@ -207,5 +208,17 @@ public class PlayerHandler : MonoBehaviour
             Debug.Log("Setting player to dead.");
             StartCoroutine(RespawnHandler());
         }
+    }
+
+    public void DropCheeses()
+    {
+        foreach (GameObject cheese in playerCurrentHoldingCheeses)
+        {
+            cheese.transform.position = transform.position + new Vector3(0.0f, 0.2f, 0.0f);   // have to use transform.position not rb.position, otherwise the floating animation sets the position before this line
+            cheese.GetComponent<CheeseHandler>().StartFloatingAnimation();
+            //cheese.GetComponent<CheeseHandler>().rb.useGravity = true;
+            //cheese.GetComponent<CheeseHandler>().rb.isKinematic = false;
+        }
+        playerCurrentHoldingCheeses.Clear();
     }
 }

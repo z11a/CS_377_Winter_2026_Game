@@ -1501,6 +1501,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2093949322661076557, guid: 9eaefdbbc84ad97499dbdf987fef1046, type: 3}
+      propertyPath: ratPrefab
+      value: 
+      objectReference: {fileID: 1851747289199441563, guid: 2685a4c542937fc45b7e39bc68ba2ed2, type: 3}
+    - target: {fileID: 2093949322661076557, guid: 9eaefdbbc84ad97499dbdf987fef1046, type: 3}
+      propertyPath: mousePrefab
+      value: 
+      objectReference: {fileID: 1851747289199441563, guid: 2685a4c542937fc45b7e39bc68ba2ed2, type: 3}
+    - target: {fileID: 2093949322661076557, guid: 9eaefdbbc84ad97499dbdf987fef1046, type: 3}
       propertyPath: player1SpawnPosition
       value: 
       objectReference: {fileID: 1444621356}
@@ -1555,7 +1563,7 @@ PrefabInstance:
     - target: {fileID: 3640763839705548023, guid: 9eaefdbbc84ad97499dbdf987fef1046, type: 3}
       propertyPath: m_PlayerPrefab
       value: 
-      objectReference: {fileID: 1851747289199441563, guid: 2685a4c542937fc45b7e39bc68ba2ed2, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 3640763839705548023, guid: 9eaefdbbc84ad97499dbdf987fef1046, type: 3}
       propertyPath: m_JoinAction.m_Reference
       value: 

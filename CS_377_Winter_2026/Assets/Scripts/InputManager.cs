@@ -8,16 +8,17 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager instance;
 
-    public bool player1Joined = false;
-    public bool player2Joined = false;
-
-    public static PlayerInputManager playerInputManager;
 
     [SerializeField] public Transform player1SpawnPosition;
     [SerializeField] public Transform player2SpawnPosition;
+    [SerializeField] public GameObject mousePrefab;
+    [SerializeField] public GameObject ratPrefab;
 
+    [HideInInspector] public PlayerInputManager playerInputManager;
     [HideInInspector] public PlayerInput player1Input;
     [HideInInspector] public PlayerInput player2Input;
+    [HideInInspector] public bool player1Joined = false;
+    [HideInInspector] public bool player2Joined = false;
 
     void Awake()
     {
@@ -37,6 +38,7 @@ public class InputManager : MonoBehaviour
     void Start()
     {
         playerInputManager = this.GetComponent<PlayerInputManager>();
+        playerInputManager.playerPrefab = mousePrefab;
         //EventSystem.current.SetSelectedGameObject(UIManager.instance.startMenuButton.gameObject);
     }
 
@@ -60,6 +62,7 @@ public class InputManager : MonoBehaviour
         else if (!player2Joined)
         {
             Debug.Log("Player 2 joined.");
+            playerInputManager.playerPrefab = ratPrefab;
             player2Joined = true;
             player2Input = playerInput;
             player2Input.GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.Player2;
