@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 2186262415711309002}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071067, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -1.6213901, y: 0.12213504, z: -4.0530963}
+  m_LocalPosition: {x: 7.3236914, y: 0.41846424, z: -4.918171}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -106,10 +106,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HammerHandler
   floatingAnimationRotationSpeed: 30
   swingSpeed: 1
-  swingCooldown: 0.7
-  weaponHitboxDuration: 0.15
+  swingCooldown: 1.5
+  weaponHitboxDuration: 0.1
   weaponDamage: 25
-  weaponKnockbackStrength: 5
+  weaponKnockbackStrength: 6.5
   weaponknockbackDuration: 0.3
 --- !u!65 &7225673623014873640
 BoxCollider:
@@ -151,7 +151,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.58
-  m_Height: 1
+  m_Radius: 0.61
+  m_Height: 1.77
   m_Direction: 1
   m_Center: {x: 0, y: 0.86, z: 0}

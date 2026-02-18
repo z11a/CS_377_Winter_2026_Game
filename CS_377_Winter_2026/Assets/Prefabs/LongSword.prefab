@@ -128,7 +128,7 @@ MonoBehaviour:
   floatingAnimationRotationSpeed: 30
   swingSpeed: 0.75
   swingCooldown: 0.3
-  weaponHitboxDuration: 0.15
+  weaponHitboxDuration: 0.1
   weaponDamage: 20
   weaponKnockbackStrength: 4
   weaponknockbackDuration: 0.15
