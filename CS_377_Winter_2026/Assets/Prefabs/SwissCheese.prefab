@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8638842037217645725}
   - component: {fileID: 1873628755761009314}
   - component: {fileID: -5586501102901970945}
+  - component: {fileID: 2135214375371543360}
   m_Layer: 0
   m_Name: SwissCheese
   m_TagString: Untagged
@@ -127,3 +128,30 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.72, y: 0.7631469, z: 2.79}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &2135214375371543360
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7846301342053070152}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

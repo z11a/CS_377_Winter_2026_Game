@@ -38,7 +38,7 @@ public class UIManager : MonoBehaviour
 
         startMenuButton.gameObject.SetActive(false);
         GameStateManager.instance.waitingForPlayersToJoin = true;
-        InputManager.playerInputManager.EnableJoining();
+        InputManager.instance.playerInputManager.EnableJoining();
     }
 
     public void OnStartGameButton()

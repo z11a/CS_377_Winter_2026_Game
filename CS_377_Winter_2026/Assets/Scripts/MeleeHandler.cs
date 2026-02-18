@@ -13,9 +13,11 @@ public class MeleeHandler : MonoBehaviour, IWeapon
     public float floatingAnimationRotationSpeed = 30.0f;
     public float swingSpeed = 1.0f;
     public float swingCooldown = 0.15f;
+    public float weaponHitboxDuration = 0.3f;
     public float weaponDamage = 50.0f;
     public float weaponKnockbackStrength = 50.0f;
     public float weaponknockbackDuration = 1.0f;
+    
     private bool canSwing = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -68,10 +70,10 @@ public class MeleeHandler : MonoBehaviour, IWeapon
             owner.GetComponent<Animator>().SetTrigger("WeaponSwing");
 
             equippedCollider.enabled = true;
-            yield return new WaitForSeconds(swingCooldown / 2);
+            yield return new WaitForSeconds(weaponHitboxDuration);
             equippedCollider.enabled = false;
 
-            yield return null;
+            yield return new WaitForSeconds(swingCooldown);
             canSwing = true;
         }
     }
