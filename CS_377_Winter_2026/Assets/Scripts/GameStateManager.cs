@@ -25,8 +25,9 @@ public class GameStateManager : MonoBehaviour
     }
 
     public GameState _gameState;
+    public RoundNumber _currentRound;
 
-    public bool waitingForPlayersToJoin = false;
+    [HideInInspector] public bool waitingForPlayersToJoin = false;
 
     public float countdownTime = 3.0f;
     public float roundTime = 90.0f;
@@ -37,7 +38,7 @@ public class GameStateManager : MonoBehaviour
 
     [HideInInspector] public bool itemsSpawning;
     public float itemSpawnCooldown = 7.5f;
-    public List<Transform> possibleItemSpawnLocations;     // first transform will be the first spawn
+    public List<Transform> possibleItemSpawnLocations;     // first transform in the list will spawn at the start of the round
     public List<GameObject> possibleItemSpawnObjects;
     private Dictionary<Transform, GameObject> possibleItemSpawnDictionary = new Dictionary<Transform, GameObject>();
 
@@ -178,21 +179,44 @@ public class GameStateManager : MonoBehaviour
         }
         yield return null;
     }
-    private void gameplaySceneStart()
+    private void GameplaySceneSetup()
     {
         InputManager.instance.player1Input.GetComponent<Rigidbody>().position = player1GameplaySpawnPosition.position;
         InputManager.instance.player1Input.GetComponent<PlayerHandler>().currentSpawnPosition = player1GameplaySpawnPosition;
+        InputManager.instance.player1Input.GetComponent<PlayerHandler>().playerCurrentHoldingCheeses = new List<GameObject>();
+        InputManager.instance.player1Input.GetComponent<PlayerHandler>().playerCurrentRoundScore = 0;
+
         InputManager.instance.player2Input.GetComponent<Rigidbody>().position = player2GameplaySpawnPosition.position;
         InputManager.instance.player2Input.GetComponent<PlayerHandler>().currentSpawnPosition = player2GameplaySpawnPosition;
+        InputManager.instance.player2Input.GetComponent<PlayerHandler>().playerCurrentHoldingCheeses = new List<GameObject>();
+        InputManager.instance.player2Input.GetComponent<PlayerHandler>().playerCurrentRoundScore = 0;
 
         instance.StartCoroutine(StartPreRoundCountdown());
     }
-    public IEnumerator LoadGameplaySceneAsync()
+    public IEnumerator LoadGameplaySceneAsync(RoundNumber roundNumber)
     {
         yield return null;
 
+        int sceneIndex = 1; 
+
+        switch (roundNumber)
+        {
+            case RoundNumber.One:
+                sceneIndex = 1;
+                _currentRound = RoundNumber.One;
+                break;
+            case RoundNumber.Two:
+                sceneIndex = 2;
+                _currentRound = RoundNumber.Two;
+                break;
+            case RoundNumber.Three:
+                sceneIndex = 3;
+                _currentRound = RoundNumber.Three;
+                break;
+        }
+
         _gameState = GameState.loadingScreen;
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Scenes/GameplayScene", LoadSceneMode.Additive);
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive);
         asyncLoad.allowSceneActivation = false;
 
         while (!asyncLoad.isDone)
@@ -207,8 +231,8 @@ public class GameStateManager : MonoBehaviour
 
                 yield return null;
 
-                SceneManager.MoveGameObjectToScene(InputManager.instance.player1Input.gameObject, SceneManager.GetSceneByName("GameplayScene"));
-                SceneManager.MoveGameObjectToScene(InputManager.instance.player2Input.gameObject, SceneManager.GetSceneByName("GameplayScene"));
+                SceneManager.MoveGameObjectToScene(InputManager.instance.player1Input.gameObject, SceneManager.GetSceneByBuildIndex(sceneIndex));
+                SceneManager.MoveGameObjectToScene(InputManager.instance.player2Input.gameObject, SceneManager.GetSceneByBuildIndex(sceneIndex));
                 SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
 
                 var refs = GameplaySceneReferences.instance;
@@ -216,7 +240,7 @@ public class GameStateManager : MonoBehaviour
                 player2GameplaySpawnPosition = refs.player2Spawn;
                 possibleItemSpawnLocations = refs.itemSpawnLocations;
 
-                gameplaySceneStart();
+                GameplaySceneSetup();
             }
 
             yield return null;

@@ -718,7 +718,7 @@ GameObject:
   m_Component:
   - component: {fileID: 341043290}
   m_Layer: 0
-  m_Name: Player2SpawnPosition
+  m_Name: Player2StartSceneSpawnPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1180,7 +1180,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1444621356}
   m_Layer: 0
-  m_Name: Player1SpawnPosition
+  m_Name: Player1StartSceneSpawnPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1441,7 +1441,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
       propertyPath: possibleItemSpawnObjects.Array.size
-      value: 4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
       propertyPath: possibleItemSpawnLocations.Array.size
@@ -1514,6 +1514,14 @@ PrefabInstance:
       objectReference: {fileID: 1444621356}
     - target: {fileID: 2093949322661076557, guid: 9eaefdbbc84ad97499dbdf987fef1046, type: 3}
       propertyPath: player2SpawnPosition
+      value: 
+      objectReference: {fileID: 341043290}
+    - target: {fileID: 2093949322661076557, guid: 9eaefdbbc84ad97499dbdf987fef1046, type: 3}
+      propertyPath: player1StartSceneSpawnPosition
+      value: 
+      objectReference: {fileID: 1444621356}
+    - target: {fileID: 2093949322661076557, guid: 9eaefdbbc84ad97499dbdf987fef1046, type: 3}
+      propertyPath: player2StartSceneSpawnPosition
       value: 
       objectReference: {fileID: 341043290}
     - target: {fileID: 2469716707843186150, guid: 9eaefdbbc84ad97499dbdf987fef1046, type: 3}

@@ -9,8 +9,8 @@ public class InputManager : MonoBehaviour
     public static InputManager instance;
 
 
-    [SerializeField] public Transform player1SpawnPosition;
-    [SerializeField] public Transform player2SpawnPosition;
+    [SerializeField] public Transform player1StartSceneSpawnPosition;
+    [SerializeField] public Transform player2StartSceneSpawnPosition;
     [SerializeField] public GameObject mousePrefab;
     [SerializeField] public GameObject ratPrefab;
 
@@ -56,7 +56,7 @@ public class InputManager : MonoBehaviour
             player1Joined = true;
             player1Input = playerInput;
             player1Input.GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.Player1;
-            player1Input.GetComponent<Rigidbody>().position = player1SpawnPosition.position;
+            player1Input.GetComponent<Rigidbody>().position = player1StartSceneSpawnPosition.position;
             player1Input.SwitchCurrentActionMap("UI");
         }
         else if (!player2Joined)
@@ -66,7 +66,7 @@ public class InputManager : MonoBehaviour
             player2Joined = true;
             player2Input = playerInput;
             player2Input.GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.Player2;
-            player2Input.GetComponent<Rigidbody>().position = player2SpawnPosition.position;
+            player2Input.GetComponent<Rigidbody>().position = player2StartSceneSpawnPosition.position;
 
             player2Input.SwitchCurrentActionMap("UI");
 

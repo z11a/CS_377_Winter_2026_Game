@@ -42,12 +42,12 @@ public class PlayerHandler : MonoBehaviour
     [HideInInspector] public PlayerState _playerState;
     [HideInInspector] public int playerCurrentRoundScore;
     [HideInInspector] public List<GameObject> playerCurrentHoldingCheeses;
-    [HideInInspector] public int playerTotalRoundScore;
+    [HideInInspector] public int playerTotalRoundScore = 0;
     [HideInInspector] public PlayerNumber playerNumber;
     [HideInInspector] public GameObject weaponEquippedObject;
     [HideInInspector] public StatTracker stats = new StatTracker();
 
-    public Transform weaponPlaceholderTransform;    // this is needed for when the player is holding a weapon, there might be a better way of finding this bone though.
+    public Transform weaponPlaceholderTransform;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

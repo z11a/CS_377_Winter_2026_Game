@@ -39,12 +39,39 @@ public class CheeseCollector : MonoBehaviour
             playerHandler.playerCurrentHoldingCheeses = new List<GameObject>();
             Debug.Log("New " + playerHandler.playerNumber + " score: " + playerHandler.playerCurrentRoundScore);
 
-            if (playerHandler.playerCurrentRoundScore == GameStateManager.instance.roundOneScoreRequirement)
-            {
-                Debug.Log(playerHandler.playerNumber + " wins!");
-                Time.timeScale = 0.0f;
-            }
+            RoundWinCheck(playerHandler);
 
+        }
+    }
+
+    private void RoundWinCheck(PlayerHandler playerHandler)
+    {
+        switch (GameStateManager.instance._currentRound)
+        {
+            case GameStateManager.RoundNumber.One:
+                if (playerHandler.playerCurrentRoundScore >= GameStateManager.instance.roundOneScoreRequirement)
+                {
+                    Debug.Log(playerHandler.playerNumber + " wins Round One!");
+                    playerHandler.playerTotalRoundScore++;
+                    StartCoroutine(GameStateManager.instance.LoadGameplaySceneAsync(GameStateManager.RoundNumber.Two));
+                }
+                break;
+            case GameStateManager.RoundNumber.Two:
+                if (playerHandler.playerCurrentRoundScore >= GameStateManager.instance.roundTwoScoreRequirement)
+                {
+                    Debug.Log(playerHandler.playerNumber + " wins Round Two!");
+                    playerHandler.playerTotalRoundScore++;
+                    StartCoroutine(GameStateManager.instance.LoadGameplaySceneAsync(GameStateManager.RoundNumber.Three));
+                }
+                break;
+            case GameStateManager.RoundNumber.Three:
+                if (playerHandler.playerCurrentRoundScore >= GameStateManager.instance.roundThreeScoreRequirement)
+                {
+                    Debug.Log(playerHandler.playerNumber + " wins Round Three!");
+                    playerHandler.playerTotalRoundScore++;
+                    Time.timeScale = 0.0f;
+                }
+                break;
         }
     }
 }
