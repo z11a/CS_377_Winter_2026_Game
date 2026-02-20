@@ -114,7 +114,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
 
             if (playerHitPlayerHandler.weaponEquippedObject != null)
             {
-                playerHitPlayerHandler.playerSpeed += playerHitPlayerHandler.weaponEquippedObject.GetComponent<Rigidbody>().mass * 10;
+                playerHitPlayerHandler.playerSpeed += playerHitPlayerHandler.weaponEquippedObject.GetComponent<Rigidbody>().mass;
                 if (playerHitPlayerHandler.weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine != null)       // stop swinging a previous weapon
                 {
                     StopCoroutine(playerHitPlayerHandler.weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine);
@@ -123,7 +123,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
 
             Destroy(playerHitPlayerHandler.weaponEquippedObject);
             playerHitPlayerHandler.weaponEquippedObject = this.gameObject;
-            playerHitPlayerHandler.playerSpeed -= rb.mass * 10;
+            playerHitPlayerHandler.playerSpeed -= rb.mass;
             playerHitPlayerHandler.GetComponent<Animator>().SetFloat("WeaponSwingSpeed", swingSpeed);
 
             this.transform.parent = playerHitPlayerHandler.weaponPlaceholderTransform;

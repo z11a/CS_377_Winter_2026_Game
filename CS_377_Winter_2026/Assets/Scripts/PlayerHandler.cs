@@ -101,11 +101,11 @@ public class PlayerHandler : MonoBehaviour
         {
             if (knockedBack)
             {
-                rb.AddForce(movement * playerSpeed * Time.deltaTime * 1.5f, ForceMode.Force);
+                rb.AddForce(movement * playerSpeed * Time.deltaTime * 1.5f * 9f, ForceMode.Force);
             }
             else
             {
-                rb.linearVelocity = movement * playerSpeed * Time.deltaTime;
+                rb.linearVelocity = movement * playerSpeed * Time.deltaTime * 9f;
             }
             _playerState = PlayerState.Running;
             rb.MoveRotation(Quaternion.LookRotation(movement));
@@ -183,7 +183,7 @@ public class PlayerHandler : MonoBehaviour
         weaponRB.isKinematic = false;
         weaponRB.useGravity = true;
         weaponRB.AddForce(transform.forward * 2.0f, ForceMode.Force);
-        playerSpeed += weaponRB.mass * 10;
+        playerSpeed += weaponRB.mass;
 
         StartCoroutine(DespawnWeapon(weaponRB.gameObject));
     }
