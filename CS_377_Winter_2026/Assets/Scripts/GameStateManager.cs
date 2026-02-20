@@ -31,6 +31,7 @@ public class GameStateManager : MonoBehaviour
 
     public float countdownTime = 3.0f;
     public float roundTime = 90.0f;
+    public float intermissionTime = 4.0f;
 
     public int roundOneScoreRequirement = 50;
     public int roundTwoScoreRequirement = 100;
@@ -191,10 +192,12 @@ public class GameStateManager : MonoBehaviour
         InputManager.instance.player2Input.GetComponent<PlayerHandler>().playerCurrentHoldingCheeses = new List<GameObject>();
         InputManager.instance.player2Input.GetComponent<PlayerHandler>().playerCurrentRoundScore = 0;
 
+        UIManager.instance.DeactivateLoadingScreen();
         instance.StartCoroutine(StartPreRoundCountdown());
     }
     public IEnumerator LoadGameplaySceneAsync(RoundNumber roundNumber)
     {
+        UIManager.instance.ActivateLoadingScreen();
         yield return null;
 
         int sceneIndex = 1; 

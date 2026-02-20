@@ -106,8 +106,8 @@ public class PlayerHandler : MonoBehaviour
             else
             {
                 rb.linearVelocity = movement * playerSpeed * Time.deltaTime;
-                _playerState = PlayerState.Running;
             }
+            _playerState = PlayerState.Running;
             rb.MoveRotation(Quaternion.LookRotation(movement));
         }
         else

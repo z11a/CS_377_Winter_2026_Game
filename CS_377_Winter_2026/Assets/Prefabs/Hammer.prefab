@@ -108,7 +108,7 @@ MonoBehaviour:
   swingSpeed: 1
   swingCooldown: 1.5
   weaponDamage: 25
-  weaponKnockbackStrength: 7
+  weaponKnockbackStrength: 5.5
   weaponknockbackDuration: 0.75
 --- !u!65 &7225673623014873640
 BoxCollider:

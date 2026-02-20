@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 public class CheeseCollector : MonoBehaviour
@@ -40,7 +41,6 @@ public class CheeseCollector : MonoBehaviour
             Debug.Log("New " + playerHandler.playerNumber + " score: " + playerHandler.playerCurrentRoundScore);
 
             RoundWinCheck(playerHandler);
-
         }
     }
 
@@ -53,7 +53,7 @@ public class CheeseCollector : MonoBehaviour
                 {
                     Debug.Log(playerHandler.playerNumber + " wins Round One!");
                     playerHandler.playerTotalRoundScore++;
-                    StartCoroutine(GameStateManager.instance.LoadGameplaySceneAsync(GameStateManager.RoundNumber.Two));
+                    StartCoroutine(Intermission(GameStateManager.RoundNumber.Two));
                 }
                 break;
             case GameStateManager.RoundNumber.Two:
@@ -61,7 +61,7 @@ public class CheeseCollector : MonoBehaviour
                 {
                     Debug.Log(playerHandler.playerNumber + " wins Round Two!");
                     playerHandler.playerTotalRoundScore++;
-                    StartCoroutine(GameStateManager.instance.LoadGameplaySceneAsync(GameStateManager.RoundNumber.Three));
+                    StartCoroutine(Intermission(GameStateManager.RoundNumber.Three));
                 }
                 break;
             case GameStateManager.RoundNumber.Three:
@@ -73,5 +73,12 @@ public class CheeseCollector : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    private IEnumerator Intermission(GameStateManager.RoundNumber nextRoundNumber)
+    {
+        yield return new WaitForSeconds(GameStateManager.instance.intermissionTime);
+
+        StartCoroutine(GameStateManager.instance.LoadGameplaySceneAsync(nextRoundNumber));
     }
 }
