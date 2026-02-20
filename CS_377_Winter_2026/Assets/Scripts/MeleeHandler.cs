@@ -8,19 +8,24 @@ using UnityEngine;
 public class MeleeHandler : MonoBehaviour, IWeapon
 {
     private GameObject owner;
-    private BoxCollider unequippedCollider;
-    private CapsuleCollider equippedCollider;
+    [HideInInspector] public BoxCollider unequippedCollider;
+    [HideInInspector] public CapsuleCollider equippedCollider;
+    private Rigidbody rb;
     [HideInInspector] public IItem.ItemState _ItemState {  get; set; }
     [HideInInspector] public Coroutine attackCoroutine { get; set; }
 
     private Vector3 startingPosition;
-    public float floatingAnimationRotationSpeed = 30.0f;
+
+    [Header("Attack Properties")]
     public float swingSpeed = 1.0f;
     public float swingCooldown = 0.15f;
     public float weaponDamage = 15.0f;
     public float weaponKnockbackStrength = 25.0f;
     public float weaponknockbackDuration = 1.0f;
-    
+
+    [Header("Other")]
+    public float floatingAnimationRotationSpeed = 30.0f;
+
     private bool canSwing = true;
 
     private List<GameObject> playersHit = new List<GameObject>();
@@ -32,6 +37,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
         unequippedCollider.enabled = true;
         equippedCollider = GetComponent<CapsuleCollider>();
         equippedCollider.enabled = false;
+        rb = GetComponent<Rigidbody>();
 
         _ItemState = IItem.ItemState.NotCollected;
         startingPosition = transform.position;
@@ -98,7 +104,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
             return;
         }
 
-        if (_ItemState == IItem.ItemState.NotCollected)   // player is equipping weapon
+        if (_ItemState == IItem.ItemState.NotCollected && playerHitPlayerHandler.weaponEquippedObject == null)   // player is equipping weapon and doesn't already have one equipped
         {
             Debug.Log("Picking up weapon.");
             owner = playerHitPlayerHandler.gameObject;
@@ -108,6 +114,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
 
             if (playerHitPlayerHandler.weaponEquippedObject != null)
             {
+                playerHitPlayerHandler.playerSpeed += playerHitPlayerHandler.weaponEquippedObject.GetComponent<Rigidbody>().mass * 10;
                 if (playerHitPlayerHandler.weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine != null)       // stop swinging a previous weapon
                 {
                     StopCoroutine(playerHitPlayerHandler.weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine);
@@ -116,8 +123,8 @@ public class MeleeHandler : MonoBehaviour, IWeapon
 
             Destroy(playerHitPlayerHandler.weaponEquippedObject);
             playerHitPlayerHandler.weaponEquippedObject = this.gameObject;
-
-            owner.GetComponent<Animator>().SetFloat("WeaponSwingSpeed", swingSpeed);
+            playerHitPlayerHandler.playerSpeed -= rb.mass * 10;
+            playerHitPlayerHandler.GetComponent<Animator>().SetFloat("WeaponSwingSpeed", swingSpeed);
 
             this.transform.parent = playerHitPlayerHandler.weaponPlaceholderTransform;
             this.transform.localPosition = Vector3.zero;
@@ -142,16 +149,16 @@ public class MeleeHandler : MonoBehaviour, IWeapon
         } 
     }
 
-    private IEnumerator ApplyKnockback(Rigidbody rb, Vector3 direction)
+    private IEnumerator ApplyKnockback(Rigidbody _rb, Vector3 direction)
     {
-        rb.GetComponent<PlayerHandler>().knockedBack = true;
-        rb.linearVelocity = Vector3.zero;   
-        rb.angularVelocity = Vector3.zero;
+        _rb.GetComponent<PlayerHandler>().knockedBack = true;
+        _rb.linearVelocity = Vector3.zero;
+        _rb.angularVelocity = Vector3.zero;
 
-        rb.AddForce(direction * weaponKnockbackStrength, ForceMode.Impulse); 
-        rb.angularVelocity = Vector3.zero;
+        _rb.AddForce(direction * weaponKnockbackStrength, ForceMode.Impulse);
+        _rb.angularVelocity = Vector3.zero;
 
         yield return new WaitForSeconds(weaponknockbackDuration);
-        rb.GetComponent<PlayerHandler>().knockedBack = false;
+        _rb.GetComponent<PlayerHandler>().knockedBack = false;
     }
 }

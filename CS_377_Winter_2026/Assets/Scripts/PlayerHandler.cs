@@ -119,27 +119,27 @@ public class PlayerHandler : MonoBehaviour
         }
     }
 
-    private void MovementHandlerCharacterController()
-    {
-        Vector3 movement = new Vector3(moveAmount.x, 0, moveAmount.y);
+    //private void MovementHandlerCharacterController()
+    //{
+    //    Vector3 movement = new Vector3(moveAmount.x, 0, moveAmount.y);
 
-        if (movement != Vector3.zero)
-        {
-            controller.Move(movement * playerSpeed * Time.deltaTime);
-            transform.forward = movement;
-            _playerState = PlayerState.Running;
-        }
-        else
-        {
-            _playerState = PlayerState.Idle;
-        }
+    //    if (movement != Vector3.zero)
+    //    {
+    //        controller.Move(movement * playerSpeed * Time.deltaTime);
+    //        transform.forward = movement;
+    //        _playerState = PlayerState.Running;
+    //    }
+    //    else
+    //    {
+    //        _playerState = PlayerState.Idle;
+    //    }
 
-        if (!controller.isGrounded)
-        {
-            controller.Move(new Vector3(0.0f, -0.2f, 0.0f));
-        }
+    //    if (!controller.isGrounded)
+    //    {
+    //        controller.Move(new Vector3(0.0f, -0.2f, 0.0f));
+    //    }
 
-    }
+    //}
 
     private void AnimationHandler()
     {
@@ -168,6 +168,32 @@ public class PlayerHandler : MonoBehaviour
         }
     }
 
+    public void OnDropWeapon()
+    {
+        if (weaponEquippedObject == null)
+        {
+            return;
+        }
+        Rigidbody weaponRB = weaponEquippedObject.GetComponent<Rigidbody>();
+        weaponEquippedObject = null;
+
+        weaponRB.transform.parent = null;
+        weaponRB.GetComponent<MeleeHandler>().unequippedCollider.isTrigger = false;
+        weaponRB.GetComponent<MeleeHandler>().unequippedCollider.enabled = true;
+        weaponRB.isKinematic = false;
+        weaponRB.useGravity = true;
+        weaponRB.AddForce(transform.forward * 2.0f, ForceMode.Force);
+        playerSpeed += weaponRB.mass * 10;
+
+        StartCoroutine(DespawnWeapon(weaponRB.gameObject));
+    }
+
+    private IEnumerator DespawnWeapon(GameObject weapon)
+    {
+        yield return new WaitForSeconds(1.0f);
+        Destroy(weapon);
+    }
+
     private IEnumerator HitFlash()
     {
         playerRenderer.material = flashMaterial;
@@ -194,6 +220,7 @@ public class PlayerHandler : MonoBehaviour
         animator.SetTrigger("Idle");
         knockedBack = false;
         playerHealth = 50.0f;
+        playerSpeed = 225.0f;
         _playerState = PlayerState.Idle;
         Destroy(weaponEquippedObject);
         GetComponent<PlayerInput>().ActivateInput();
@@ -202,8 +229,6 @@ public class PlayerHandler : MonoBehaviour
 
     public void TakeDamage(float damageAmount)
     {
-        
-
         if (_playerState == PlayerState.Dead)
         {
             Debug.Log("Player is already dead.");

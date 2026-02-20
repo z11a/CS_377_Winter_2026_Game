@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6388551830464052596}
   - component: {fileID: 7225673623014873640}
   - component: {fileID: -8471437491584164887}
+  - component: {fileID: -5689417654978285471}
   m_Layer: 0
   m_Name: Hammer
   m_TagString: Untagged
@@ -104,12 +105,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79d9a79f2d27abe47a05bf6f62c7055b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HammerHandler
-  floatingAnimationRotationSpeed: 30
+  unequippedCollider: {fileID: 0}
+  equippedCollider: {fileID: 0}
   swingSpeed: 1
   swingCooldown: 1.5
   weaponDamage: 25
-  weaponKnockbackStrength: 5.5
+  weaponKnockbackStrength: 65
   weaponknockbackDuration: 0.75
+  floatingAnimationRotationSpeed: 30
 --- !u!65 &7225673623014873640
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -154,3 +157,30 @@ CapsuleCollider:
   m_Height: 1.77
   m_Direction: 1
   m_Center: {x: 0, y: 0.86, z: 0}
+--- !u!54 &-5689417654978285471
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2186262415711309002}
+  serializedVersion: 5
+  m_Mass: 5
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

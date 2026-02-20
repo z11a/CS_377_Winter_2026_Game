@@ -67,7 +67,7 @@ public class CheeseHandler : MonoBehaviour, IItem
         Vector3 animationStartingPosition = rb.position;
         while (true)
         {
-            rb.position = new Vector3(animationStartingPosition.x,
+            transform.position = new Vector3(animationStartingPosition.x,
                                              animationStartingPosition.y + (Mathf.Sin(Time.time) * 0.25f),
                                              animationStartingPosition.z);
 
