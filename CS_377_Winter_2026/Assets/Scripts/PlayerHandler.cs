@@ -101,7 +101,7 @@ public class PlayerHandler : MonoBehaviour
         {
             if (knockedBack)
             {
-                rb.AddForce(movement * playerSpeed * Time.deltaTime * 3, ForceMode.Force);
+                rb.AddForce(movement * playerSpeed * Time.deltaTime * 1.5f, ForceMode.Force);
             }
             else
             {

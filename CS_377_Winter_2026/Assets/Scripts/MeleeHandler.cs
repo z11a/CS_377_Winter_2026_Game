@@ -1,5 +1,8 @@
+using NUnit.Framework;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MeleeHandler : MonoBehaviour, IWeapon
@@ -14,12 +17,13 @@ public class MeleeHandler : MonoBehaviour, IWeapon
     public float floatingAnimationRotationSpeed = 30.0f;
     public float swingSpeed = 1.0f;
     public float swingCooldown = 0.15f;
-    public float weaponHitboxDuration = 0.3f;
-    public float weaponDamage = 50.0f;
-    public float weaponKnockbackStrength = 50.0f;
+    public float weaponDamage = 15.0f;
+    public float weaponKnockbackStrength = 25.0f;
     public float weaponknockbackDuration = 1.0f;
     
     private bool canSwing = true;
+
+    private List<GameObject> playersHit = new List<GameObject>();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -61,22 +65,28 @@ public class MeleeHandler : MonoBehaviour, IWeapon
 
     public IEnumerator SwingWeapon()
     {
-        yield return null;
-
-        if (canSwing)
+        if (!canSwing)
         {
-            canSwing = false;
-            Debug.Log("Swinging weapon.");
-
-            owner.GetComponent<Animator>().SetTrigger("WeaponSwing");
-
-            equippedCollider.enabled = true;
-            yield return new WaitForSeconds(weaponHitboxDuration);
-            equippedCollider.enabled = false;
-
-            yield return new WaitForSeconds(swingCooldown);
-            canSwing = true;
+            yield break;
         }
+        
+        canSwing = false;
+        Debug.Log("Swinging weapon.");
+
+        Animator ownerAnimator = owner.GetComponent<Animator>();
+        ownerAnimator.SetTrigger("WeaponSwing");
+
+        yield return new WaitForEndOfFrame();
+        float animationLength = ownerAnimator.GetCurrentAnimatorStateInfo(0).length;
+        float actualHitboxDuration = (animationLength / swingSpeed) * 0.5f;
+
+        equippedCollider.enabled = true;
+        yield return new WaitForSeconds(actualHitboxDuration);
+        equippedCollider.enabled = false;
+
+        yield return new WaitForSeconds(swingCooldown);
+        playersHit.Clear();
+        canSwing = true;
     }
 
     private void OnTriggerEnter(Collider collider)
@@ -93,11 +103,12 @@ public class MeleeHandler : MonoBehaviour, IWeapon
             Debug.Log("Picking up weapon.");
             owner = playerHitPlayerHandler.gameObject;
             unequippedCollider.enabled = false;
+            
             _ItemState = IItem.ItemState.Collected;
 
             if (playerHitPlayerHandler.weaponEquippedObject != null)
             {
-                if (playerHitPlayerHandler.weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine != null)       // stop swinging the weapon if we're already
+                if (playerHitPlayerHandler.weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine != null)       // stop swinging a previous weapon
                 {
                     StopCoroutine(playerHitPlayerHandler.weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine);
                 }
@@ -107,22 +118,25 @@ public class MeleeHandler : MonoBehaviour, IWeapon
             playerHitPlayerHandler.weaponEquippedObject = this.gameObject;
 
             owner.GetComponent<Animator>().SetFloat("WeaponSwingSpeed", swingSpeed);
+
             this.transform.parent = playerHitPlayerHandler.weaponPlaceholderTransform;
             this.transform.localPosition = Vector3.zero;
             this.transform.localRotation = Quaternion.Euler(30.864f, -8.384f, -38.901f);
+
             return;
         }
 
 
         if (_ItemState == IItem.ItemState.Collected)   // player is swinging the weapon
         {
-            if (playerHitPlayerHandler.gameObject != owner)
+            if (playerHitPlayerHandler.gameObject != owner && !playersHit.Contains(playerHitPlayerHandler.gameObject))
             {
                 Debug.Log("Hitting " + playerHitPlayerHandler.playerNumber + " for " + weaponDamage + " damage.");
-                
+
+                playersHit.Add(playerHitPlayerHandler.gameObject);
+
                 StartCoroutine(ApplyKnockback(playerHitPlayerHandler.GetComponent<Rigidbody>(), (playerHitPlayerHandler.transform.position - owner.transform.position).normalized));
                 
-                equippedCollider.enabled = false;
                 playerHitPlayerHandler.TakeDamage(weaponDamage);
             }
         } 
@@ -137,7 +151,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
         rb.AddForce(direction * weaponKnockbackStrength, ForceMode.Impulse); 
         rb.angularVelocity = Vector3.zero;
 
-        yield return new WaitForSeconds(weaponHitboxDuration);
+        yield return new WaitForSeconds(weaponknockbackDuration);
         rb.GetComponent<PlayerHandler>().knockedBack = false;
     }
 }

@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 7671112626157459591}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.705253, y: 0.34713492, z: -4.3853607}
+  m_LocalPosition: {x: 8.1687, y: 0.34713468, z: -5.3511176}
   m_LocalScale: {x: 0.1, y: 0.45, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -128,10 +128,9 @@ MonoBehaviour:
   floatingAnimationRotationSpeed: 30
   swingSpeed: 1.25
   swingCooldown: 0.1
-  weaponHitboxDuration: 0.05
   weaponDamage: 15
   weaponKnockbackStrength: 1
-  weaponknockbackDuration: 0.1
+  weaponknockbackDuration: 0.05
 --- !u!136 &7611033996376420810
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -151,7 +150,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 4.27
-  m_Height: 2.47
+  m_Radius: 4.93
+  m_Height: 2.77
   m_Direction: 1
   m_Center: {x: 0, y: 0.587825, z: 0}

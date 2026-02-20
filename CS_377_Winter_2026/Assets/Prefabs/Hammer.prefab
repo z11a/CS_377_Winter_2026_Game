@@ -107,10 +107,9 @@ MonoBehaviour:
   floatingAnimationRotationSpeed: 30
   swingSpeed: 1
   swingCooldown: 1.5
-  weaponHitboxDuration: 0.1
   weaponDamage: 25
-  weaponKnockbackStrength: 20
-  weaponknockbackDuration: 2
+  weaponKnockbackStrength: 7
+  weaponknockbackDuration: 0.75
 --- !u!65 &7225673623014873640
 BoxCollider:
   m_ObjectHideFlags: 0
