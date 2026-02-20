@@ -114,8 +114,8 @@ public class PlayerHandler : MonoBehaviour
         {
             if (!knockedBack) { 
                 rb.linearVelocity = Vector3.zero;
-                _playerState = PlayerState.Idle;
             }
+            _playerState = PlayerState.Idle;
         }
     }
 
@@ -220,7 +220,7 @@ public class PlayerHandler : MonoBehaviour
         animator.SetTrigger("Idle");
         knockedBack = false;
         playerHealth = 50.0f;
-        playerSpeed = 225.0f;
+        playerSpeed = 25.0f;
         _playerState = PlayerState.Idle;
         Destroy(weaponEquippedObject);
         GetComponent<PlayerInput>().ActivateInput();
