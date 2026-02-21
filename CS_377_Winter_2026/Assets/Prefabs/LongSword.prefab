@@ -126,6 +126,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79d9a79f2d27abe47a05bf6f62c7055b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HammerHandler
+  owner: {fileID: 0}
   unequippedCollider: {fileID: 0}
   equippedCollider: {fileID: 0}
   swingSpeed: 0.75
@@ -134,6 +135,7 @@ MonoBehaviour:
   weaponKnockbackStrength: 40
   weaponknockbackDuration: 0.4
   floatingAnimationRotationSpeed: 30
+  highlightMaterial: {fileID: 2100000, guid: f6826286dcb636347a39ccece15b0647, type: 2}
 --- !u!136 &2263650266750804342
 CapsuleCollider:
   m_ObjectHideFlags: 0

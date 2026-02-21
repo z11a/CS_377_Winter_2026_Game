@@ -7,10 +7,11 @@ using UnityEngine;
 
 public class MeleeHandler : MonoBehaviour, IWeapon
 {
-    private GameObject owner;
+    [HideInInspector] public GameObject owner;
     [HideInInspector] public BoxCollider unequippedCollider;
     [HideInInspector] public CapsuleCollider equippedCollider;
     private Rigidbody rb;
+    [HideInInspector] public MeshRenderer meshRenderer;
     [HideInInspector] public IItem.ItemState _ItemState {  get; set; }
     [HideInInspector] public Coroutine attackCoroutine { get; set; }
 
@@ -25,10 +26,13 @@ public class MeleeHandler : MonoBehaviour, IWeapon
 
     [Header("Other")]
     public float floatingAnimationRotationSpeed = 30.0f;
+    public Material highlightMaterial;
 
     private bool canSwing = true;
 
     private List<GameObject> playersHit = new List<GameObject>();
+    [HideInInspector] public Material[] highlightMaterialList;
+    [HideInInspector] public Material[] defaultMaterialList;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -41,6 +45,15 @@ public class MeleeHandler : MonoBehaviour, IWeapon
 
         _ItemState = IItem.ItemState.NotCollected;
         startingPosition = transform.position;
+
+        meshRenderer = GetComponent<MeshRenderer>();
+        defaultMaterialList = meshRenderer.materials;
+        highlightMaterialList = new Material[defaultMaterialList.Length + 1];
+        for (int i = 0; i < defaultMaterialList.Length; i++)
+        {
+            highlightMaterialList[i] = defaultMaterialList[i];
+        }
+        highlightMaterialList[highlightMaterialList.Length - 1] = highlightMaterial; 
 
         StartCoroutine(AnimationHandler());
     }
@@ -104,34 +117,41 @@ public class MeleeHandler : MonoBehaviour, IWeapon
             return;
         }
 
-        if (_ItemState == IItem.ItemState.NotCollected && playerHitPlayerHandler.weaponEquippedObject == null)   // player is equipping weapon and doesn't already have one equipped
+        if (_ItemState == IItem.ItemState.NotCollected)
         {
-            Debug.Log("Picking up weapon.");
-            owner = playerHitPlayerHandler.gameObject;
-            unequippedCollider.enabled = false;
-            
-            _ItemState = IItem.ItemState.Collected;
-
-            if (playerHitPlayerHandler.weaponEquippedObject != null)
-            {
-                playerHitPlayerHandler.playerSpeed += playerHitPlayerHandler.weaponEquippedObject.GetComponent<Rigidbody>().mass;
-                if (playerHitPlayerHandler.weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine != null)       // stop swinging a previous weapon
-                {
-                    StopCoroutine(playerHitPlayerHandler.weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine);
-                }
-            }
-
-            Destroy(playerHitPlayerHandler.weaponEquippedObject);
-            playerHitPlayerHandler.weaponEquippedObject = this.gameObject;
-            playerHitPlayerHandler.playerSpeed -= rb.mass;
-            playerHitPlayerHandler.GetComponent<Animator>().SetFloat("WeaponSwingSpeed", swingSpeed);
-
-            this.transform.parent = playerHitPlayerHandler.weaponPlaceholderTransform;
-            this.transform.localPosition = Vector3.zero;
-            this.transform.localRotation = Quaternion.Euler(30.864f, -8.384f, -38.901f);
-
-            return;
+            Debug.Log("Able to pick up " + this.gameObject.name);
+            meshRenderer.materials = highlightMaterialList;
+            playerHitPlayerHandler.possibleWeaponPickup = this.gameObject;
         }
+
+        //if (_ItemState == IItem.ItemState.NotCollected && playerHitPlayerHandler.weaponEquippedObject == null)   // player is equipping weapon and doesn't already have one equipped
+        //{
+        //    Debug.Log("Picking up weapon.");
+        //    owner = playerHitPlayerHandler.gameObject;
+        //    unequippedCollider.enabled = false;
+
+            //    _ItemState = IItem.ItemState.Collected;
+
+            //    if (playerHitPlayerHandler.weaponEquippedObject != null)
+            //    {
+            //        playerHitPlayerHandler.playerSpeed += playerHitPlayerHandler.weaponEquippedObject.GetComponent<Rigidbody>().mass;
+            //        if (playerHitPlayerHandler.weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine != null)       // stop swinging a previous weapon
+            //        {
+            //            StopCoroutine(playerHitPlayerHandler.weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine);
+            //        }
+            //    }
+
+            //    Destroy(playerHitPlayerHandler.weaponEquippedObject);
+            //    playerHitPlayerHandler.weaponEquippedObject = this.gameObject;
+            //    playerHitPlayerHandler.playerSpeed -= rb.mass;
+            //    playerHitPlayerHandler.GetComponent<Animator>().SetFloat("WeaponSwingSpeed", swingSpeed);
+
+            //    this.transform.parent = playerHitPlayerHandler.weaponPlaceholderTransform;
+            //    this.transform.localPosition = Vector3.zero;
+            //    this.transform.localRotation = Quaternion.Euler(30.864f, -8.384f, -38.901f);
+
+            //    return;
+            //}
 
 
         if (_ItemState == IItem.ItemState.Collected)   // player is swinging the weapon
@@ -160,5 +180,18 @@ public class MeleeHandler : MonoBehaviour, IWeapon
 
         yield return new WaitForSeconds(weaponknockbackDuration);
         _rb.GetComponent<PlayerHandler>().knockedBack = false;
+    }
+
+    private void OnTriggerExit(Collider collider)
+    {
+        PlayerHandler playerHitPlayerHandler = collider.gameObject.GetComponent<PlayerHandler>();
+
+        if (playerHitPlayerHandler == null)
+        {
+            return;
+        }
+        Debug.Log("No longer able to pick up " + this.gameObject.name);
+        meshRenderer.materials = defaultMaterialList;
+        playerHitPlayerHandler.possibleWeaponPickup = null;
     }
 }

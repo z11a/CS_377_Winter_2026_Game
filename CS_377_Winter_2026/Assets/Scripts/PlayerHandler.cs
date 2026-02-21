@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEditor;
 using static PlayerHandler;
+using static UnityEngine.UI.GridLayoutGroup;
 
 public class PlayerHandler : MonoBehaviour
 {
@@ -45,6 +46,7 @@ public class PlayerHandler : MonoBehaviour
     [HideInInspector] public int playerTotalRoundScore = 0;
     [HideInInspector] public PlayerNumber playerNumber;
     [HideInInspector] public GameObject weaponEquippedObject;
+    [HideInInspector] public GameObject possibleWeaponPickup;
     [HideInInspector] public StatTracker stats = new StatTracker();
 
     public Transform weaponPlaceholderTransform;
@@ -168,6 +170,43 @@ public class PlayerHandler : MonoBehaviour
         }
     }
 
+    public void OnInteract()
+    {
+        if (possibleWeaponPickup == null)
+        {
+            Debug.Log("Nothing to pick up.");
+            return;
+        }
+
+        if (weaponEquippedObject != null)
+        {
+            if (weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine != null)       // stop swinging a previous weapon
+            {
+                StopCoroutine(weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine);
+            }
+            OnDropWeapon();
+        }
+
+        weaponEquippedObject = possibleWeaponPickup;
+        possibleWeaponPickup = null;
+
+        MeleeHandler weaponMeleeHandler = weaponEquippedObject.GetComponent<MeleeHandler>();
+        weaponMeleeHandler.owner = this.gameObject;
+        weaponMeleeHandler.unequippedCollider.enabled = false;
+        weaponMeleeHandler.meshRenderer.materials = weaponMeleeHandler.defaultMaterialList;
+
+        weaponMeleeHandler._ItemState = IItem.ItemState.Collected;
+
+        playerSpeed -= weaponEquippedObject.GetComponent<Rigidbody>().mass;
+        animator.SetFloat("WeaponSwingSpeed", weaponMeleeHandler.swingSpeed);
+
+        weaponEquippedObject.transform.parent = weaponPlaceholderTransform;
+        weaponEquippedObject.transform.localPosition = Vector3.zero;
+        weaponEquippedObject.transform.localRotation = Quaternion.Euler(30.864f, -8.384f, -38.901f);
+
+        return;
+    }
+
     public void OnDropWeapon()
     {
         if (weaponEquippedObject == null)
@@ -176,13 +215,14 @@ public class PlayerHandler : MonoBehaviour
         }
         Rigidbody weaponRB = weaponEquippedObject.GetComponent<Rigidbody>();
         weaponEquippedObject = null;
-
         weaponRB.transform.parent = null;
+
+        weaponRB.transform.position += transform.right * 0.25f;
         weaponRB.GetComponent<MeleeHandler>().unequippedCollider.isTrigger = false;
         weaponRB.GetComponent<MeleeHandler>().unequippedCollider.enabled = true;
         weaponRB.isKinematic = false;
         weaponRB.useGravity = true;
-        weaponRB.AddForce(transform.forward * 2.0f, ForceMode.Force);
+        weaponRB.AddForce(transform.up / 3, ForceMode.Force);
         playerSpeed += weaponRB.mass;
 
         StartCoroutine(DespawnWeapon(weaponRB.gameObject));
@@ -214,8 +254,7 @@ public class PlayerHandler : MonoBehaviour
 
         rb.position = currentSpawnPosition.position;
         rb.rotation = Quaternion.identity;
-        rb.constraints = RigidbodyConstraints.FreezeRotationX;
-        rb.constraints = RigidbodyConstraints.FreezeRotationZ;
+        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         rb.linearVelocity = Vector3.zero;
         animator.SetTrigger("Idle");
         knockedBack = false;
