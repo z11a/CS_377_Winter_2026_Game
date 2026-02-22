@@ -58,11 +58,11 @@ public class InputManager : MonoBehaviour
             player1Input.GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.Player1;
             player1Input.GetComponent<Rigidbody>().position = player1StartSceneSpawnPosition.position;
             player1Input.SwitchCurrentActionMap("UI");
+            playerInputManager.playerPrefab = ratPrefab;
         }
         else if (!player2Joined)
         {
             Debug.Log("Player 2 joined.");
-            playerInputManager.playerPrefab = ratPrefab;
             player2Joined = true;
             player2Input = playerInput;
             player2Input.GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.Player2;

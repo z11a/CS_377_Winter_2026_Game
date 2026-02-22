@@ -1527,7 +1527,7 @@ PrefabInstance:
     - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
       propertyPath: 'possibleItemSpawnObjects.Array.data[1]'
       value: 
-      objectReference: {fileID: 7671112626157459591, guid: c9a21b9ac93c21a459c5bd42efcc8c4f, type: 3}
+      objectReference: {fileID: 1206104607816383204, guid: 0e1b8e1303f362a4489ed67f31c6244a, type: 3}
     - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
       propertyPath: 'possibleItemSpawnObjects.Array.data[2]'
       value: 
@@ -1576,7 +1576,7 @@ PrefabInstance:
     - target: {fileID: 2093949322661076557, guid: 9eaefdbbc84ad97499dbdf987fef1046, type: 3}
       propertyPath: ratPrefab
       value: 
-      objectReference: {fileID: 1851747289199441563, guid: 2685a4c542937fc45b7e39bc68ba2ed2, type: 3}
+      objectReference: {fileID: 5793833337735520633, guid: 25677ecae8d204143bd0431c0b269fba, type: 3}
     - target: {fileID: 2093949322661076557, guid: 9eaefdbbc84ad97499dbdf987fef1046, type: 3}
       propertyPath: mousePrefab
       value: 
