@@ -159,6 +159,10 @@ public class PlayerHandler : MonoBehaviour
     public void OnMove(InputValue value)
     {
         moveAmount = value.Get<Vector2>();
+        if (animator == null)
+        {
+            return;
+        }
         animator.SetFloat("RunningSpeed", Vector2.Distance(value.Get<Vector2>(), Vector2.zero));
     }
 
