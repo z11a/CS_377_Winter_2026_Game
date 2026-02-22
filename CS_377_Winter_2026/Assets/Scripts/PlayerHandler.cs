@@ -7,6 +7,7 @@ using System.Collections;
 using UnityEditor;
 using static PlayerHandler;
 using static UnityEngine.UI.GridLayoutGroup;
+using System.Security.Claims;
 
 public class PlayerHandler : MonoBehaviour
 {
@@ -37,6 +38,7 @@ public class PlayerHandler : MonoBehaviour
     public float invincibilityTime = 3.0f;
     public Material flashMaterial;
     private Material defaultMaterial;
+    public PlayerUI playerUI;
 
     [HideInInspector] public bool knockedBack = false;
     [HideInInspector] public Transform currentSpawnPosition;
@@ -265,6 +267,7 @@ public class PlayerHandler : MonoBehaviour
         knockedBack = false;
         playerHealth = 50.0f;
         playerSpeed = 25.0f;
+        playerUI.UpdateHealth((int)playerHealth);
         _playerState = PlayerState.Idle;
         Destroy(weaponEquippedObject);
         GetComponent<PlayerInput>().ActivateInput();
@@ -281,6 +284,7 @@ public class PlayerHandler : MonoBehaviour
 
         playerHealth -= damageAmount;
         StartCoroutine(HitFlash());
+        playerUI.UpdateHealth((int)Mathf.Max(playerHealth, 0));
 
         if (playerHealth <= 0.0f)
         {
@@ -300,5 +304,8 @@ public class PlayerHandler : MonoBehaviour
             //cheese.GetComponent<CheeseHandler>().rb.isKinematic = false;
         }
         playerCurrentHoldingCheeses.Clear();
+        playerUI.UpdateCheeses(0);
     }
+
+
 }
