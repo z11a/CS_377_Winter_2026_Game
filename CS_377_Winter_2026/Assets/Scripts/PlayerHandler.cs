@@ -159,6 +159,7 @@ public class PlayerHandler : MonoBehaviour
     public void OnMove(InputValue value)
     {
         moveAmount = value.Get<Vector2>();
+        animator.SetFloat("RunningSpeed", Vector2.Distance(value.Get<Vector2>(), Vector2.zero));
     }
 
     public void OnAttack()
@@ -167,6 +168,10 @@ public class PlayerHandler : MonoBehaviour
         {
             weaponEquippedObject.GetComponent<IWeapon>().Attack();
             stats.timesAttack++;
+        }
+        else
+        {
+            // add default attack here
         }
     }
 
@@ -217,12 +222,12 @@ public class PlayerHandler : MonoBehaviour
         weaponEquippedObject = null;
         weaponRB.transform.parent = null;
 
-        weaponRB.transform.position += transform.right * 0.25f;
+        //weaponRB.transform.position += transform.right * 0.25f;       // i was trying to get the player to throw the weapon slightly ahead of them, but it feels janky
         weaponRB.GetComponent<MeleeHandler>().unequippedCollider.isTrigger = false;
         weaponRB.GetComponent<MeleeHandler>().unequippedCollider.enabled = true;
         weaponRB.isKinematic = false;
         weaponRB.useGravity = true;
-        weaponRB.AddForce(transform.up / 3, ForceMode.Force);
+        //weaponRB.AddForce(transform.up / 3, ForceMode.Force);
         playerSpeed += weaponRB.mass;
 
         StartCoroutine(DespawnWeapon(weaponRB.gameObject));
@@ -249,8 +254,8 @@ public class PlayerHandler : MonoBehaviour
         rb.constraints = RigidbodyConstraints.None;
         animator.SetTrigger("Death");
 
-        yield return new WaitForSeconds(respawnTime);
         DropCheeses();
+        yield return new WaitForSeconds(respawnTime);
 
         rb.position = currentSpawnPosition.position;
         rb.rotation = Quaternion.identity;
