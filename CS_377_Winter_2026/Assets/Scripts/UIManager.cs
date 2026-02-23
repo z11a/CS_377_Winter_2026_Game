@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
 
     [Header("Other")]
     public RawImage loadingScreen;
+    public GameObject GameplayUI;
     public float loadingScreenFadeDuration = 1.0f;
     
     void Awake()
@@ -34,6 +35,7 @@ public class UIManager : MonoBehaviour
         startGameButton.gameObject.SetActive(false);
         startMenuButton.gameObject.SetActive(true);
         loadingScreen.gameObject.SetActive(false);
+        GameplayUI.SetActive(false);
     }
 
     // Update is called once per frame

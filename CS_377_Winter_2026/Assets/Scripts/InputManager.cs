@@ -13,6 +13,8 @@ public class InputManager : MonoBehaviour
     [SerializeField] public Transform player2StartSceneSpawnPosition;
     [SerializeField] public GameObject mousePrefab;
     [SerializeField] public GameObject ratPrefab;
+    [SerializeField] public PlayerUIManager playerOneUIManager;
+    [SerializeField] public PlayerUIManager playerTwoUIManager;
 
     [HideInInspector] public PlayerInputManager playerInputManager;
     [HideInInspector] public PlayerInput player1Input;
@@ -39,7 +41,7 @@ public class InputManager : MonoBehaviour
     {
         playerInputManager = this.GetComponent<PlayerInputManager>();
         playerInputManager.playerPrefab = mousePrefab;
-        //EventSystem.current.SetSelectedGameObject(UIManager.instance.startMenuButton.gameObject);
+        EventSystem.current.SetSelectedGameObject(UIManager.instance.startMenuButton.gameObject);
     }
 
     // Update is called once per frame
@@ -58,7 +60,10 @@ public class InputManager : MonoBehaviour
             player1Input.GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.Player1;
             player1Input.GetComponent<Rigidbody>().position = player1StartSceneSpawnPosition.position;
             player1Input.SwitchCurrentActionMap("UI");
-            //playerInputManager.playerPrefab = ratPrefab;
+            playerOneUIManager.playerHandler = player1Input.GetComponent<PlayerHandler>();
+
+            playerInputManager.playerPrefab = ratPrefab;
+
         }
         else if (!player2Joined)
         {
@@ -67,8 +72,8 @@ public class InputManager : MonoBehaviour
             player2Input = playerInput;
             player2Input.GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.Player2;
             player2Input.GetComponent<Rigidbody>().position = player2StartSceneSpawnPosition.position;
-
             player2Input.SwitchCurrentActionMap("UI");
+            playerTwoUIManager.playerHandler = player2Input.GetComponent<PlayerHandler>();
 
             StartCoroutine(enableStartButton());
         }
@@ -78,8 +83,8 @@ public class InputManager : MonoBehaviour
     {
         yield return null;
 
-        //UIManager.instance.startGameButton.gameObject.SetActive(true);
-        //EventSystem.current.SetSelectedGameObject(UIManager.instance.startGameButton.gameObject);
+        UIManager.instance.startGameButton.gameObject.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(UIManager.instance.startGameButton.gameObject);
         playerInputManager.DisableJoining();
     }
 }

@@ -33,20 +33,20 @@ public class PlayerHandler : MonoBehaviour
     
     public float playerHealth = 50.0f;
     public float playerSpeed = 5.0f;
-    //public float gravity = -2.0f; // not sure if we need this yet.
     public float respawnTime = 3.0f;
     public float invincibilityTime = 3.0f;
     public Material flashMaterial;
     private Material defaultMaterial;
-    public PlayerUI playerUI;
+    public PlayerUIManager playerUIManager;
+
+    [HideInInspector] public PlayerState _playerState;
+    [HideInInspector] public PlayerNumber playerNumber;
 
     [HideInInspector] public bool knockedBack = false;
     [HideInInspector] public Transform currentSpawnPosition;
-    [HideInInspector] public PlayerState _playerState;
     [HideInInspector] public int playerCurrentRoundScore;
     [HideInInspector] public List<GameObject> playerCurrentHoldingCheeses;
     [HideInInspector] public int playerTotalRoundScore = 0;
-    [HideInInspector] public PlayerNumber playerNumber;
     [HideInInspector] public GameObject weaponEquippedObject;
     [HideInInspector] public GameObject possibleWeaponPickup;
     [HideInInspector] public StatTracker stats = new StatTracker();
@@ -71,14 +71,9 @@ public class PlayerHandler : MonoBehaviour
     void Update()
 
     {
-      
         if (GameStateManager.instance._gameState == GameStateManager.GameState.inGame)
         {
-            //MovementHandlerCharacterController();
             AnimationHandler();
-
-            
-
         }
     }
 
@@ -271,7 +266,7 @@ public class PlayerHandler : MonoBehaviour
         knockedBack = false;
         playerHealth = 50.0f;
         playerSpeed = 25.0f;
-        playerUI.UpdateHealth((int)playerHealth);
+        //playerUIManager.UpdateHealth((int)player);
         _playerState = PlayerState.Idle;
         Destroy(weaponEquippedObject);
         GetComponent<PlayerInput>().ActivateInput();
@@ -288,7 +283,7 @@ public class PlayerHandler : MonoBehaviour
 
         playerHealth -= damageAmount;
         StartCoroutine(HitFlash());
-        playerUI.UpdateHealth((int)Mathf.Max(playerHealth, 0));
+        //playerUI.UpdateHealth((int)Mathf.Max(playerHealth, 0));
 
         if (playerHealth <= 0.0f)
         {
@@ -308,7 +303,7 @@ public class PlayerHandler : MonoBehaviour
             //cheese.GetComponent<CheeseHandler>().rb.isKinematic = false;
         }
         playerCurrentHoldingCheeses.Clear();
-        playerUI.UpdateCheeses(0);
+        //playerUI.UpdateCheeses(0);
     }
 
 
