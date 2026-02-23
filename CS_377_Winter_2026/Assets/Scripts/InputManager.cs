@@ -58,7 +58,7 @@ public class InputManager : MonoBehaviour
             player1Input.GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.Player1;
             player1Input.GetComponent<Rigidbody>().position = player1StartSceneSpawnPosition.position;
             player1Input.SwitchCurrentActionMap("UI");
-            playerInputManager.playerPrefab = ratPrefab;
+            //playerInputManager.playerPrefab = ratPrefab;
         }
         else if (!player2Joined)
         {
@@ -78,8 +78,8 @@ public class InputManager : MonoBehaviour
     {
         yield return null;
 
-        UIManager.instance.startGameButton.gameObject.SetActive(true);
-        EventSystem.current.SetSelectedGameObject(UIManager.instance.startGameButton.gameObject);
+        //UIManager.instance.startGameButton.gameObject.SetActive(true);
+        //EventSystem.current.SetSelectedGameObject(UIManager.instance.startGameButton.gameObject);
         playerInputManager.DisableJoining();
     }
 }
