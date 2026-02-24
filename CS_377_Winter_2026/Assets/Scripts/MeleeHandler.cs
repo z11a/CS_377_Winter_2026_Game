@@ -14,6 +14,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
     [HideInInspector] public MeshRenderer meshRenderer;
     [HideInInspector] public IItem.ItemState _ItemState {  get; set; }
     [HideInInspector] public Coroutine attackCoroutine { get; set; }
+    [HideInInspector] public Vector3 spawnPosition { get; set; }
 
     private Vector3 startingPosition;
 
@@ -45,6 +46,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
 
         _ItemState = IItem.ItemState.NotCollected;
         startingPosition = transform.position;
+        spawnPosition = transform.position;
 
         meshRenderer = GetComponent<MeshRenderer>();
         defaultMaterialList = meshRenderer.materials;

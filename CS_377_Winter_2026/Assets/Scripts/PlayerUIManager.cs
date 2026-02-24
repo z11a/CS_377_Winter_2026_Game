@@ -3,10 +3,11 @@ using UnityEngine.UI;
 using TMPro;
 public class PlayerUIManager : MonoBehaviour
 {
+    [Header("Player Information")]
     public PlayerHandler playerHandler;
 
+    [Header("UI Elements")]
     public Slider HealthBar;
-
     public TextMeshProUGUI PointsText;
     public TextMeshProUGUI CheeseText;
 

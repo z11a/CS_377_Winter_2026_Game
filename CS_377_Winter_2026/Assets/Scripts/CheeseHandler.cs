@@ -21,7 +21,7 @@ public class CheeseHandler : MonoBehaviour, IItem
 
     [HideInInspector] public IItem.ItemState _ItemState { get; set; }
 
-    [HideInInspector] 
+    [HideInInspector] public Vector3 spawnPosition {  get; set; }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -42,6 +42,7 @@ public class CheeseHandler : MonoBehaviour, IItem
                 break;
         }
         _ItemState = IItem.ItemState.NotCollected;
+        spawnPosition = transform.position;
         rb = GetComponent<Rigidbody>();
         StartFloatingAnimation();
     }
@@ -63,7 +64,6 @@ public class CheeseHandler : MonoBehaviour, IItem
 
     private IEnumerator FloatingAnimation()
     {
-        yield return null;
         Vector3 animationStartingPosition = rb.position;
         while (true)
         {
@@ -103,6 +103,7 @@ public class CheeseHandler : MonoBehaviour, IItem
         //playerHandler.playerUIManager.UpdateCheeses(playerHandler.playerCurrentHoldingCheeses.Count);
         StopCoroutine(floatingAnimationCoroutine);
         _ItemState = IItem.ItemState.Collected;
+        GameStateManager.instance.itemSpawnDictionary[spawnPosition] = null;
         Debug.Log("Cheese Type: " + this._CheeseType);
     }
 }

@@ -9,4 +9,6 @@ public interface IItem
     }
 
     ItemState _ItemState { get; set; }
+
+    Vector3 spawnPosition { get; set; }
 }

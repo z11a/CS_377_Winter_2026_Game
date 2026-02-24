@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Xml;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -24,29 +26,35 @@ public class GameStateManager : MonoBehaviour
         Three
     }
 
+    [Header("Game State Tracking")]
     public GameState _gameState;
     public RoundNumber _currentRound;
 
-    [HideInInspector] public bool waitingForPlayersToJoin = false;
+    [Header("Timing")]
+    public float countdownLength = 3.0f;
+    public float roundLength = 90.0f;
+    public float intermissionLength = 4.0f;
 
-    public float countdownTime = 3.0f;
-    public float roundTime = 90.0f;
-    public float intermissionTime = 4.0f;
-
+    [Header("Scoring")]
     public int roundOneScoreRequirement = 50;
     public int roundTwoScoreRequirement = 100;
     public int roundThreeScoreRequirement = 150;
 
-    [HideInInspector] public bool itemsSpawning;
+    [Header("Item Spawning")]
+    public bool itemsSpawning;
     public float itemSpawnCooldown = 7.5f;
-    public List<Transform> possibleItemSpawnLocations;     // first transform in the list will spawn at the start of the round
+    public List<Transform> possibleItemSpawnLocations;     // first transform in the list will spawn at the start of the round, this list is set by the "GameplayReferences" gameObject in each round scene.
     public List<GameObject> possibleItemSpawnObjects;
-    private Dictionary<Transform, GameObject> possibleItemSpawnDictionary = new Dictionary<Transform, GameObject>();
+    public List<GameObject> commonItems;
+    public List<GameObject> uncommonItems;
+    public List<GameObject> rareItems;
+    [HideInInspector] public Dictionary<Vector3, GameObject> itemSpawnDictionary = new Dictionary<Vector3, GameObject>();
+    private Coroutine itemSpawningCoroutine;
 
+    [HideInInspector] public bool waitingForPlayersToJoin = false;
     [HideInInspector] public Transform player1GameplaySpawnPosition;
     [HideInInspector] public Transform player2GameplaySpawnPosition;
 
-    private Coroutine itemSpawningCoroutine;
 
     void Awake()
     {
@@ -92,7 +100,7 @@ public class GameStateManager : MonoBehaviour
     {
         yield return null;
 
-        float _roundTime = roundTime;
+        float _roundTime = roundLength;
 
         while (true)
         {
@@ -110,43 +118,47 @@ public class GameStateManager : MonoBehaviour
         yield return null;
     }
 
-    private IEnumerator itemSpawning()
+    private IEnumerator itemSpawning()  // must fix still broken
     {
-        yield return null;
+        itemSpawnDictionary.Clear();
+        // setup itemSpawnDictionary
+        for (int i = 0; i < possibleItemSpawnLocations.Count; i++)
+        {
+            itemSpawnDictionary[possibleItemSpawnLocations[i].position] = null;
+        }
 
-        GameObject firstItem = Instantiate(possibleItemSpawnObjects[Random.Range(0, possibleItemSpawnObjects.Count)], possibleItemSpawnLocations[0].position, Quaternion.identity);    // first transform will be the first spawn
-
-        possibleItemSpawnDictionary[possibleItemSpawnLocations[0]] = firstItem;
+        // spawn random common item at first location
+        GameObject firstItem = Instantiate(possibleItemSpawnObjects[Random.Range(0, possibleItemSpawnObjects.Count)], possibleItemSpawnLocations[0].position, Quaternion.identity);
+        itemSpawnDictionary[possibleItemSpawnLocations[0].position] = firstItem;
 
         while (itemsSpawning)
         {
-            yield return new WaitForSeconds(itemSpawnCooldown);
+            bool allLocationsFull = itemSpawnDictionary.Values.All(value => value != null);
+
+            if (allLocationsFull)
+            {
+                yield return new WaitForSeconds(4.0f);
+                continue;
+            }
+            else
+            {
+                yield return new WaitForSeconds(itemSpawnCooldown);
+            }
 
             while (true)
             {
                 int newSpawnIndex = Random.Range(0, possibleItemSpawnLocations.Count);
+                // figure out how to take rarity into account
                 GameObject randomObject = possibleItemSpawnObjects[Random.Range(0, possibleItemSpawnObjects.Count)];
 
-                if (possibleItemSpawnDictionary.ContainsKey(possibleItemSpawnLocations[newSpawnIndex]))
+                if (itemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex].position] == null)
                 {
-
-                    if (possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]] != null && possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]].GetComponent<IItem>()._ItemState == IItem.ItemState.NotCollected)
-                    {
-                        yield return null;
-                        continue;
-                    }
-                    possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]] = Instantiate(randomObject, 
-                                                                                                         possibleItemSpawnLocations[newSpawnIndex].position,
-                                                                                                         randomObject.transform.rotation);
+                    itemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex].position] = Instantiate(randomObject,
+                                                                                                 possibleItemSpawnLocations[newSpawnIndex].position,
+                                                                                                 randomObject.transform.rotation);
                     break;
                 }
-                else
-                {
-                    possibleItemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex]] = Instantiate(randomObject,
-                                                                                                         possibleItemSpawnLocations[newSpawnIndex].position,
-                                                                                                         randomObject.transform.rotation);
-                    break;
-                }
+                yield return null;
             }
         }
     }
@@ -155,7 +167,7 @@ public class GameStateManager : MonoBehaviour
     {
         yield return null;
 
-        float _countdownTime = countdownTime;
+        float _countdownTime = countdownLength;
 
         Debug.Log("Countdown started.");
 

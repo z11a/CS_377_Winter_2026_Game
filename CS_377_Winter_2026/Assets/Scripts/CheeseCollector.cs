@@ -79,7 +79,7 @@ public class CheeseCollector : MonoBehaviour
 
     private IEnumerator Intermission(GameStateManager.RoundNumber nextRoundNumber)
     {
-        yield return new WaitForSeconds(GameStateManager.instance.intermissionTime);
+        yield return new WaitForSeconds(GameStateManager.instance.intermissionLength);
 
         StartCoroutine(GameStateManager.instance.LoadGameplaySceneAsync(nextRoundNumber));
     }
