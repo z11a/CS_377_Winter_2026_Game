@@ -202,7 +202,7 @@ public class PlayerHandler : MonoBehaviour
         weaponMeleeHandler.meshRenderer.materials = weaponMeleeHandler.defaultMaterialList;
 
         weaponMeleeHandler._ItemState = IItem.ItemState.Collected;
-        GameStateManager.instance.itemSpawnDictionary[weaponMeleeHandler.spawnPosition] = null;
+        GameStateManager.instance.itemSpawnDictionary[weaponMeleeHandler.initialSpawnPosition] = null;
 
         playerSpeed -= weaponEquippedObject.GetComponent<Rigidbody>().mass;
         animator.SetFloat("WeaponSwingSpeed", weaponMeleeHandler.swingSpeed);

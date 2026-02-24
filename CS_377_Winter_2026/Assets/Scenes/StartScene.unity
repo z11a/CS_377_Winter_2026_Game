@@ -2798,58 +2798,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: player1GameplaySpawnPosition
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: player2GameplaySpawnPosition
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: possibleItemSpawnObjects.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: possibleItemSpawnLocations.Array.size
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: 'possibleItemSpawnObjects.Array.data[0]'
-      value: 
-      objectReference: {fileID: 7846301342053070152, guid: 0d5e0f8b678bd834284ca64556531823, type: 3}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: 'possibleItemSpawnObjects.Array.data[1]'
-      value: 
-      objectReference: {fileID: 1206104607816383204, guid: 0e1b8e1303f362a4489ed67f31c6244a, type: 3}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: 'possibleItemSpawnObjects.Array.data[2]'
-      value: 
-      objectReference: {fileID: 2186262415711309002, guid: f4a06f44735f9124a889b39c08ab6f8d, type: 3}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: 'possibleItemSpawnObjects.Array.data[3]'
-      value: 
-      objectReference: {fileID: 2498599946575675284, guid: 4ea1a632372797d41b490283b91c1ae0, type: 3}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: 'possibleItemSpawnLocations.Array.data[0]'
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: 'possibleItemSpawnLocations.Array.data[1]'
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: 'possibleItemSpawnLocations.Array.data[2]'
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: 'possibleItemSpawnLocations.Array.data[3]'
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: 'possibleItemSpawnLocations.Array.data[4]'
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 8269917051868093485, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
       propertyPath: m_Name
       value: GameStateManager

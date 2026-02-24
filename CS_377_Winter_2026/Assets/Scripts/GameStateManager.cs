@@ -18,7 +18,6 @@ public class GameStateManager : MonoBehaviour
         inGame,
         intermission // in between rounds / before the first round starts.
     }
-
     public enum RoundNumber
     {
         One,
@@ -41,20 +40,20 @@ public class GameStateManager : MonoBehaviour
     public int roundThreeScoreRequirement = 150;
 
     [Header("Item Spawning")]
-    public bool itemsSpawning;
     public float itemSpawnCooldown = 7.5f;
+    public float uncommonItemSpawnChance = 45.0f;
+    public float rareItemSpawnChance = 15.0f;
     public List<Transform> possibleItemSpawnLocations;     // first transform in the list will spawn at the start of the round, this list is set by the "GameplayReferences" gameObject in each round scene.
-    public List<GameObject> possibleItemSpawnObjects;
     public List<GameObject> commonItems;
     public List<GameObject> uncommonItems;
     public List<GameObject> rareItems;
     [HideInInspector] public Dictionary<Vector3, GameObject> itemSpawnDictionary = new Dictionary<Vector3, GameObject>();
+    [HideInInspector] public bool itemsSpawning;
     private Coroutine itemSpawningCoroutine;
 
     [HideInInspector] public bool waitingForPlayersToJoin = false;
     [HideInInspector] public Transform player1GameplaySpawnPosition;
     [HideInInspector] public Transform player2GameplaySpawnPosition;
-
 
     void Awake()
     {
@@ -95,7 +94,6 @@ public class GameStateManager : MonoBehaviour
             StopCoroutine(itemSpawningCoroutine);
         }
     }
-
     private IEnumerator StartRoundTimer()
     {
         yield return null;
@@ -116,51 +114,6 @@ public class GameStateManager : MonoBehaviour
             }
         }
         yield return null;
-    }
-
-    private IEnumerator itemSpawning()  // must fix still broken
-    {
-        itemSpawnDictionary.Clear();
-        // setup itemSpawnDictionary
-        for (int i = 0; i < possibleItemSpawnLocations.Count; i++)
-        {
-            itemSpawnDictionary[possibleItemSpawnLocations[i].position] = null;
-        }
-
-        // spawn random common item at first location
-        GameObject firstItem = Instantiate(possibleItemSpawnObjects[Random.Range(0, possibleItemSpawnObjects.Count)], possibleItemSpawnLocations[0].position, Quaternion.identity);
-        itemSpawnDictionary[possibleItemSpawnLocations[0].position] = firstItem;
-
-        while (itemsSpawning)
-        {
-            bool allLocationsFull = itemSpawnDictionary.Values.All(value => value != null);
-
-            if (allLocationsFull)
-            {
-                yield return new WaitForSeconds(4.0f);
-                continue;
-            }
-            else
-            {
-                yield return new WaitForSeconds(itemSpawnCooldown);
-            }
-
-            while (true)
-            {
-                int newSpawnIndex = Random.Range(0, possibleItemSpawnLocations.Count);
-                // figure out how to take rarity into account
-                GameObject randomObject = possibleItemSpawnObjects[Random.Range(0, possibleItemSpawnObjects.Count)];
-
-                if (itemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex].position] == null)
-                {
-                    itemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex].position] = Instantiate(randomObject,
-                                                                                                 possibleItemSpawnLocations[newSpawnIndex].position,
-                                                                                                 randomObject.transform.rotation);
-                    break;
-                }
-                yield return null;
-            }
-        }
     }
 
     private IEnumerator StartPreRoundCountdown()
@@ -192,6 +145,7 @@ public class GameStateManager : MonoBehaviour
         }
         yield return null;
     }
+
     private void GameplaySceneSetup()
     {
         InputManager.instance.player1Input.GetComponent<Rigidbody>().position = player1GameplaySpawnPosition.position;
@@ -261,5 +215,69 @@ public class GameStateManager : MonoBehaviour
 
             yield return null;
         }
-    } 
+    }
+    private IEnumerator itemSpawning()
+    {
+        itemSpawnDictionary.Clear();
+        // setup itemSpawnDictionary
+        for (int i = 0; i < possibleItemSpawnLocations.Count; i++)
+        {
+            itemSpawnDictionary[possibleItemSpawnLocations[i].position] = null;
+        }
+
+        // spawn random common item at first location
+        GameObject firstItem = Instantiate(commonItems[Random.Range(0, commonItems.Count)], possibleItemSpawnLocations[0].position, Quaternion.identity);
+        itemSpawnDictionary[possibleItemSpawnLocations[0].position] = firstItem;
+
+        while (itemsSpawning)
+        {
+            bool allLocationsFull = itemSpawnDictionary.Values.All(value => value != null);
+
+            if (allLocationsFull)
+            {
+                yield return new WaitForSeconds(4.0f);
+                continue;
+            }
+            else
+            {
+                yield return new WaitForSeconds(itemSpawnCooldown);
+            }
+
+            while (true)
+            {
+                int newSpawnIndex = Random.Range(0, possibleItemSpawnLocations.Count);
+                GameObject randomObject = ChooseRandomItem();
+
+                if (itemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex].position] == null)
+                {
+                    itemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex].position] = Instantiate(randomObject,
+                                                                                                 possibleItemSpawnLocations[newSpawnIndex].position,
+                                                                                                 randomObject.transform.rotation);
+                    break;
+                }
+                yield return null;
+            }
+        }
+    }
+
+    private GameObject ChooseRandomItem()
+    {
+        float randomValue = Random.Range(0.0f, 100f);
+        GameObject randomItem = null;
+
+        if (randomValue < rareItemSpawnChance)
+        {
+            randomItem = rareItems[Random.Range(0, rareItems.Count)];
+        }
+        else if (randomValue < uncommonItemSpawnChance)
+        {
+            randomItem = uncommonItems[Random.Range(0, rareItems.Count)];
+        }
+        else
+        {
+            randomItem = commonItems[Random.Range(0, commonItems.Count)];
+        }
+
+        return randomItem;
+    }
 }
