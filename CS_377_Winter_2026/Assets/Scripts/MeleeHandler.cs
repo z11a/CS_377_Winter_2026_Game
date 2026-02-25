@@ -14,8 +14,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
     [HideInInspector] public MeshRenderer meshRenderer;
     [HideInInspector] public IItem.ItemState _ItemState {  get; set; }
     [HideInInspector] public Coroutine attackCoroutine { get; set; }
-
-    private Vector3 startingPosition;
+    [HideInInspector] public Vector3 initialSpawnPosition { get; set; }
 
     [Header("Attack Properties")]
     public float swingSpeed = 1.0f;
@@ -44,7 +43,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
         rb = GetComponent<Rigidbody>();
 
         _ItemState = IItem.ItemState.NotCollected;
-        startingPosition = transform.position;
+        initialSpawnPosition = transform.position;
 
         meshRenderer = GetComponent<MeshRenderer>();
         defaultMaterialList = meshRenderer.materials;
@@ -68,9 +67,9 @@ public class MeleeHandler : MonoBehaviour, IWeapon
     {
         while (_ItemState == IItem.ItemState.NotCollected)
         {
-            transform.position = new Vector3(startingPosition.x,
-                                 startingPosition.y + (Mathf.Sin(Time.time) * 0.25f),
-                                 startingPosition.z);
+            transform.position = new Vector3(initialSpawnPosition.x,
+                                 initialSpawnPosition.y + (Mathf.Sin(Time.time) * 0.25f),
+                                 initialSpawnPosition.z);
 
             transform.Rotate(Vector3.up * floatingAnimationRotationSpeed * Time.deltaTime);
             yield return null;
@@ -123,36 +122,6 @@ public class MeleeHandler : MonoBehaviour, IWeapon
             meshRenderer.materials = highlightMaterialList;
             playerHitPlayerHandler.possibleWeaponPickup = this.gameObject;
         }
-
-        //if (_ItemState == IItem.ItemState.NotCollected && playerHitPlayerHandler.weaponEquippedObject == null)   // player is equipping weapon and doesn't already have one equipped
-        //{
-        //    Debug.Log("Picking up weapon.");
-        //    owner = playerHitPlayerHandler.gameObject;
-        //    unequippedCollider.enabled = false;
-
-            //    _ItemState = IItem.ItemState.Collected;
-
-            //    if (playerHitPlayerHandler.weaponEquippedObject != null)
-            //    {
-            //        playerHitPlayerHandler.playerSpeed += playerHitPlayerHandler.weaponEquippedObject.GetComponent<Rigidbody>().mass;
-            //        if (playerHitPlayerHandler.weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine != null)       // stop swinging a previous weapon
-            //        {
-            //            StopCoroutine(playerHitPlayerHandler.weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine);
-            //        }
-            //    }
-
-            //    Destroy(playerHitPlayerHandler.weaponEquippedObject);
-            //    playerHitPlayerHandler.weaponEquippedObject = this.gameObject;
-            //    playerHitPlayerHandler.playerSpeed -= rb.mass;
-            //    playerHitPlayerHandler.GetComponent<Animator>().SetFloat("WeaponSwingSpeed", swingSpeed);
-
-            //    this.transform.parent = playerHitPlayerHandler.weaponPlaceholderTransform;
-            //    this.transform.localPosition = Vector3.zero;
-            //    this.transform.localRotation = Quaternion.Euler(30.864f, -8.384f, -38.901f);
-
-            //    return;
-            //}
-
 
         if (_ItemState == IItem.ItemState.Collected)   // player is swinging the weapon
         {

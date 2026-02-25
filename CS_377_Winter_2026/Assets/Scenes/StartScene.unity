@@ -1948,7 +1948,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2048,7 +2048,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &773480803
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3391,7 +3391,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0.26077747, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4260,57 +4260,21 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: player1GameplaySpawnPosition
-      value: 
+      propertyPath: commonItems.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: player2GameplaySpawnPosition
-      value: 
+      propertyPath: uncommonItemSpawnChance
+      value: 55
       objectReference: {fileID: 0}
     - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: possibleItemSpawnObjects.Array.size
-      value: 4
+      propertyPath: uncommonItems.Array.size
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: possibleItemSpawnLocations.Array.size
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: 'possibleItemSpawnObjects.Array.data[0]'
-      value: 
-      objectReference: {fileID: 7846301342053070152, guid: 0d5e0f8b678bd834284ca64556531823, type: 3}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: 'possibleItemSpawnObjects.Array.data[1]'
+      propertyPath: 'uncommonItems.Array.data[1]'
       value: 
       objectReference: {fileID: 1206104607816383204, guid: 0e1b8e1303f362a4489ed67f31c6244a, type: 3}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: 'possibleItemSpawnObjects.Array.data[2]'
-      value: 
-      objectReference: {fileID: 2186262415711309002, guid: f4a06f44735f9124a889b39c08ab6f8d, type: 3}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: 'possibleItemSpawnObjects.Array.data[3]'
-      value: 
-      objectReference: {fileID: 2498599946575675284, guid: 4ea1a632372797d41b490283b91c1ae0, type: 3}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: 'possibleItemSpawnLocations.Array.data[0]'
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: 'possibleItemSpawnLocations.Array.data[1]'
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: 'possibleItemSpawnLocations.Array.data[2]'
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: 'possibleItemSpawnLocations.Array.data[3]'
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: 'possibleItemSpawnLocations.Array.data[4]'
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 8269917051868093485, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
       propertyPath: m_Name
       value: GameStateManager
