@@ -218,7 +218,7 @@ public class GameStateManager : MonoBehaviour
     }
     private IEnumerator itemSpawning()
     {
-        itemSpawnDictionary.Clear();
+        itemSpawnDictionary.Clear(); // just change values to null instead of clearing
         // setup itemSpawnDictionary
         for (int i = 0; i < possibleItemSpawnLocations.Count; i++)
         {
@@ -271,7 +271,7 @@ public class GameStateManager : MonoBehaviour
         }
         else if (randomValue < uncommonItemSpawnChance)
         {
-            randomItem = uncommonItems[Random.Range(0, rareItems.Count)];
+            randomItem = uncommonItems[Random.Range(0, uncommonItems.Count)];
         }
         else
         {
