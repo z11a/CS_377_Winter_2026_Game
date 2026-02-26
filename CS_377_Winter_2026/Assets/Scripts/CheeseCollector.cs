@@ -35,11 +35,10 @@ public class CheeseCollector : MonoBehaviour
             foreach (GameObject cheese in playerHandler.playerCurrentHoldingCheeses)
             {
                 playerHandler.playerCurrentRoundScore += cheese.GetComponent<CheeseHandler>().cheeseValue;
+                playerHandler.playerWeight -= cheese.GetComponent<Rigidbody>().mass;
                 Destroy(cheese);
             }
             playerHandler.playerCurrentHoldingCheeses = new List<GameObject>();
-            //playerHandler.PlayerUIManager.UpdateCheeses(0);
-            //playerHandler.PlayerUIManager.UpdateScore(playerHandler.playerCurrentRoundScore);
             Debug.Log("New " + playerHandler.playerNumber + " score: " + playerHandler.playerCurrentRoundScore);
 
             RoundWinCheck(playerHandler);

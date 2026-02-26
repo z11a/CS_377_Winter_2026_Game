@@ -99,10 +99,9 @@ public class CheeseHandler : MonoBehaviour, IItem
 
         rb.position = new Vector3(-100.0f, -100.0f, -100.0f);
         playerHandler.playerCurrentHoldingCheeses.Add(this.gameObject); // store it far away, we can bring it back if the player loses all their health and drops them.
-        //playerHandler.playerUIManager.UpdateCheeses(playerHandler.playerCurrentHoldingCheeses.Count);
+        playerHandler.playerWeight += rb.mass;
         StopCoroutine(floatingAnimationCoroutine);
         _ItemState = IItem.ItemState.Collected;
         GameStateManager.instance.itemSpawnDictionary[initialSpawnPosition] = null;
-        Debug.Log("Cheese Type: " + this._CheeseType);
     }
 }

@@ -8,6 +8,7 @@ using UnityEditor;
 using static PlayerHandler;
 using static UnityEngine.UI.GridLayoutGroup;
 using System.Security.Claims;
+using static UnityEngine.Rendering.DebugUI;
 
 public class PlayerHandler : MonoBehaviour
 {
@@ -30,14 +31,21 @@ public class PlayerHandler : MonoBehaviour
         Aiming,
         Dead
     }
-    
+
+    [Header("Main Player Attributes")]
     public float playerHealth = 50.0f;
-    public float playerSpeed = 5.0f;
+    public float playerSpeed = 25.0f;
+    public float playerWeight = 0.0f;
     public float respawnTime = 3.0f;
     public float invincibilityTime = 3.0f;
     public Material flashMaterial;
     private Material defaultMaterial;
-    public PlayerUIManager playerUIManager;
+    //[HideInInspector] public PlayerUIManager playerUIManager;
+    private Coroutine defaultAttackCoroutine;
+
+    public Transform weaponPlaceholderTransform;
+    public GameObject defaultAttackWeapon;
+
 
     [HideInInspector] public PlayerState _playerState;
     [HideInInspector] public PlayerNumber playerNumber;
@@ -51,7 +59,6 @@ public class PlayerHandler : MonoBehaviour
     [HideInInspector] public GameObject possibleWeaponPickup;
     [HideInInspector] public StatTracker stats = new StatTracker();
 
-    public Transform weaponPlaceholderTransform;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -65,16 +72,15 @@ public class PlayerHandler : MonoBehaviour
         defaultMaterial = playerRenderer.material;
 
         _playerState = PlayerState.Idle;
-    }   
+        weaponEquippedObject = defaultAttackWeapon;
+        weaponEquippedObject.GetComponent<DefaultAttack>().owner = this.gameObject;
+        animator.SetFloat("WeaponSwingSpeed", weaponEquippedObject.GetComponent<DefaultAttack>().swingSpeed);
+    }
 
     // Update is called once per frame
     void Update()
-
     {
-        if (GameStateManager.instance._gameState == GameStateManager.GameState.inGame)
-        {
-            AnimationHandler();
-        }
+        AnimationHandler();
     }
 
     private void FixedUpdate()
@@ -95,19 +101,25 @@ public class PlayerHandler : MonoBehaviour
         Vector3 movement = new Vector3(moveAmount.x, 0, moveAmount.y);
 
         rb.angularVelocity = Vector3.zero;
+        float newPlayerSpeed = playerSpeed - playerWeight;
+        if (newPlayerSpeed <= 0) { newPlayerSpeed = 0; }
 
         if (movement != Vector3.zero)
         {
             if (knockedBack)
             {
-                rb.AddForce(movement * playerSpeed * Time.deltaTime * 1.5f * 9f, ForceMode.Force);
+                rb.AddForce(movement * newPlayerSpeed * Time.deltaTime * 1.5f * 9f, ForceMode.Force);
             }
             else
             {
-                rb.linearVelocity = movement * playerSpeed * Time.deltaTime * 9f;
+                rb.linearVelocity = movement * newPlayerSpeed * Time.deltaTime * 9f;
             }
             _playerState = PlayerState.Running;
             rb.MoveRotation(Quaternion.LookRotation(movement));
+            if (animator != null)
+            {
+                animator.SetFloat("RunningSpeed", movement.magnitude * newPlayerSpeed / playerSpeed);
+            }
         }
         else
         {
@@ -118,30 +130,10 @@ public class PlayerHandler : MonoBehaviour
         }
     }
 
-    //private void MovementHandlerCharacterController()
-    //{
-    //    Vector3 movement = new Vector3(moveAmount.x, 0, moveAmount.y);
-
-    //    if (movement != Vector3.zero)
-    //    {
-    //        controller.Move(movement * playerSpeed * Time.deltaTime);
-    //        transform.forward = movement;
-    //        _playerState = PlayerState.Running;
-    //    }
-    //    else
-    //    {
-    //        _playerState = PlayerState.Idle;
-    //    }
-
-    //    if (!controller.isGrounded)
-    //    {
-    //        controller.Move(new Vector3(0.0f, -0.2f, 0.0f));
-    //    }
-
-    //}
-
     private void AnimationHandler()
     {
+        if (_playerState == PlayerState.Dead) return;
+
         switch (_playerState)
         {
             case PlayerState.Idle:
@@ -156,11 +148,6 @@ public class PlayerHandler : MonoBehaviour
     public void OnMove(InputValue value)
     {
         moveAmount = value.Get<Vector2>();
-        if (animator == null)
-        {
-            return;
-        }
-        animator.SetFloat("RunningSpeed", Vector2.Distance(value.Get<Vector2>(), Vector2.zero));
     }
 
     public void OnAttack()
@@ -170,12 +157,7 @@ public class PlayerHandler : MonoBehaviour
             weaponEquippedObject.GetComponent<IWeapon>().Attack();
             stats.timesAttack++;
         }
-        else
-        {
-            // add default attack here
-        }
     }
-
     public void OnInteract()
     {
         if (possibleWeaponPickup == null)
@@ -204,7 +186,7 @@ public class PlayerHandler : MonoBehaviour
         weaponMeleeHandler._ItemState = IItem.ItemState.Collected;
         GameStateManager.instance.itemSpawnDictionary[weaponMeleeHandler.initialSpawnPosition] = null;
 
-        playerSpeed -= weaponEquippedObject.GetComponent<Rigidbody>().mass;
+        playerWeight += weaponEquippedObject.GetComponent<Rigidbody>().mass;
         animator.SetFloat("WeaponSwingSpeed", weaponMeleeHandler.swingSpeed);
 
         weaponEquippedObject.transform.parent = weaponPlaceholderTransform;
@@ -216,7 +198,7 @@ public class PlayerHandler : MonoBehaviour
 
     public void OnDropWeapon()
     {
-        if (weaponEquippedObject == null)
+        if (weaponEquippedObject == null || weaponEquippedObject.GetComponent<DefaultAttack>() != null)
         {
             return;
         }
@@ -230,9 +212,10 @@ public class PlayerHandler : MonoBehaviour
         weaponRB.isKinematic = false;
         weaponRB.useGravity = true;
         //weaponRB.AddForce(transform.up / 3, ForceMode.Force);
-        playerSpeed += weaponRB.mass;
+        playerWeight -= weaponRB.mass;
 
         StartCoroutine(DespawnWeapon(weaponRB.gameObject));
+        SetupDefaultAttack();
     }
 
     private IEnumerator DespawnWeapon(GameObject weapon)
@@ -254,24 +237,50 @@ public class PlayerHandler : MonoBehaviour
 
         GetComponent<PlayerInput>().DeactivateInput();
         rb.constraints = RigidbodyConstraints.None;
+        animator.ResetTrigger("Idle");
         animator.SetTrigger("Death");
 
         DropCheeses();
         yield return new WaitForSeconds(respawnTime);
 
         rb.position = currentSpawnPosition.position;
+        ResetPlayerValues();
+        //yield return new WaitForSeconds(invincibilityTime);
+    }
+
+    public void ResetPlayerValues()
+    {
         rb.rotation = Quaternion.identity;
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
         animator.SetTrigger("Idle");
         knockedBack = false;
         playerHealth = 50.0f;
         playerSpeed = 25.0f;
-        //playerUIManager.UpdateHealth((int)player);
+        playerWeight = 0.0f;
         _playerState = PlayerState.Idle;
-        Destroy(weaponEquippedObject);
+
+        possibleWeaponPickup = null;
+        if (weaponEquippedObject != null)
+        {
+            if (weaponEquippedObject.GetComponent<DefaultAttack>() == null)
+            {
+                Destroy(weaponEquippedObject);
+                SetupDefaultAttack();
+            }
+        }
+
         GetComponent<PlayerInput>().ActivateInput();
-        //yield return new WaitForSeconds(invincibilityTime);
+    }
+
+    private void SetupDefaultAttack()
+    {
+        weaponEquippedObject = Instantiate(defaultAttackWeapon, Vector3.zero, Quaternion.identity);
+        weaponEquippedObject.transform.parent = weaponPlaceholderTransform;
+        weaponEquippedObject.transform.localPosition = Vector3.zero;
+        weaponEquippedObject.GetComponent<DefaultAttack>().owner = this.gameObject;
+        animator.SetFloat("WeaponSwingSpeed", weaponEquippedObject.GetComponent<DefaultAttack>().swingSpeed);
     }
 
     public void TakeDamage(float damageAmount)
@@ -304,8 +313,5 @@ public class PlayerHandler : MonoBehaviour
             //cheese.GetComponent<CheeseHandler>().rb.isKinematic = false;
         }
         playerCurrentHoldingCheeses.Clear();
-        //playerUI.UpdateCheeses(0);
     }
-
-
 }

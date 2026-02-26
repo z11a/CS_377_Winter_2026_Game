@@ -4,7 +4,9 @@ using System.Linq;
 using System.Xml;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class GameStateManager : MonoBehaviour
 {
@@ -139,7 +141,7 @@ public class GameStateManager : MonoBehaviour
                 InputManager.instance.player1Input.SwitchCurrentActionMap("Player");
                 InputManager.instance.player2Input.SwitchCurrentActionMap("Player");
                 itemsSpawning = true;
-                StartCoroutine(itemSpawning());
+                itemSpawningCoroutine = StartCoroutine(itemSpawning());
                 break;
             }
         }
@@ -152,11 +154,13 @@ public class GameStateManager : MonoBehaviour
         InputManager.instance.player1Input.GetComponent<PlayerHandler>().currentSpawnPosition = player1GameplaySpawnPosition;
         InputManager.instance.player1Input.GetComponent<PlayerHandler>().playerCurrentHoldingCheeses = new List<GameObject>();
         InputManager.instance.player1Input.GetComponent<PlayerHandler>().playerCurrentRoundScore = 0;
+        InputManager.instance.player1Input.GetComponent<PlayerHandler>().ResetPlayerValues();
 
         InputManager.instance.player2Input.GetComponent<Rigidbody>().position = player2GameplaySpawnPosition.position;
         InputManager.instance.player2Input.GetComponent<PlayerHandler>().currentSpawnPosition = player2GameplaySpawnPosition;
         InputManager.instance.player2Input.GetComponent<PlayerHandler>().playerCurrentHoldingCheeses = new List<GameObject>();
         InputManager.instance.player2Input.GetComponent<PlayerHandler>().playerCurrentRoundScore = 0;
+        InputManager.instance.player2Input.GetComponent<PlayerHandler>().ResetPlayerValues();
 
         UIManager.instance.DeactivateLoadingScreen();
         UIManager.instance.GameplayUI.SetActive(true);
@@ -164,6 +168,8 @@ public class GameStateManager : MonoBehaviour
     }
     public IEnumerator LoadGameplaySceneAsync(RoundNumber roundNumber)
     {
+        InputManager.instance.player1Input.StopAllCoroutines();
+        InputManager.instance.player2Input.StopAllCoroutines();
         UIManager.instance.ActivateLoadingScreen();
         yield return null;
 
@@ -218,8 +224,8 @@ public class GameStateManager : MonoBehaviour
     }
     private IEnumerator itemSpawning()
     {
-        itemSpawnDictionary.Clear(); // just change values to null instead of clearing
         // setup itemSpawnDictionary
+        itemSpawnDictionary.Clear();
         for (int i = 0; i < possibleItemSpawnLocations.Count; i++)
         {
             itemSpawnDictionary[possibleItemSpawnLocations[i].position] = null;
@@ -253,10 +259,20 @@ public class GameStateManager : MonoBehaviour
                     itemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex].position] = Instantiate(randomObject,
                                                                                                  possibleItemSpawnLocations[newSpawnIndex].position,
                                                                                                  randomObject.transform.rotation);
+                    //printDictionary();
                     break;
                 }
                 yield return null;
             }
+        }
+    }
+
+    private void printDictionary()
+    {
+        Debug.Log("itemSpawnDictionary:");
+        foreach (KeyValuePair<Vector3, GameObject> entry in itemSpawnDictionary)
+        {
+            Debug.Log("Key: " + entry.Key + ", Value: " + entry.Value);
         }
     }
 

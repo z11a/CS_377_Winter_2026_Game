@@ -6,7 +6,8 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager instance;
 
-    [Header("Buttons")]
+    [Header("Start Menu")]
+    public GameObject StartMenuUI;
     public Button startMenuButton;
     public Button startGameButton;
 
@@ -35,12 +36,14 @@ public class UIManager : MonoBehaviour
         startGameButton.gameObject.SetActive(false);
         startMenuButton.gameObject.SetActive(true);
         loadingScreen.gameObject.SetActive(false);
+        StartMenuUI.SetActive(true);
         GameplayUI.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
+
     }
     public void OnStartButton()
     {
@@ -68,6 +71,7 @@ public class UIManager : MonoBehaviour
     }
     public void DeactivateLoadingScreen()
     {
+        StartMenuUI.SetActive(false);
         loadingScreen.gameObject.SetActive(true);
         Color fullAlpha = loadingScreen.color;
         fullAlpha.a = 0.0f;

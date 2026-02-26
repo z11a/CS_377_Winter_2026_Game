@@ -22,14 +22,15 @@ public class MeleeHandler : MonoBehaviour, IWeapon
     public float weaponDamage = 15.0f;
     public float weaponKnockbackStrength = 25.0f;
     public float weaponknockbackDuration = 1.0f;
+    public int weaponDurability = 5;
 
     [Header("Other")]
     public float floatingAnimationRotationSpeed = 30.0f;
     public Material highlightMaterial;
 
-    private bool canSwing = true;
+    protected bool canSwing = true;
 
-    private List<GameObject> playersHit = new List<GameObject>();
+    protected List<GameObject> playersHit = new List<GameObject>();
     [HideInInspector] public Material[] highlightMaterialList;
     [HideInInspector] public Material[] defaultMaterialList;
 
@@ -89,13 +90,18 @@ public class MeleeHandler : MonoBehaviour, IWeapon
         }
         
         canSwing = false;
-        Debug.Log("Swinging weapon.");
 
         Animator ownerAnimator = owner.GetComponent<Animator>();
         ownerAnimator.SetTrigger("WeaponSwing");
 
         yield return new WaitForEndOfFrame();
+        while (!ownerAnimator.GetCurrentAnimatorStateInfo(0).IsName("WeaponSwing"))
+        {
+            yield return null;
+        }
+
         float animationLength = ownerAnimator.GetCurrentAnimatorStateInfo(0).length;
+        Debug.Log(animationLength);
         float actualHitboxDuration = (animationLength / swingSpeed) * 0.5f;
 
         equippedCollider.enabled = true;
@@ -132,13 +138,14 @@ public class MeleeHandler : MonoBehaviour, IWeapon
                 playersHit.Add(playerHitPlayerHandler.gameObject);
 
                 StartCoroutine(ApplyKnockback(playerHitPlayerHandler.GetComponent<Rigidbody>(), (playerHitPlayerHandler.transform.position - owner.transform.position).normalized));
-                
+
                 playerHitPlayerHandler.TakeDamage(weaponDamage);
+                weaponDurability -= 1;
             }
-        } 
+        }
     }
 
-    private IEnumerator ApplyKnockback(Rigidbody _rb, Vector3 direction)
+    protected IEnumerator ApplyKnockback(Rigidbody _rb, Vector3 direction)
     {
         _rb.GetComponent<PlayerHandler>().knockedBack = true;
         _rb.linearVelocity = Vector3.zero;
@@ -149,6 +156,11 @@ public class MeleeHandler : MonoBehaviour, IWeapon
 
         yield return new WaitForSeconds(weaponknockbackDuration);
         _rb.GetComponent<PlayerHandler>().knockedBack = false;
+
+        if (weaponDurability <= 0)
+        {
+            Destroy(this.gameObject);
+        }
     }
 
     private void OnTriggerExit(Collider collider)
