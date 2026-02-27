@@ -38,14 +38,18 @@ public class PlayerHandler : MonoBehaviour
     public float playerWeight = 0.0f;
     public float respawnTime = 3.0f;
     public float invincibilityTime = 3.0f;
-    public Material flashMaterial;
-    private Material defaultMaterial;
-    //[HideInInspector] public PlayerUIManager playerUIManager;
-    private Coroutine defaultAttackCoroutine;
 
+    [Header("Weapon Info")]
     public Transform weaponPlaceholderTransform;
     public GameObject defaultAttackWeapon;
+    private Coroutine defaultAttackCoroutine;
 
+    [Header("Appearance")]
+    public Material flashMaterial;
+    private Material defaultMaterial;
+    public ParticleSystem PlayerWalkingParticleSystem;
+    private float maxWalkingParticleSpeed;
+    private float maxEmissionRateOverTime;
 
     [HideInInspector] public PlayerState _playerState;
     [HideInInspector] public PlayerNumber playerNumber;
@@ -70,6 +74,8 @@ public class PlayerHandler : MonoBehaviour
         rb.isKinematic = false;
         playerRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
         defaultMaterial = playerRenderer.material;
+        maxWalkingParticleSpeed = PlayerWalkingParticleSystem.main.startSpeed.constant;
+        maxEmissionRateOverTime = PlayerWalkingParticleSystem.emission.rateOverTime.constant;
 
         _playerState = PlayerState.Idle;
         weaponEquippedObject = defaultAttackWeapon;
@@ -114,18 +120,35 @@ public class PlayerHandler : MonoBehaviour
             {
                 rb.linearVelocity = movement * newPlayerSpeed * Time.deltaTime * 9f;
             }
-            _playerState = PlayerState.Running;
-            rb.MoveRotation(Quaternion.LookRotation(movement));
+
             if (animator != null)
             {
-                animator.SetFloat("RunningSpeed", movement.magnitude * newPlayerSpeed / playerSpeed);
+                animator.SetFloat("RunningSpeed", newPlayerSpeed / playerSpeed * movement.magnitude);
             }
+
+            // walking particle system
+            var main = PlayerWalkingParticleSystem.main;
+            main.startSpeed = movement.magnitude * maxWalkingParticleSpeed;
+            var emission = PlayerWalkingParticleSystem.emission;
+            emission.rateOverTime = movement.magnitude * maxEmissionRateOverTime;
+            if (PlayerWalkingParticleSystem.isStopped)
+            {
+                PlayerWalkingParticleSystem.Play();
+            }
+
+            _playerState = PlayerState.Running;
+            rb.MoveRotation(Quaternion.LookRotation(movement));
         }
         else
         {
             if (!knockedBack) { 
                 rb.linearVelocity = Vector3.zero;
             }
+            if (PlayerWalkingParticleSystem.isPlaying)
+            {
+                PlayerWalkingParticleSystem.Stop();
+            }
+
             _playerState = PlayerState.Idle;
         }
     }
