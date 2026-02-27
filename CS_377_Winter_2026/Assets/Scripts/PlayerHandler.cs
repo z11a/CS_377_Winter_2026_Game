@@ -34,7 +34,7 @@ public class PlayerHandler : MonoBehaviour
 
     [Header("Main Player Attributes")]
     public float playerHealth = 50.0f;
-    public float playerSpeed = 25.0f;
+    public float maxPlayerSpeed = 25.0f;
     public float playerWeight = 0.0f;
     public float respawnTime = 3.0f;
     public float invincibilityTime = 3.0f;
@@ -107,7 +107,7 @@ public class PlayerHandler : MonoBehaviour
         Vector3 movement = new Vector3(moveAmount.x, 0, moveAmount.y);
 
         rb.angularVelocity = Vector3.zero;
-        float newPlayerSpeed = playerSpeed - playerWeight;
+        float newPlayerSpeed = maxPlayerSpeed - playerWeight;
         if (newPlayerSpeed <= 0) { newPlayerSpeed = 0; }
 
         if (movement != Vector3.zero)
@@ -121,16 +121,18 @@ public class PlayerHandler : MonoBehaviour
                 rb.linearVelocity = movement * newPlayerSpeed * Time.deltaTime * 9f;
             }
 
+            float playerSpeedFactor = newPlayerSpeed / maxPlayerSpeed * movement.magnitude;
+
             if (animator != null)
             {
-                animator.SetFloat("RunningSpeed", newPlayerSpeed / playerSpeed * movement.magnitude);
+                animator.SetFloat("RunningSpeed", playerSpeedFactor);
             }
 
             // walking particle system
             var main = PlayerWalkingParticleSystem.main;
-            main.startSpeed = movement.magnitude * maxWalkingParticleSpeed;
+            main.startSpeed = playerSpeedFactor * maxWalkingParticleSpeed;
             var emission = PlayerWalkingParticleSystem.emission;
-            emission.rateOverTime = movement.magnitude * maxEmissionRateOverTime;
+            emission.rateOverTime = playerSpeedFactor * maxEmissionRateOverTime;
             if (PlayerWalkingParticleSystem.isStopped)
             {
                 PlayerWalkingParticleSystem.Play();
@@ -280,7 +282,7 @@ public class PlayerHandler : MonoBehaviour
         animator.SetTrigger("Idle");
         knockedBack = false;
         playerHealth = 50.0f;
-        playerSpeed = 25.0f;
+        maxPlayerSpeed = 25.0f;
         playerWeight = 0.0f;
         _playerState = PlayerState.Idle;
 
