@@ -34,18 +34,22 @@ public class PlayerHandler : MonoBehaviour
 
     [Header("Main Player Attributes")]
     public float playerHealth = 50.0f;
-    public float playerSpeed = 25.0f;
+    public float maxPlayerSpeed = 25.0f;
     public float playerWeight = 0.0f;
     public float respawnTime = 3.0f;
     public float invincibilityTime = 3.0f;
-    public Material flashMaterial;
-    private Material defaultMaterial;
-    //[HideInInspector] public PlayerUIManager playerUIManager;
-    private Coroutine defaultAttackCoroutine;
 
+    [Header("Weapon Info")]
     public Transform weaponPlaceholderTransform;
     public GameObject defaultAttackWeapon;
+    private Coroutine defaultAttackCoroutine;
 
+    [Header("Appearance")]
+    public Material flashMaterial;
+    private Material defaultMaterial;
+    public ParticleSystem PlayerWalkingParticleSystem;
+    private float maxWalkingParticleSpeed;
+    private float maxEmissionRateOverTime;
 
     [HideInInspector] public PlayerState _playerState;
     [HideInInspector] public PlayerNumber playerNumber;
@@ -70,6 +74,8 @@ public class PlayerHandler : MonoBehaviour
         rb.isKinematic = false;
         playerRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
         defaultMaterial = playerRenderer.material;
+        maxWalkingParticleSpeed = PlayerWalkingParticleSystem.main.startSpeed.constant;
+        maxEmissionRateOverTime = PlayerWalkingParticleSystem.emission.rateOverTime.constant;
 
         _playerState = PlayerState.Idle;
         weaponEquippedObject = defaultAttackWeapon;
@@ -101,31 +107,50 @@ public class PlayerHandler : MonoBehaviour
         Vector3 movement = new Vector3(moveAmount.x, 0, moveAmount.y);
 
         rb.angularVelocity = Vector3.zero;
-        float newPlayerSpeed = playerSpeed - playerWeight;
+        float newPlayerSpeed = maxPlayerSpeed - playerWeight;
         if (newPlayerSpeed <= 0) { newPlayerSpeed = 0; }
 
         if (movement != Vector3.zero)
         {
             if (knockedBack)
             {
-                rb.AddForce(movement * newPlayerSpeed * Time.deltaTime * 1.5f * 9f, ForceMode.Force);
+                rb.AddForce(movement * newPlayerSpeed * Time.fixedDeltaTime * 1.5f * 9f, ForceMode.Force);
             }
             else
             {
-                rb.linearVelocity = movement * newPlayerSpeed * Time.deltaTime * 9f;
+                rb.linearVelocity = movement * newPlayerSpeed * Time.fixedDeltaTime * 9f;
             }
-            _playerState = PlayerState.Running;
-            rb.MoveRotation(Quaternion.LookRotation(movement));
+
+            float playerSpeedFactor = newPlayerSpeed / maxPlayerSpeed * movement.magnitude;
+
             if (animator != null)
             {
-                animator.SetFloat("RunningSpeed", movement.magnitude * newPlayerSpeed / playerSpeed);
+                animator.SetFloat("RunningSpeed", playerSpeedFactor);
             }
+
+            // walking particle system
+            var main = PlayerWalkingParticleSystem.main;
+            main.startSpeed = playerSpeedFactor * maxWalkingParticleSpeed;
+            var emission = PlayerWalkingParticleSystem.emission;
+            emission.rateOverTime = playerSpeedFactor * maxEmissionRateOverTime;
+            if (PlayerWalkingParticleSystem.isStopped)
+            {
+                PlayerWalkingParticleSystem.Play();
+            }
+
+            _playerState = PlayerState.Running;
+            rb.MoveRotation(Quaternion.LookRotation(movement));
         }
         else
         {
             if (!knockedBack) { 
                 rb.linearVelocity = Vector3.zero;
             }
+            if (PlayerWalkingParticleSystem.isPlaying)
+            {
+                PlayerWalkingParticleSystem.Stop();
+            }
+
             _playerState = PlayerState.Idle;
         }
     }
@@ -202,6 +227,12 @@ public class PlayerHandler : MonoBehaviour
         {
             return;
         }
+
+        if (weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine != null)       // stop swinging a previous weapon
+        {
+            StopCoroutine(weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine);
+        }
+
         Rigidbody weaponRB = weaponEquippedObject.GetComponent<Rigidbody>();
         weaponEquippedObject = null;
         weaponRB.transform.parent = null;
@@ -257,7 +288,7 @@ public class PlayerHandler : MonoBehaviour
         animator.SetTrigger("Idle");
         knockedBack = false;
         playerHealth = 50.0f;
-        playerSpeed = 25.0f;
+        maxPlayerSpeed = 25.0f;
         playerWeight = 0.0f;
         _playerState = PlayerState.Idle;
 
@@ -307,11 +338,36 @@ public class PlayerHandler : MonoBehaviour
     {
         foreach (GameObject cheese in playerCurrentHoldingCheeses)
         {
-            cheese.transform.position = transform.position + new Vector3(0.0f, 0.2f, 0.0f);   // have to use transform.position not rb.position, otherwise the floating animation sets the position before this line
-            cheese.GetComponent<CheeseHandler>().StartFloatingAnimation();
-            //cheese.GetComponent<CheeseHandler>().rb.useGravity = true;
-            //cheese.GetComponent<CheeseHandler>().rb.isKinematic = false;
+            StartCoroutine(ThrowCheese(cheese));
         }
         playerCurrentHoldingCheeses.Clear();
+    }
+
+    private IEnumerator ThrowCheese(GameObject cheese)
+    {
+        yield return null;
+        Rigidbody cheeseRB = cheese.GetComponent<Rigidbody>();
+        cheese.GetComponent<CapsuleCollider>().isTrigger = false;
+        cheeseRB.position = this.rb.position + new Vector3(0.0f, 1.3f, 0.0f);
+        cheeseRB.isKinematic = false;
+        cheeseRB.useGravity = true;
+
+        Vector3 throwDirection = new Vector3(Random.Range(0, 2) * 2 - 1, 0.1f, Random.Range(0, 2) * 2 - 1);
+        Debug.Log(throwDirection.normalized);
+        cheeseRB.AddForce(throwDirection, ForceMode.Impulse);
+        cheeseRB.AddTorque(new Vector3(0.0f, 0.75f, 0.0f), ForceMode.VelocityChange);
+
+        yield return new WaitForSeconds(0.3f);
+        while (!cheese.GetComponent<CheeseHandler>().isGrounded)
+        {
+            yield return null;
+        }
+        yield return new WaitForSeconds(0.5f);
+
+        cheese.GetComponent<CapsuleCollider>().isTrigger = true;
+        cheeseRB.isKinematic = true;
+        cheeseRB.useGravity = false;
+        cheeseRB.position = cheeseRB.position + new Vector3(0.0f, 0.15f, 0.0f);
+        cheese.GetComponent<CheeseHandler>().StartFloatingAnimation();
     }
 }
