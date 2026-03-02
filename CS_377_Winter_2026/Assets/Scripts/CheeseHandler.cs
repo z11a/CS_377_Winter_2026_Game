@@ -19,6 +19,7 @@ public class CheeseHandler : MonoBehaviour, IItem
 
     [HideInInspector] public int cheeseValue;
     [HideInInspector] public Rigidbody rb;
+    [HideInInspector] public bool isGrounded = false;
     [HideInInspector] public IItem.ItemState _ItemState { get; set; }
     [HideInInspector] public Vector3 initialSpawnPosition {  get; set; }
 
@@ -49,6 +50,7 @@ public class CheeseHandler : MonoBehaviour, IItem
     // Update is called once per frame
     void Update()
     {
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, 0.75f);
     }
 
     public void StartFloatingAnimation()
@@ -101,7 +103,11 @@ public class CheeseHandler : MonoBehaviour, IItem
         playerHandler.playerCurrentHoldingCheeses.Add(this.gameObject); // store it far away, we can bring it back if the player loses all their health and drops them.
         playerHandler.playerWeight += rb.mass;
         StopCoroutine(floatingAnimationCoroutine);
-        _ItemState = IItem.ItemState.Collected;
-        GameStateManager.instance.itemSpawnDictionary[initialSpawnPosition] = null;
+
+        if (_ItemState == IItem.ItemState.NotCollected)
+        {
+            GameStateManager.instance.itemSpawnDictionary[initialSpawnPosition] = null;
+            _ItemState = IItem.ItemState.Collected;
+        }
     }
 }

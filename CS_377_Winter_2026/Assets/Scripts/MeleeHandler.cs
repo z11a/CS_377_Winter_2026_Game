@@ -13,7 +13,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
     private Rigidbody rb;
     [HideInInspector] public MeshRenderer meshRenderer;
     [HideInInspector] public IItem.ItemState _ItemState {  get; set; }
-    [HideInInspector] public Coroutine attackCoroutine { get; set; }
+    [HideInInspector] public IEnumerator attackCoroutine { get; set; }
     [HideInInspector] public Vector3 initialSpawnPosition { get; set; }
 
     [Header("Attack Properties")]
@@ -79,7 +79,8 @@ public class MeleeHandler : MonoBehaviour, IWeapon
 
     public void Attack()
     {
-        attackCoroutine = StartCoroutine(SwingWeapon());
+        attackCoroutine = SwingWeapon();
+        StartCoroutine(attackCoroutine);
     }
 
     public IEnumerator SwingWeapon()
