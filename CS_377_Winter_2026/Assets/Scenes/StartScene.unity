@@ -5265,12 +5265,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
+      propertyPath: itemSpawnCooldown
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
       propertyPath: commonItems.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
       propertyPath: uncommonItemSpawnChance
-      value: 55
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
       propertyPath: uncommonItems.Array.size

@@ -42,8 +42,8 @@ public class GameStateManager : MonoBehaviour
     public int roundThreeScoreRequirement = 150;
 
     [Header("Item Spawning")]
-    public float itemSpawnCooldown = 7.5f;
-    public float uncommonItemSpawnChance = 45.0f;
+    public float itemSpawnCooldown = 3.0f;
+    public float uncommonItemSpawnChance = 40.0f;
     public float rareItemSpawnChance = 15.0f;
     public List<Transform> possibleItemSpawnLocations;     // first transform in the list will spawn at the start of the round, this list is set by the "GameplayReferences" gameObject in each round scene.
     public List<GameObject> commonItems;
