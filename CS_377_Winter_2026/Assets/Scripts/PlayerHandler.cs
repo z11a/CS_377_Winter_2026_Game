@@ -114,11 +114,11 @@ public class PlayerHandler : MonoBehaviour
         {
             if (knockedBack)
             {
-                rb.AddForce(movement * newPlayerSpeed * Time.deltaTime * 1.5f * 9f, ForceMode.Force);
+                rb.AddForce(movement * newPlayerSpeed * Time.fixedDeltaTime * 1.5f * 9f, ForceMode.Force);
             }
             else
             {
-                rb.linearVelocity = movement * newPlayerSpeed * Time.deltaTime * 9f;
+                rb.linearVelocity = movement * newPlayerSpeed * Time.fixedDeltaTime * 9f;
             }
 
             float playerSpeedFactor = newPlayerSpeed / maxPlayerSpeed * movement.magnitude;
@@ -227,6 +227,12 @@ public class PlayerHandler : MonoBehaviour
         {
             return;
         }
+
+        if (weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine != null)       // stop swinging a previous weapon
+        {
+            StopCoroutine(weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine);
+        }
+
         Rigidbody weaponRB = weaponEquippedObject.GetComponent<Rigidbody>();
         weaponEquippedObject = null;
         weaponRB.transform.parent = null;
@@ -332,11 +338,36 @@ public class PlayerHandler : MonoBehaviour
     {
         foreach (GameObject cheese in playerCurrentHoldingCheeses)
         {
-            cheese.transform.position = transform.position + new Vector3(0.0f, 0.2f, 0.0f);   // have to use transform.position not rb.position, otherwise the floating animation sets the position before this line
-            cheese.GetComponent<CheeseHandler>().StartFloatingAnimation();
-            //cheese.GetComponent<CheeseHandler>().rb.useGravity = true;
-            //cheese.GetComponent<CheeseHandler>().rb.isKinematic = false;
+            StartCoroutine(ThrowCheese(cheese));
         }
         playerCurrentHoldingCheeses.Clear();
+    }
+
+    private IEnumerator ThrowCheese(GameObject cheese)
+    {
+        yield return null;
+        Rigidbody cheeseRB = cheese.GetComponent<Rigidbody>();
+        cheese.GetComponent<CapsuleCollider>().isTrigger = false;
+        cheeseRB.position = this.rb.position + new Vector3(0.0f, 1.3f, 0.0f);
+        cheeseRB.isKinematic = false;
+        cheeseRB.useGravity = true;
+
+        Vector3 throwDirection = new Vector3(Random.Range(0, 2) * 2 - 1, 0.1f, Random.Range(0, 2) * 2 - 1);
+        Debug.Log(throwDirection.normalized);
+        cheeseRB.AddForce(throwDirection, ForceMode.Impulse);
+        cheeseRB.AddTorque(new Vector3(0.0f, 0.75f, 0.0f), ForceMode.VelocityChange);
+
+        yield return new WaitForSeconds(0.3f);
+        while (!cheese.GetComponent<CheeseHandler>().isGrounded)
+        {
+            yield return null;
+        }
+        yield return new WaitForSeconds(0.5f);
+
+        cheese.GetComponent<CapsuleCollider>().isTrigger = true;
+        cheeseRB.isKinematic = true;
+        cheeseRB.useGravity = false;
+        cheeseRB.position = cheeseRB.position + new Vector3(0.0f, 0.15f, 0.0f);
+        cheese.GetComponent<CheeseHandler>().StartFloatingAnimation();
     }
 }

@@ -1,8 +1,9 @@
+using System.Collections;
 using UnityEngine;
 
 public interface IWeapon : IItem
 {
-    Coroutine attackCoroutine { get; set; }
+    IEnumerator attackCoroutine { get; set; }
 
     void Attack();
 }
