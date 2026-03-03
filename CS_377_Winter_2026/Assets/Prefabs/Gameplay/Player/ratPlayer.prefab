@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1913910843693981279}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: spine_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6392447705667211060}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: forearm_l
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75,7 +75,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6907830408743777350}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: leg_l
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -107,7 +107,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6325655050327142684}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: rat_rig
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,7 +139,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6785397973205036614}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: foot_l
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,7 +171,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4107650571280226659}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: head_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -202,7 +202,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3053630959773179172}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: foot_r
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -236,7 +236,7 @@ GameObject:
   - component: {fileID: 5462820882305567526}
   - component: {fileID: 3652436039438157255}
   - component: {fileID: 2278126844891694476}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: defaultAttackWeapon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -316,7 +316,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7899634317978596087}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: forearm_r_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -349,7 +349,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8300006099609857436}
   - component: {fileID: 6130474971469080876}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: rat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -450,7 +450,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8360394037125041321}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -482,7 +482,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1300514923783710562}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: spine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -516,7 +516,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 529041540306881462}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: forearm_r
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -548,7 +548,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4245916360921014347}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: arm_l
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -585,7 +585,7 @@ GameObject:
   - component: {fileID: 7996970155162440586}
   - component: {fileID: 6802766841428977984}
   - component: {fileID: 7521652978000383693}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: ratPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -675,7 +675,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHandler
   playerHealth: 50
-  playerSpeed: 25
+  maxPlayerSpeed: 25
   playerWeight: 0
   respawnTime: 3
   invincibilityTime: 3
@@ -751,7 +751,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 378032340065510551}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: foot_r_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -782,7 +782,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1097097011667291464}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: leg_r
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -814,7 +814,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7942785035480534007}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: foot_l_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -845,7 +845,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 146592786784125078}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: arm_r
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -877,7 +877,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3229330630974923764}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: weaponPlaceholder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -909,7 +909,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3184013890539077341}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: forearm_l_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -982,6 +982,10 @@ PrefabInstance:
     - target: {fileID: 3015697070081358155, guid: 3474b9f7e1e0d0d4096e5adaa7c506ca, type: 3}
       propertyPath: m_Name
       value: PlayerWalkingParticle
+      objectReference: {fileID: 0}
+    - target: {fileID: 3015697070081358155, guid: 3474b9f7e1e0d0d4096e5adaa7c506ca, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

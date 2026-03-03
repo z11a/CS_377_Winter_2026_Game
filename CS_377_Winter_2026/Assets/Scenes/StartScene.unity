@@ -5276,14 +5276,6 @@ PrefabInstance:
       propertyPath: uncommonItemSpawnChance
       value: 45
       objectReference: {fileID: 0}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: uncommonItems.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: 'uncommonItems.Array.data[1]'
-      value: 
-      objectReference: {fileID: 1206104607816383204, guid: 0e1b8e1303f362a4489ed67f31c6244a, type: 3}
     - target: {fileID: 8269917051868093485, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
       propertyPath: m_Name
       value: GameStateManager
@@ -6284,7 +6276,7 @@ PrefabInstance:
     - target: {fileID: 2093949322661076557, guid: 9eaefdbbc84ad97499dbdf987fef1046, type: 3}
       propertyPath: ratPrefab
       value: 
-      objectReference: {fileID: 5793833337735520633, guid: 25677ecae8d204143bd0431c0b269fba, type: 3}
+      objectReference: {fileID: 3084827248702809869, guid: d57526b7e99d87b4f88aa36e16c2641c, type: 3}
     - target: {fileID: 2093949322661076557, guid: 9eaefdbbc84ad97499dbdf987fef1046, type: 3}
       propertyPath: mousePrefab
       value: 

@@ -47,6 +47,10 @@ public class CheeseCollector : MonoBehaviour
 
     private void RoundWinCheck(PlayerHandler playerHandler)
     {
+        if (GameStateManager.instance._gameState == GameStateManager.GameState.intermission)
+        {
+            return;
+        }
         switch (GameStateManager.instance._currentRound)
         {
             case GameStateManager.RoundNumber.One:
@@ -55,6 +59,7 @@ public class CheeseCollector : MonoBehaviour
                     Debug.Log(playerHandler.playerNumber + " wins Round One!");
                     playerHandler.playerTotalRoundScore++;
                     StartCoroutine(Intermission(GameStateManager.RoundNumber.Two));
+                    GameStateManager.instance._gameState = GameStateManager.GameState.intermission;
                 }
                 break;
             case GameStateManager.RoundNumber.Two:
@@ -63,6 +68,7 @@ public class CheeseCollector : MonoBehaviour
                     Debug.Log(playerHandler.playerNumber + " wins Round Two!");
                     playerHandler.playerTotalRoundScore++;
                     StartCoroutine(Intermission(GameStateManager.RoundNumber.Three));
+                    GameStateManager.instance._gameState = GameStateManager.GameState.intermission;
                 }
                 break;
             case GameStateManager.RoundNumber.Three:
@@ -71,6 +77,7 @@ public class CheeseCollector : MonoBehaviour
                     Debug.Log(playerHandler.playerNumber + " wins Round Three!");
                     playerHandler.playerTotalRoundScore++;
                     Time.timeScale = 0.0f;
+                    GameStateManager.instance._gameState = GameStateManager.GameState.intermission;
                 }
                 break;
         }
