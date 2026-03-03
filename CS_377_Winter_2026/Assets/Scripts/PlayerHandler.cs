@@ -323,7 +323,6 @@ public class PlayerHandler : MonoBehaviour
 
         playerHealth -= damageAmount;
         StartCoroutine(HitFlash());
-        //playerUI.UpdateHealth((int)Mathf.Max(playerHealth, 0));
 
         if (playerHealth <= 0.0f)
         {
@@ -346,27 +345,33 @@ public class PlayerHandler : MonoBehaviour
     {
         yield return null;
         Rigidbody cheeseRB = cheese.GetComponent<Rigidbody>();
-        cheese.GetComponent<CapsuleCollider>().isTrigger = false;
-        cheeseRB.position = this.rb.position + new Vector3(0.0f, 1.3f, 0.0f);
+        CapsuleCollider cheeseCol = cheese.GetComponent<CapsuleCollider>();
+        CheeseHandler cheeseHandler = cheese.GetComponent<CheeseHandler>();
+
+        cheese.layer = 6;
+        cheeseRB.position = this.rb.position + new Vector3(0.0f, 0.75f, 0.0f);
         cheeseRB.isKinematic = false;
         cheeseRB.useGravity = true;
+        cheeseCol.isTrigger = false;
 
-        Vector3 throwDirection = new Vector3(Random.Range(0, 2) * 2 - 1, 0.1f, Random.Range(0, 2) * 2 - 1);
-        Debug.Log(throwDirection.normalized);
-        cheeseRB.AddForce(throwDirection, ForceMode.Impulse);
+        Vector3 throwDirection = Random.onUnitSphere;
+        throwDirection.y = 0.5f;
+        cheeseRB.AddForce(throwDirection * 7.5f, ForceMode.VelocityChange);
         cheeseRB.AddTorque(new Vector3(0.0f, 0.75f, 0.0f), ForceMode.VelocityChange);
 
         yield return new WaitForSeconds(0.3f);
-        while (!cheese.GetComponent<CheeseHandler>().isGrounded)
+        while (!cheeseHandler.isGrounded)
         {
             yield return null;
         }
         yield return new WaitForSeconds(0.5f);
 
-        cheese.GetComponent<CapsuleCollider>().isTrigger = true;
         cheeseRB.isKinematic = true;
         cheeseRB.useGravity = false;
-        cheeseRB.position = cheeseRB.position + new Vector3(0.0f, 0.15f, 0.0f);
-        cheese.GetComponent<CheeseHandler>().StartFloatingAnimation();
+        cheeseRB.MovePosition(cheeseRB.position + new Vector3(0.0f, 0.3f, 0.0f));
+        cheese.layer = 0;
+        yield return null;
+        cheeseHandler.StartFloatingAnimation();
+        cheeseCol.isTrigger = true;
     }
 }

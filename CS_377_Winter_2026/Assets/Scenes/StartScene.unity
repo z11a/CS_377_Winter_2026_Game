@@ -6276,7 +6276,7 @@ PrefabInstance:
     - target: {fileID: 2093949322661076557, guid: 9eaefdbbc84ad97499dbdf987fef1046, type: 3}
       propertyPath: ratPrefab
       value: 
-      objectReference: {fileID: 5793833337735520633, guid: 25677ecae8d204143bd0431c0b269fba, type: 3}
+      objectReference: {fileID: 3084827248702809869, guid: d57526b7e99d87b4f88aa36e16c2641c, type: 3}
     - target: {fileID: 2093949322661076557, guid: 9eaefdbbc84ad97499dbdf987fef1046, type: 3}
       propertyPath: mousePrefab
       value: 
