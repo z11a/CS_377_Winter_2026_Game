@@ -276,6 +276,7 @@ public class PlayerHandler : MonoBehaviour
 
         rb.position = currentSpawnPosition.position;
         ResetPlayerValues();
+        GetComponent<PlayerInput>().ActivateInput();
         //yield return new WaitForSeconds(invincibilityTime);
     }
 
@@ -301,11 +302,9 @@ public class PlayerHandler : MonoBehaviour
                 SetupDefaultAttack();
             }
         }
-
-        GetComponent<PlayerInput>().ActivateInput();
     }
 
-    private void SetupDefaultAttack()
+    public void SetupDefaultAttack()
     {
         weaponEquippedObject = Instantiate(defaultAttackWeapon, Vector3.zero, Quaternion.identity);
         weaponEquippedObject.transform.parent = weaponPlaceholderTransform;

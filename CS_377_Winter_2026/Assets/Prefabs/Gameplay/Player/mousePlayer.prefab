@@ -302,7 +302,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHandler
   playerHealth: 50
-  playerSpeed: 25
+  maxPlayerSpeed: 25
   playerWeight: 0
   respawnTime: 3
   invincibilityTime: 3

@@ -5276,14 +5276,6 @@ PrefabInstance:
       propertyPath: uncommonItemSpawnChance
       value: 45
       objectReference: {fileID: 0}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: uncommonItems.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: 'uncommonItems.Array.data[1]'
-      value: 
-      objectReference: {fileID: 1206104607816383204, guid: 0e1b8e1303f362a4489ed67f31c6244a, type: 3}
     - target: {fileID: 8269917051868093485, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
       propertyPath: m_Name
       value: GameStateManager

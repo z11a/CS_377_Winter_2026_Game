@@ -160,7 +160,9 @@ public class MeleeHandler : MonoBehaviour, IWeapon
 
         if (weaponDurability <= 0)
         {
+
             Destroy(this.gameObject);
+            _rb.GetComponent<PlayerHandler>().SetupDefaultAttack();
         }
     }
 
