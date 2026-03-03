@@ -7,9 +7,11 @@ public class PlayerUIManager : MonoBehaviour
     public PlayerHandler playerHandler;
 
     [Header("UI Elements")]
-    public Slider HealthBar;
+    public TextMeshProUGUI RoundWins;
     public TextMeshProUGUI PointsText;
     public TextMeshProUGUI CheeseText;
+    public Slider HealthBar;
+
 
     void Update()
     {
@@ -28,6 +30,7 @@ public class PlayerUIManager : MonoBehaviour
         }
         if (playerHandler != null)
         {
+            RoundWins.text = "Round wins: " + playerHandler.playerTotalRoundScore.ToString() + " / 3";
             HealthBar.value = playerHandler.playerHealth;
             PointsText.text = "Points: " + playerHandler.playerCurrentRoundScore.ToString() + " / " + currentRoundScoreReq.ToString();
             CheeseText.text = "Cheese: " + playerHandler.playerCurrentHoldingCheeses.Count.ToString();

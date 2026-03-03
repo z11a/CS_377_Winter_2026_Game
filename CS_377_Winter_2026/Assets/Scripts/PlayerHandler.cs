@@ -21,8 +21,8 @@ public class PlayerHandler : MonoBehaviour
 
     public enum PlayerNumber
     {
-        Player1, 
-        Player2
+        PlayerOne, 
+        PlayerTwo
     }
     public enum PlayerState
     {
@@ -91,7 +91,7 @@ public class PlayerHandler : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (GameStateManager.instance._gameState == GameStateManager.GameState.inGame)
+        if (GameStateManager.instance._gameState == GameStateManager.GameState.inGame || GameStateManager.instance._gameState == GameStateManager.GameState.intermission)
         {
             MovementHandlerRigidbody();
         }
@@ -299,16 +299,14 @@ public class PlayerHandler : MonoBehaviour
             if (weaponEquippedObject.GetComponent<DefaultAttack>() == null)
             {
                 Destroy(weaponEquippedObject);
-                SetupDefaultAttack();
             }
         }
+        SetupDefaultAttack();
     }
 
     public void SetupDefaultAttack()
     {
-        weaponEquippedObject = Instantiate(defaultAttackWeapon, Vector3.zero, Quaternion.identity);
-        weaponEquippedObject.transform.parent = weaponPlaceholderTransform;
-        weaponEquippedObject.transform.localPosition = Vector3.zero;
+        weaponEquippedObject = defaultAttackWeapon;
         weaponEquippedObject.GetComponent<DefaultAttack>().owner = this.gameObject;
         animator.SetFloat("WeaponSwingSpeed", weaponEquippedObject.GetComponent<DefaultAttack>().swingSpeed);
     }
