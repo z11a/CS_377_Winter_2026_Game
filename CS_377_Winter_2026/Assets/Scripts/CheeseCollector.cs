@@ -6,6 +6,7 @@ public class CheeseCollector : MonoBehaviour
 {
 
     public PlayerHandler.PlayerNumber owner;
+    private IEnumerator activateIntermissionCoroutine;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -56,35 +57,43 @@ public class CheeseCollector : MonoBehaviour
             case GameStateManager.RoundNumber.One:
                 if (playerHandler.playerCurrentRoundScore >= GameStateManager.instance.roundOneScoreRequirement)
                 {
-                    Debug.Log(playerHandler.playerNumber + " wins Round One!");
-                    playerHandler.playerTotalRoundScore++;
-                    StartCoroutine(Intermission(GameStateManager.RoundNumber.Two));
-                    GameStateManager.instance._gameState = GameStateManager.GameState.intermission;
+                    if (activateIntermissionCoroutine == null)
+                    {
+                        playerHandler.playerTotalRoundScore++;
+                        activateIntermissionCoroutine = ActivateIntermission(GameStateManager.RoundNumber.Two);
+                        StartCoroutine(activateIntermissionCoroutine);
+                        UIManager.instance.ActivateRoundWinText(playerHandler);
+                    }
                 }
                 break;
             case GameStateManager.RoundNumber.Two:
                 if (playerHandler.playerCurrentRoundScore >= GameStateManager.instance.roundTwoScoreRequirement)
                 {
-                    Debug.Log(playerHandler.playerNumber + " wins Round Two!");
-                    playerHandler.playerTotalRoundScore++;
-                    StartCoroutine(Intermission(GameStateManager.RoundNumber.Three));
-                    GameStateManager.instance._gameState = GameStateManager.GameState.intermission;
+                    if (activateIntermissionCoroutine == null)
+                    {
+                        playerHandler.playerTotalRoundScore++;
+                        activateIntermissionCoroutine = ActivateIntermission(GameStateManager.RoundNumber.Three);
+                        StartCoroutine(activateIntermissionCoroutine);
+                        UIManager.instance.ActivateRoundWinText(playerHandler);
+                    }
                 }
                 break;
             case GameStateManager.RoundNumber.Three:
                 if (playerHandler.playerCurrentRoundScore >= GameStateManager.instance.roundThreeScoreRequirement)
                 {
-                    Debug.Log(playerHandler.playerNumber + " wins Round Three!");
-                    playerHandler.playerTotalRoundScore++;
-                    Time.timeScale = 0.0f;
                     GameStateManager.instance._gameState = GameStateManager.GameState.intermission;
+                    playerHandler.playerTotalRoundScore++;
+                    UIManager.instance.ActivateRoundWinText(playerHandler);
+                    Time.timeScale = 0.0f;
                 }
                 break;
         }
     }
 
-    private IEnumerator Intermission(GameStateManager.RoundNumber nextRoundNumber)
+    private IEnumerator ActivateIntermission(GameStateManager.RoundNumber nextRoundNumber)
     {
+        GameStateManager.instance._gameState = GameStateManager.GameState.intermission;
+
         yield return new WaitForSeconds(GameStateManager.instance.intermissionLength);
 
         StartCoroutine(GameStateManager.instance.LoadGameplaySceneAsync(nextRoundNumber));
