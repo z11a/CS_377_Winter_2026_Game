@@ -36,9 +36,11 @@ public class DefaultAttack : MeleeHandler
 
                 playersHit.Add(playerHitPlayerHandler.gameObject);
 
+                playerHitPlayerHandler.TakeDamage(weaponDamage);
+
                 StartCoroutine(ApplyKnockback(playerHitPlayerHandler.GetComponent<Rigidbody>(), (playerHitPlayerHandler.transform.position - owner.transform.position).normalized));
 
-                playerHitPlayerHandler.TakeDamage(weaponDamage);
+               
             }
         }
     }

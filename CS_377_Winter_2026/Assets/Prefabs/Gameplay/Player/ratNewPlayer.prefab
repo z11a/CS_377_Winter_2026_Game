@@ -230,6 +230,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e633ba575a664047a03852410eba5f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHandler
+  dmgSFX: {fileID: 8300000, guid: 82bc2d27ef0401d4191657b95293d43e, type: 3}
   playerHealth: 50
   maxPlayerSpeed: 25
   playerWeight: 0

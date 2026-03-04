@@ -57,6 +57,10 @@ public class GameStateManager : MonoBehaviour
     [HideInInspector] public Transform player1GameplaySpawnPosition;
     [HideInInspector] public Transform player2GameplaySpawnPosition;
 
+    [HideInInspector] public int cheesePity = 0;
+    [HideInInspector] public int uncommonPity = 0;
+
+
     void Awake()
     {
         if (instance != null && instance != this)
@@ -79,8 +83,6 @@ public class GameStateManager : MonoBehaviour
             _gameState = GameState.inGame;
             itemsSpawning = true;
             itemSpawningCoroutine = StartCoroutine(itemSpawning());
-            InputManager.instance.player1Input.SwitchCurrentActionMap("Player");
-            InputManager.instance.player2Input.SwitchCurrentActionMap("Player");
         }
         else
         {
@@ -252,21 +254,19 @@ public class GameStateManager : MonoBehaviour
                 yield return new WaitForSeconds(itemSpawnCooldown);
             }
 
-            while (true)
+            var emptyLocations = itemSpawnDictionary
+                                .Where(kvp => kvp.Value == null)
+                                .Select(kvp => kvp.Key)
+                                .ToList();
+
+            if (emptyLocations.Count > 0)
             {
-                int newSpawnIndex = Random.Range(0, possibleItemSpawnLocations.Count);
+                Vector3 newSpawnIndex = emptyLocations[Random.Range(0, emptyLocations.Count)];
                 GameObject randomObject = ChooseRandomItem();
 
-                if (itemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex].position] == null)
-                {
-                    itemSpawnDictionary[possibleItemSpawnLocations[newSpawnIndex].position] = Instantiate(randomObject,
-                                                                                                 possibleItemSpawnLocations[newSpawnIndex].position,
-                                                                                                 randomObject.transform.rotation);
-                    //printDictionary();
-                    break;
-                }
-                yield return null;
+                itemSpawnDictionary[newSpawnIndex] = Instantiate(randomObject, newSpawnIndex, randomObject.transform.rotation);
             }
+
         }
     }
 
@@ -283,18 +283,37 @@ public class GameStateManager : MonoBehaviour
     {
         float randomValue = Random.Range(0.0f, 100f);
         GameObject randomItem = null;
+        //Debug.Log(uncommonPity);
+        if (cheesePity >= 3)
+        {
+            randomItem = commonItems[Random.Range(0, commonItems.Count)];
+            cheesePity = 0;
+            return randomItem;
+        }
+        if (uncommonPity >= 3)
+        {
+            randomItem = uncommonItems[Random.Range(0, uncommonItems.Count)];
+            uncommonPity = 0;
+            return randomItem;
+        }
 
         if (randomValue < rareItemSpawnChance)
         {
             randomItem = rareItems[Random.Range(0, rareItems.Count)];
+            cheesePity++;
+            uncommonPity = 0;
         }
         else if (randomValue < uncommonItemSpawnChance)
         {
             randomItem = uncommonItems[Random.Range(0, uncommonItems.Count)];
+            cheesePity++;
+            uncommonPity = 0;
         }
         else
         {
             randomItem = commonItems[Random.Range(0, commonItems.Count)];
+            cheesePity = 0;
+            uncommonPity++;
         }
 
         return randomItem;
