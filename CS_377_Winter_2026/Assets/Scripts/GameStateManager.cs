@@ -298,6 +298,7 @@ public class GameStateManager : MonoBehaviour
         {
             randomItem = rareItems[Random.Range(0, rareItems.Count)];
             cheesePity++;
+            uncommonPity = 0;
         }
         else if (randomValue < uncommonItemSpawnChance)
         {

@@ -7,6 +7,9 @@ public class CheeseCollector : MonoBehaviour
 
     public PlayerHandler.PlayerNumber owner;
 
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip depositSFX;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -34,6 +37,10 @@ public class CheeseCollector : MonoBehaviour
             Debug.Log("Cheese delivery!");
             foreach (GameObject cheese in playerHandler.playerCurrentHoldingCheeses)
             {
+                if (depositSFX != null && audioSource != null)
+                {
+                    audioSource.PlayOneShot(depositSFX);
+                }
                 playerHandler.playerCurrentRoundScore += cheese.GetComponent<CheeseHandler>().cheeseValue;
                 playerHandler.playerWeight -= cheese.GetComponent<Rigidbody>().mass;
                 Destroy(cheese);

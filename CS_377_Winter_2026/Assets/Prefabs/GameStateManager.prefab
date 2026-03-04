@@ -52,7 +52,7 @@ MonoBehaviour:
   roundOneScoreRequirement: 50
   roundTwoScoreRequirement: 100
   roundThreeScoreRequirement: 150
-  itemSpawnCooldown: 7.5
+  itemSpawnCooldown: 3.5
   uncommonItemSpawnChance: 45
   rareItemSpawnChance: 15
   possibleItemSpawnLocations:
@@ -63,7 +63,6 @@ MonoBehaviour:
   - {fileID: 0}
   commonItems:
   - {fileID: 7846301342053070152, guid: 0d5e0f8b678bd834284ca64556531823, type: 3}
-  - {fileID: 1206104607816383204, guid: 0e1b8e1303f362a4489ed67f31c6244a, type: 3}
   uncommonItems:
   - {fileID: 2498599946575675284, guid: 4ea1a632372797d41b490283b91c1ae0, type: 3}
   - {fileID: 1206104607816383204, guid: 0e1b8e1303f362a4489ed67f31c6244a, type: 3}
