@@ -138,9 +138,10 @@ public class MeleeHandler : MonoBehaviour, IWeapon
 
                 playersHit.Add(playerHitPlayerHandler.gameObject);
 
+                playerHitPlayerHandler.TakeDamage(weaponDamage);
+
                 StartCoroutine(ApplyKnockback(playerHitPlayerHandler.GetComponent<Rigidbody>(), (playerHitPlayerHandler.transform.position - owner.transform.position).normalized));
 
-                playerHitPlayerHandler.TakeDamage(weaponDamage);
                 weaponDurability -= 1;
                 if (weaponDurability <= 0)
                 {

@@ -16,6 +16,7 @@ public class CheeseHandler : MonoBehaviour, IItem
     public CheeseType _CheeseType;
     public float floatingAnimationRotationSpeed = 30.0f;
     private Coroutine floatingAnimationCoroutine;
+    [SerializeField] private AudioClip nomSFX;
 
     [HideInInspector] public int cheeseValue;
     [HideInInspector] public Rigidbody rb;
@@ -85,6 +86,10 @@ public class CheeseHandler : MonoBehaviour, IItem
         if (playerHandler == null || playerHandler._playerState == PlayerHandler.PlayerState.Dead)
         {
             return;
+        }
+        if (nomSFX != null && AudioManager.instance.audioSource != null)
+        {
+            AudioManager.instance.audioSource.PlayOneShot(nomSFX);
         }
 
         switch (_CheeseType)        // in case we want anything else to happpen depending on cheese type

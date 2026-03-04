@@ -7,6 +7,7 @@ public class CheeseCollector : MonoBehaviour
 
     public PlayerHandler.PlayerNumber owner;
     private IEnumerator activateIntermissionCoroutine;
+    [SerializeField] private AudioClip winSFX;
 
     //[SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip depositSFX;
@@ -35,12 +36,16 @@ public class CheeseCollector : MonoBehaviour
         if (owner == playerHandler.playerNumber)
         {
             Debug.Log("Cheese delivery!");
-            foreach (GameObject cheese in playerHandler.playerCurrentHoldingCheeses)
+            if (playerHandler.playerCurrentHoldingCheeses.Count != 0)
             {
                 if (depositSFX != null && AudioManager.instance.audioSource != null)
                 {
                     AudioManager.instance.audioSource.PlayOneShot(depositSFX);
                 }
+            }
+
+            foreach (GameObject cheese in playerHandler.playerCurrentHoldingCheeses)
+            {
                 playerHandler.playerCurrentRoundScore += cheese.GetComponent<CheeseHandler>().cheeseValue;
                 playerHandler.playerWeight -= cheese.GetComponent<Rigidbody>().mass;
                 Destroy(cheese);
@@ -65,6 +70,10 @@ public class CheeseCollector : MonoBehaviour
                 {
                     if (activateIntermissionCoroutine == null)
                     {
+                        if (winSFX != null && AudioManager.instance.audioSource != null)
+                        {
+                            AudioManager.instance.audioSource.PlayOneShot(winSFX);
+                        }
                         playerHandler.playerTotalRoundScore++;
                         activateIntermissionCoroutine = ActivateIntermission(GameStateManager.RoundNumber.Two);
                         StartCoroutine(activateIntermissionCoroutine);
@@ -77,6 +86,10 @@ public class CheeseCollector : MonoBehaviour
                 {
                     if (activateIntermissionCoroutine == null)
                     {
+                        if (winSFX != null && AudioManager.instance.audioSource != null)
+                        {
+                            AudioManager.instance.audioSource.PlayOneShot(winSFX);
+                        }
                         playerHandler.playerTotalRoundScore++;
                         activateIntermissionCoroutine = ActivateIntermission(GameStateManager.RoundNumber.Three);
                         StartCoroutine(activateIntermissionCoroutine);

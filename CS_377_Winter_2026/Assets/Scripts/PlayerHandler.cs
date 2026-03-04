@@ -19,6 +19,8 @@ public class PlayerHandler : MonoBehaviour
     private Animator animator;
     private SkinnedMeshRenderer playerRenderer;
 
+    [SerializeField] private AudioClip dmgSFX;
+
     public enum PlayerNumber
     {
         PlayerOne, 
@@ -318,9 +320,15 @@ public class PlayerHandler : MonoBehaviour
             Debug.Log("Player is already dead.");
             return;
         }
+       
+        if (dmgSFX != null && AudioManager.instance.audioSource != null)
+        {
+            AudioManager.instance.audioSource.PlayOneShot(dmgSFX);
+        }
 
         playerHealth -= damageAmount;
         StartCoroutine(HitFlash());
+        
 
         if (playerHealth <= 0.0f)
         {

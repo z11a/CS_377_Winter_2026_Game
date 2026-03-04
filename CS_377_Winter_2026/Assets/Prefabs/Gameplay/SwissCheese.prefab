@@ -107,6 +107,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   _CheeseType: 0
   floatingAnimationRotationSpeed: 30
+  nomSFX: {fileID: 8300000, guid: 22af5b6e96819004cb8842786b0b021e, type: 3}
   cheeseValue: 0
   rb: {fileID: 0}
   isGrounded: 0

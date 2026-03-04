@@ -125,4 +125,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   owner: 0
+  winSFX: {fileID: 8300000, guid: 386ba01cc8824c1408564846e9c295df, type: 3}
   depositSFX: {fileID: 8300000, guid: 01aa6f5b022eab0409f1815c9a2539ea, type: 3}
