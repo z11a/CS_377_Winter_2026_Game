@@ -8,13 +8,12 @@ public class CheeseCollector : MonoBehaviour
     public PlayerHandler.PlayerNumber owner;
     private IEnumerator activateIntermissionCoroutine;
 
-    [SerializeField] private AudioSource audioSource;
+    //[SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip depositSFX;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
     }
 
     // Update is called once per frame
@@ -38,9 +37,9 @@ public class CheeseCollector : MonoBehaviour
             Debug.Log("Cheese delivery!");
             foreach (GameObject cheese in playerHandler.playerCurrentHoldingCheeses)
             {
-                if (depositSFX != null && audioSource != null)
+                if (depositSFX != null && AudioManager.instance.audioSource != null)
                 {
-                    audioSource.PlayOneShot(depositSFX);
+                    AudioManager.instance.audioSource.PlayOneShot(depositSFX);
                 }
                 playerHandler.playerCurrentRoundScore += cheese.GetComponent<CheeseHandler>().cheeseValue;
                 playerHandler.playerWeight -= cheese.GetComponent<Rigidbody>().mass;
