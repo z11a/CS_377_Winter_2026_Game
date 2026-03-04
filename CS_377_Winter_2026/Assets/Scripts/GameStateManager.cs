@@ -164,14 +164,17 @@ public class GameStateManager : MonoBehaviour
         InputManager.instance.player2Input.GetComponent<PlayerHandler>().playerCurrentRoundScore = 0;
         InputManager.instance.player2Input.GetComponent<PlayerHandler>().ResetPlayerValues();
 
-        UIManager.instance.DeactivateLoadingScreen();
         UIManager.instance.GameplayUI.SetActive(true);
-        instance.StartCoroutine(StartPreRoundCountdown());
+        UIManager.instance.DeactivateLoadingScreen();
+        StartCoroutine(StartPreRoundCountdown());
     }
     public IEnumerator LoadGameplaySceneAsync(RoundNumber roundNumber)
     {
         InputManager.instance.player1Input.StopAllCoroutines();
         InputManager.instance.player2Input.StopAllCoroutines();
+        InputManager.instance.player1Input.SwitchCurrentActionMap("UI");
+        InputManager.instance.player2Input.SwitchCurrentActionMap("UI");
+
         UIManager.instance.ActivateLoadingScreen();
         yield return null;
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class UIManager : MonoBehaviour
 {
@@ -11,9 +12,12 @@ public class UIManager : MonoBehaviour
     public Button startMenuButton;
     public Button startGameButton;
 
+    [Header("Gameplay")]
+    public GameObject GameplayUI;
+    public TextMeshProUGUI roundWinText;
+
     [Header("Other")]
     public RawImage loadingScreen;
-    public GameObject GameplayUI;
     public float loadingScreenFadeDuration = 1.0f;
     
     void Awake()
@@ -38,6 +42,7 @@ public class UIManager : MonoBehaviour
         loadingScreen.gameObject.SetActive(false);
         StartMenuUI.SetActive(true);
         GameplayUI.SetActive(false);
+        roundWinText.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -90,6 +95,7 @@ public class UIManager : MonoBehaviour
             rawImage.color = col;
             yield return null;
         }
+        DeactivateRoundWinText();
         yield break;
     }
 
@@ -106,5 +112,26 @@ public class UIManager : MonoBehaviour
             yield return null;
         }
         yield break;
+    }
+
+    public void ActivateRoundWinText(PlayerHandler playerHandler)
+    {
+        string playerNumberString = "";
+        switch (playerHandler.playerNumber)
+        {
+            case PlayerHandler.PlayerNumber.PlayerOne:
+                playerNumberString = "Player One";
+                break;
+            case PlayerHandler.PlayerNumber.PlayerTwo:
+                playerNumberString = "Player Two";
+                break;
+        }
+        roundWinText.text = playerNumberString + " wins Round " + GameStateManager.instance._currentRound.ToString() + "!";
+        roundWinText.gameObject.SetActive(true);
+    }
+
+    public void DeactivateRoundWinText()
+    {
+        roundWinText.gameObject.SetActive(false);
     }
 }

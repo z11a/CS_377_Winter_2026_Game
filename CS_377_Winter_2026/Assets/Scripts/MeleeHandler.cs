@@ -42,6 +42,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
         equippedCollider = GetComponent<CapsuleCollider>();
         equippedCollider.enabled = false;
         rb = GetComponent<Rigidbody>();
+        canSwing = true;
 
         _ItemState = IItem.ItemState.NotCollected;
         initialSpawnPosition = transform.position;
@@ -141,6 +142,11 @@ public class MeleeHandler : MonoBehaviour, IWeapon
 
                 playerHitPlayerHandler.TakeDamage(weaponDamage);
                 weaponDurability -= 1;
+                if (weaponDurability <= 0)
+                {
+                    this.GetComponent<MeshRenderer>().enabled = false;
+                    owner.GetComponent<PlayerHandler>().SetupDefaultAttack();
+                }
             }
         }
     }
@@ -159,9 +165,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
 
         if (weaponDurability <= 0)
         {
-
             Destroy(this.gameObject);
-            _rb.GetComponent<PlayerHandler>().SetupDefaultAttack();
         }
     }
 
@@ -169,7 +173,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
     {
         PlayerHandler playerHitPlayerHandler = collider.gameObject.GetComponent<PlayerHandler>();
 
-        if (playerHitPlayerHandler == null)
+        if (playerHitPlayerHandler == null || owner != null)
         {
             return;
         }
