@@ -307,6 +307,8 @@ MonoBehaviour:
   playerWeight: 0
   respawnTime: 3
   invincibilityTime: 3
+  healthRegenDelay: 4
+  healthRegenPerSecond: 5
   weaponPlaceholderTransform: {fileID: 2966530009653085850}
   defaultAttackWeapon: {fileID: 7432889313250386686}
   flashMaterial: {fileID: 2100000, guid: 50a3b01df15b0e246a6d9e0cfd562d65, type: 2}

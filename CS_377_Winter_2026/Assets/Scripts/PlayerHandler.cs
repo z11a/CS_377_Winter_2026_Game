@@ -37,14 +37,16 @@ public class PlayerHandler : MonoBehaviour
     [Header("Main Player Attributes")]
     public float playerHealth = 50.0f;
     public float maxPlayerSpeed = 25.0f;
-    public float playerWeight = 0.0f;
+    [HideInInspector] public float playerWeight = 0.0f;
     public float respawnTime = 3.0f;
     public float invincibilityTime = 3.0f;
+    public float healthRegenDelay = 4.0f;
+    public float healthRegenPerSecond = 5.0f;
+    private IEnumerator healthRegenCoroutine;
 
     [Header("Weapon Info")]
     public Transform weaponPlaceholderTransform;
     public GameObject defaultAttackWeapon;
-    private Coroutine defaultAttackCoroutine;
 
     [Header("Appearance")]
     public Material flashMaterial;
@@ -304,6 +306,11 @@ public class PlayerHandler : MonoBehaviour
             }
         }
         SetupDefaultAttack();
+
+        if (healthRegenCoroutine != null)
+        {
+            StopCoroutine(healthRegenCoroutine);
+        }
     }
 
     public void SetupDefaultAttack()
@@ -328,13 +335,30 @@ public class PlayerHandler : MonoBehaviour
 
         playerHealth -= damageAmount;
         StartCoroutine(HitFlash());
-        
 
         if (playerHealth <= 0.0f)
         {
             _playerState = PlayerState.Dead;
             Debug.Log("Setting player to dead.");
             StartCoroutine(RespawnHandler());
+        }
+
+        if (healthRegenCoroutine != null)
+        {
+            StopCoroutine(healthRegenCoroutine);
+        }
+        healthRegenCoroutine = HealthRegen();
+        StartCoroutine(healthRegenCoroutine);
+    }
+
+    private IEnumerator HealthRegen()
+    {
+        yield return new WaitForSeconds(healthRegenDelay);
+
+        while (playerHealth < 50.0f)
+        {
+            playerHealth += healthRegenPerSecond;
+            yield return new WaitForSeconds(1.0f);
         }
     }
 
