@@ -164,17 +164,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6746989192641442619, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
   m_PrefabInstance: {fileID: 8397934424409912615}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &63149259 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7809153717032005315, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-  m_PrefabInstance: {fileID: 8397934424409912615}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 63149257}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1001 &237056633
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1878,17 +1867,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 039c3d1b8d142044abbc11788fe08f0d, type: 3}
   m_PrefabInstance: {fileID: 518629463}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &974884234 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3557441147086426463, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-  m_PrefabInstance: {fileID: 8397934424409912615}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RawImage
 --- !u!1001 &984010865
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2158,26 +2136,10 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b11ab302ae8d67743b549adac9ce1b7f, type: 3}
   m_PrefabInstance: {fileID: 440441040}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1179313348 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1239903061912647574, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-  m_PrefabInstance: {fileID: 8397934424409912615}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!4 &1183345893 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b11ab302ae8d67743b549adac9ce1b7f, type: 3}
   m_PrefabInstance: {fileID: 1574539909}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1252516330 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1669667440076628306, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-  m_PrefabInstance: {fileID: 8397934424409912615}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1253388969
 GameObject:
@@ -2290,17 +2252,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1253388969}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1348295582 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3398578504957355426, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-  m_PrefabInstance: {fileID: 8397934424409912615}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!4 &1357422272 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 039c3d1b8d142044abbc11788fe08f0d, type: 3}
@@ -2310,11 +2261,6 @@ Transform:
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b11ab302ae8d67743b549adac9ce1b7f, type: 3}
   m_PrefabInstance: {fileID: 1648520478}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1444382714 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6107706367813665172, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-  m_PrefabInstance: {fileID: 8397934424409912615}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1444621355
 GameObject:
@@ -4196,34 +4142,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1506058020194427668, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-      propertyPath: GameplayUI
-      value: 
-      objectReference: {fileID: 1444382714}
-    - target: {fileID: 1506058020194427668, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-      propertyPath: StartMenuUI
-      value: 
-      objectReference: {fileID: 1252516330}
-    - target: {fileID: 1506058020194427668, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-      propertyPath: startButton
-      value: 
-      objectReference: {fileID: 63149259}
-    - target: {fileID: 1506058020194427668, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-      propertyPath: roundWinText
-      value: 
-      objectReference: {fileID: 1179313348}
-    - target: {fileID: 1506058020194427668, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-      propertyPath: loadingScreen
-      value: 
-      objectReference: {fileID: 974884234}
-    - target: {fileID: 1506058020194427668, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-      propertyPath: startGameButton
-      value: 
-      objectReference: {fileID: 1348295582}
-    - target: {fileID: 1506058020194427668, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-      propertyPath: startMenuButton
-      value: 
-      objectReference: {fileID: 63149259}
     - target: {fileID: 2011546776377306741, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -4272,34 +4190,6 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2917913810573434536, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: -5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2917913810573434536, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 2.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3199569308379357348, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3199569308379357348, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3199569308379357348, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5126963865800340081, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: -5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5126963865800340081, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 2.5
-      objectReference: {fileID: 0}
     - target: {fileID: 6932687549561726357, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -4312,22 +4202,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: UIManager
       objectReference: {fileID: 0}
-    - target: {fileID: 7993765452306093510, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7993765452306093510, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7993765452306093510, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 8299389171453181023, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
-    - {fileID: 3194090144772427029, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
