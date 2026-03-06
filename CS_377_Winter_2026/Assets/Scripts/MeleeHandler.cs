@@ -22,7 +22,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
     public float weaponDamage = 15.0f;
     public float weaponKnockbackStrength = 25.0f;
     public float weaponknockbackDuration = 1.0f;
-    public int weaponDurability = 5;
+    public float weaponDurability = 5;
 
     [Header("Other")]
     public float floatingAnimationRotationSpeed = 30.0f;
@@ -109,6 +109,12 @@ public class MeleeHandler : MonoBehaviour, IWeapon
         yield return new WaitForSeconds(actualHitboxDuration);
         equippedCollider.enabled = false;
 
+        weaponDurability -= 0.5f;
+        if (weaponDurability <= 0.0f && this.GetComponent<DefaultAttack>() == null)
+        {
+            Destroy(this.gameObject);
+        }
+
         yield return new WaitForSeconds(swingCooldown);
         playersHit.Clear();
         canSwing = true;
@@ -142,8 +148,8 @@ public class MeleeHandler : MonoBehaviour, IWeapon
 
                 StartCoroutine(ApplyKnockback(playerHitPlayerHandler.GetComponent<Rigidbody>(), (playerHitPlayerHandler.transform.position - owner.transform.position).normalized));
 
-                weaponDurability -= 1;
-                if (weaponDurability <= 0)
+                weaponDurability -= 1.0f;
+                if (weaponDurability <= 0.0f)
                 {
                     this.GetComponent<MeshRenderer>().enabled = false;
                     owner.GetComponent<PlayerHandler>().SetupDefaultAttack();

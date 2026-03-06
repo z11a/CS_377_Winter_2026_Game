@@ -47,11 +47,12 @@ MonoBehaviour:
   _gameState: 0
   _currentRound: 0
   countdownLength: 3
-  roundLength: 90
+  roundLength: 120
+  currentRoundTime: 0
   intermissionLength: 4
-  roundOneScoreRequirement: 50
+  roundOneScoreRequirement: 70
   roundTwoScoreRequirement: 100
-  roundThreeScoreRequirement: 150
+  roundThreeScoreRequirement: 120
   itemSpawnCooldown: 3.5
   uncommonItemSpawnChance: 45
   rareItemSpawnChance: 15
@@ -72,3 +73,5 @@ MonoBehaviour:
   waitingForPlayersToJoin: 0
   player1GameplaySpawnPosition: {fileID: 0}
   player2GameplaySpawnPosition: {fileID: 0}
+  cheesePity: 0
+  uncommonPity: 0

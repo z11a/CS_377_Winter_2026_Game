@@ -18,7 +18,8 @@ public class GameStateManager : MonoBehaviour
         pauseMenu,
         loadingScreen,
         inGame,
-        intermission // in between rounds / before the first round starts.
+        intermission, // in between rounds / before the first round starts.
+        endGame
     }
     public enum RoundNumber
     {
@@ -33,7 +34,8 @@ public class GameStateManager : MonoBehaviour
 
     [Header("Timing")]
     public float countdownLength = 3.0f;
-    public float roundLength = 90.0f;
+    public float roundLength = 120.0f;
+    [HideInInspector] public float currentRoundTime = 120.0f;
     public float intermissionLength = 4.0f;
 
     [Header("Scoring")]
@@ -51,7 +53,8 @@ public class GameStateManager : MonoBehaviour
     public List<GameObject> rareItems;
     [HideInInspector] public Dictionary<Vector3, GameObject> itemSpawnDictionary = new Dictionary<Vector3, GameObject>();
     [HideInInspector] public bool itemsSpawning;
-    private Coroutine itemSpawningCoroutine;
+    private IEnumerator itemSpawningCoroutine;
+    private IEnumerator roundTimerCoroutine;
 
     [HideInInspector] public bool waitingForPlayersToJoin = false;
     [HideInInspector] public Transform player1GameplaySpawnPosition;
@@ -82,7 +85,8 @@ public class GameStateManager : MonoBehaviour
         {
             _gameState = GameState.inGame;
             itemsSpawning = true;
-            itemSpawningCoroutine = StartCoroutine(itemSpawning());
+            itemSpawningCoroutine = itemSpawning();
+            StartCoroutine(itemSpawningCoroutine);
         }
         else
         {
@@ -96,28 +100,30 @@ public class GameStateManager : MonoBehaviour
         if (itemSpawningCoroutine != null && _gameState != GameState.inGame)
         {
             StopCoroutine(itemSpawningCoroutine);
+            StopCoroutine(roundTimerCoroutine);
         }
     }
+
     private IEnumerator StartRoundTimer()
     {
         yield return null;
 
-        float _roundTime = roundLength;
+        currentRoundTime = roundLength;
 
         while (true)
         {
             yield return new WaitForSeconds(1.0f);
 
-            _roundTime -= 1.0f;
+            currentRoundTime -= 1.0f;
 
-            if (_roundTime <= 0.0f)
+            if (currentRoundTime <= 0.0f)
             {
                 Debug.Log("Round over.");
                 _gameState = GameState.intermission;
-                break;
+                // check for cheese tie here, if they have the same cheeses maybe we check who hit more attacks
+                yield break;
             }
         }
-        yield return null;
     }
 
     private IEnumerator StartPreRoundCountdown()
@@ -143,11 +149,13 @@ public class GameStateManager : MonoBehaviour
                 InputManager.instance.player1Input.SwitchCurrentActionMap("Player");
                 InputManager.instance.player2Input.SwitchCurrentActionMap("Player");
                 itemsSpawning = true;
-                itemSpawningCoroutine = StartCoroutine(itemSpawning());
-                break;
+                itemSpawningCoroutine = itemSpawning();
+                StartCoroutine(itemSpawningCoroutine);
+                roundTimerCoroutine = StartRoundTimer();
+                StartCoroutine(roundTimerCoroutine);
+                yield break;
             }
         }
-        yield return null;
     }
 
     private void GameplaySceneSetup()

@@ -15,6 +15,7 @@ public class UIManager : MonoBehaviour
     [Header("Gameplay")]
     public GameObject GameplayUI;
     public TextMeshProUGUI roundWinText;
+    public TextMeshProUGUI roundTimerText;
 
     [Header("Other")]
     public RawImage loadingScreen;
@@ -48,8 +49,19 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GameStateManager.instance._gameState == GameStateManager.GameState.inGame)
+        {
+            int minutes = (int)(GameStateManager.instance.currentRoundTime / 60);
+            int seconds = (int)(GameStateManager.instance.currentRoundTime % 60);
+            roundTimerText.text = $"{minutes}:{seconds:D2}";
+        }
+    }
+
+    public void ActivatePreRoundTimerCoroutine()
+    {
 
     }
+
     public void OnStartButton()
     {
         Debug.Log("Start Menu button pressed.");
