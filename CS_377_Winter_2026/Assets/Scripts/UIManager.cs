@@ -16,6 +16,7 @@ public class UIManager : MonoBehaviour
     public GameObject GameplayUI;
     public TextMeshProUGUI roundWinText;
     public TextMeshProUGUI roundTimerText;
+    public TextMeshProUGUI preRoundTimerText;
 
     [Header("Other")]
     public RawImage loadingScreen;
@@ -55,11 +56,6 @@ public class UIManager : MonoBehaviour
             int seconds = (int)(GameStateManager.instance.currentRoundTime % 60);
             roundTimerText.text = $"{minutes}:{seconds:D2}";
         }
-    }
-
-    public void ActivatePreRoundTimerCoroutine()
-    {
-
     }
 
     public void OnStartButton()

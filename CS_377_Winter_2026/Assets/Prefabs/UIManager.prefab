@@ -410,7 +410,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 3
+  m_text: Play!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 426810ff967e39b4094c7a91daa82d35, type: 2}
   m_sharedMaterial: {fileID: -4585969980376455550, guid: 426810ff967e39b4094c7a91daa82d35, type: 2}
@@ -437,8 +437,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 359.3
-  m_fontSizeBase: 359.3
+  m_fontSize: 231.8
+  m_fontSizeBase: 231.8
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -476,7 +476,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 397.54987, y: 0, z: 387.5703, w: 0}
+  m_margin: {x: -107.72778, y: 0, z: -100.91626, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -2591,7 +2591,7 @@ Transform:
   m_GameObject: {fileID: 7160355172934800622}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.59401, y: 1.43657, z: -5.31095}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2616,6 +2616,7 @@ MonoBehaviour:
   GameplayUI: {fileID: 6107706367813665172}
   roundWinText: {fileID: 1239903061912647574}
   roundTimerText: {fileID: 2632849960139944308}
+  preRoundTimerText: {fileID: 6421543219367201211}
   loadingScreen: {fileID: 3557441147086426463}
   loadingScreenFadeDuration: 1
 --- !u!1 &7612441160009067011

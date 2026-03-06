@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using UnityEngine.UIElements;
 
 public class GameStateManager : MonoBehaviour
@@ -87,6 +88,7 @@ public class GameStateManager : MonoBehaviour
             itemsSpawning = true;
             itemSpawningCoroutine = itemSpawning();
             StartCoroutine(itemSpawningCoroutine);
+            StartCoroutine(StartPreRoundCountdown());
         }
         else
         {
@@ -132,11 +134,15 @@ public class GameStateManager : MonoBehaviour
 
         float _countdownTime = countdownLength;
 
+        UIManager.instance.preRoundTimerText.gameObject.SetActive(true);
+
         Debug.Log("Countdown started.");
 
         while (true)
         {
             Debug.Log("Countdown: " + _countdownTime);
+
+            UIManager.instance.preRoundTimerText.text = _countdownTime.ToString();
 
             yield return new WaitForSeconds(1.0f);
 
@@ -146,13 +152,31 @@ public class GameStateManager : MonoBehaviour
             {
                 Debug.Log("Countdown ended.");
                 _gameState = GameState.inGame;
+
                 InputManager.instance.player1Input.SwitchCurrentActionMap("Player");
                 InputManager.instance.player2Input.SwitchCurrentActionMap("Player");
+
                 itemsSpawning = true;
                 itemSpawningCoroutine = itemSpawning();
                 StartCoroutine(itemSpawningCoroutine);
+
                 roundTimerCoroutine = StartRoundTimer();
                 StartCoroutine(roundTimerCoroutine);
+
+                UIManager.instance.preRoundTimerText.text = "Play!";
+
+                // fade out preRoundTimerText
+                float elapsedTime = 0.0f;
+                float duration = 2.0f;
+                Color col = UIManager.instance.preRoundTimerText.color;
+
+                while (elapsedTime < duration)
+                {
+                    elapsedTime += Time.deltaTime;
+                    col.a = 1.0f - Mathf.Clamp01(elapsedTime / duration);
+                    UIManager.instance.preRoundTimerText.color = col;
+                    yield return null;
+                }
                 yield break;
             }
         }
