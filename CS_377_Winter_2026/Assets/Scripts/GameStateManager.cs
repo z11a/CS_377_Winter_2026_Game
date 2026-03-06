@@ -88,7 +88,7 @@ public class GameStateManager : MonoBehaviour
             itemsSpawning = true;
             itemSpawningCoroutine = itemSpawning();
             StartCoroutine(itemSpawningCoroutine);
-            StartCoroutine(StartPreRoundCountdown());
+            //StartCoroutine(StartPreRoundCountdown());
         }
         else
         {

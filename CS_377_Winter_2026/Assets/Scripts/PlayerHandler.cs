@@ -47,6 +47,7 @@ public class PlayerHandler : MonoBehaviour
     [Header("Weapon Info")]
     public Transform weaponPlaceholderTransform;
     public GameObject defaultAttackWeapon;
+    public ParticleSystem weaponBreakParticleSystem;
 
     [Header("Appearance")]
     public Material flashMaterial;

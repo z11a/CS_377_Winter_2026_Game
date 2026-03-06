@@ -109,10 +109,10 @@ public class MeleeHandler : MonoBehaviour, IWeapon
         yield return new WaitForSeconds(actualHitboxDuration);
         equippedCollider.enabled = false;
 
-        weaponDurability -= 0.5f;
-        if (weaponDurability <= 0.0f && this.GetComponent<DefaultAttack>() == null)
+        if (playersHit.Count == 0)
         {
-            Destroy(this.gameObject);
+            weaponDurability -= 0.5f;
+            DurabilityCheck();
         }
 
         yield return new WaitForSeconds(swingCooldown);
@@ -146,12 +146,14 @@ public class MeleeHandler : MonoBehaviour, IWeapon
 
                 playerHitPlayerHandler.TakeDamage(weaponDamage);
 
+                weaponDurability -= 1.0f;
+
                 StartCoroutine(ApplyKnockback(playerHitPlayerHandler.GetComponent<Rigidbody>(), (playerHitPlayerHandler.transform.position - owner.transform.position).normalized));
 
-                weaponDurability -= 1.0f;
                 if (weaponDurability <= 0.0f)
                 {
                     this.GetComponent<MeshRenderer>().enabled = false;
+                    owner.GetComponent<PlayerHandler>().weaponBreakParticleSystem.Play();
                     owner.GetComponent<PlayerHandler>().SetupDefaultAttack();
                 }
             }
@@ -170,10 +172,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
         yield return new WaitForSeconds(weaponknockbackDuration);
         _rb.GetComponent<PlayerHandler>().knockedBack = false;
 
-        if (weaponDurability <= 0)
-        {
-            Destroy(this.gameObject);
-        }
+        DurabilityCheck();
     }
 
     private void OnTriggerExit(Collider collider)
@@ -187,5 +186,17 @@ public class MeleeHandler : MonoBehaviour, IWeapon
         Debug.Log("No longer able to pick up " + this.gameObject.name);
         meshRenderer.materials = defaultMaterialList;
         playerHitPlayerHandler.possibleWeaponPickup = null;
+    }
+
+    private void DurabilityCheck()
+    {
+        if (weaponDurability <= 0.0f && this.GetComponent<DefaultAttack>() == null)
+        {
+            if (this.GetComponent<MeshRenderer>().enabled == true)
+            {
+                owner.GetComponent<PlayerHandler>().weaponBreakParticleSystem.Play();
+            }
+            Destroy(this.gameObject);
+        }
     }
 }
