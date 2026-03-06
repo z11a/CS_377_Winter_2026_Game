@@ -109,6 +109,29 @@ public class CheeseCollector : MonoBehaviour
         }
     }
 
+    public void PlayerWonRound(PlayerHandler playerHandler, GameStateManager.RoundNumber roundNumber)
+    {
+        if (winSFX != null && AudioManager.instance.audioSource != null)
+        {
+            AudioManager.instance.audioSource.PlayOneShot(winSFX);
+        }
+
+        playerHandler.playerTotalRoundScore++;
+
+        if (roundNumber == GameStateManager.RoundNumber.Three)
+        {
+            GameStateManager.instance._gameState = GameStateManager.GameState.endGame;
+            UIManager.instance.ActivateRoundWinText(playerHandler);
+            Time.timeScale = 0.0f;
+        }
+        else
+        {
+            UIManager.instance.ActivateRoundWinText(playerHandler);
+            activateIntermissionCoroutine = ActivateIntermission(roundNumber++);
+            StartCoroutine(activateIntermissionCoroutine);
+        }
+        return;
+    }
     private IEnumerator ActivateIntermission(GameStateManager.RoundNumber nextRoundNumber)
     {
         GameStateManager.instance._gameState = GameStateManager.GameState.intermission;

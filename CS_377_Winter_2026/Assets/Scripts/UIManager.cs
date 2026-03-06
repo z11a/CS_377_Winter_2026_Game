@@ -15,6 +15,8 @@ public class UIManager : MonoBehaviour
     [Header("Gameplay")]
     public GameObject GameplayUI;
     public TextMeshProUGUI roundWinText;
+    public TextMeshProUGUI roundTimerText;
+    public TextMeshProUGUI preRoundTimerText;
 
     [Header("Other")]
     public RawImage loadingScreen;
@@ -48,8 +50,14 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (GameStateManager.instance._gameState == GameStateManager.GameState.inGame)
+        {
+            int minutes = (int)(GameStateManager.instance.currentRoundTime / 60);
+            int seconds = (int)(GameStateManager.instance.currentRoundTime % 60);
+            roundTimerText.text = $"{minutes}:{seconds:D2}";
+        }
     }
+
     public void OnStartButton()
     {
         Debug.Log("Start Menu button pressed.");
@@ -79,7 +87,7 @@ public class UIManager : MonoBehaviour
         StartMenuUI.SetActive(false);
         loadingScreen.gameObject.SetActive(true);
         Color fullAlpha = loadingScreen.color;
-        fullAlpha.a = 0.0f;
+        fullAlpha.a = 1.0f;
         loadingScreen.color = fullAlpha;
         StartCoroutine(RawImageFadeOut(loadingScreen, loadingScreenFadeDuration));
     }

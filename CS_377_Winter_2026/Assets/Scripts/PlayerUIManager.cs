@@ -7,12 +7,11 @@ public class PlayerUIManager : MonoBehaviour
     public PlayerHandler playerHandler;
 
     [Header("UI Elements")]
+    public RawImage PlayerAvatar;
     public TextMeshProUGUI RoundWins;
     public TextMeshProUGUI PointsText;
     public TextMeshProUGUI CheeseText;
     public Slider HealthBar;
-
-
     void Update()
     {
         int currentRoundScoreReq = 0;
@@ -34,6 +33,19 @@ public class PlayerUIManager : MonoBehaviour
             HealthBar.value = playerHandler.playerHealth;
             PointsText.text = "Points: " + playerHandler.playerCurrentRoundScore.ToString() + " / " + currentRoundScoreReq.ToString();
             CheeseText.text = "Cheese: " + playerHandler.playerCurrentHoldingCheeses.Count.ToString();
+
+            if (playerHandler._playerState == PlayerHandler.PlayerState.Dead)
+            {
+                Color transparentAlpha = PlayerAvatar.color;
+                transparentAlpha.a = 0.7f;
+                PlayerAvatar.color = transparentAlpha;
+            }
+            else
+            {
+                Color fullAlpha = PlayerAvatar.color;
+                fullAlpha.a = 1.0f;
+                PlayerAvatar.color = fullAlpha;
+            }
         }
     }
 }
