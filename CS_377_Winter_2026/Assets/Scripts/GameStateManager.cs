@@ -300,6 +300,7 @@ public class GameStateManager : MonoBehaviour
             if (asyncLoad.progress >= 0.9f)
             {
                 Debug.Log("Loaded! Starting game in 2 seconds...");
+
                 yield return new WaitForSeconds(2.0f);
                 asyncLoad.allowSceneActivation = true;
 
@@ -308,6 +309,7 @@ public class GameStateManager : MonoBehaviour
                 SceneManager.MoveGameObjectToScene(InputManager.instance.player1Input.gameObject, SceneManager.GetSceneByBuildIndex(sceneIndex));
                 SceneManager.MoveGameObjectToScene(InputManager.instance.player2Input.gameObject, SceneManager.GetSceneByBuildIndex(sceneIndex));
                 SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
+                LightProbes.Tetrahedralize();
 
                 var refs = GameplaySceneReferences.instance;
                 player1GameplaySpawnPosition = refs.player1Spawn;
