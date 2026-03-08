@@ -38,11 +38,14 @@ public class GameStateManager : MonoBehaviour
     public float roundLength = 120.0f;
     [HideInInspector] public float currentRoundTime = 120.0f;
     public float intermissionLength = 4.0f;
+    private IEnumerator roundTimerCoroutine;
 
     [Header("Scoring")]
     public int roundOneScoreRequirement = 50;
     public int roundTwoScoreRequirement = 100;
     public int roundThreeScoreRequirement = 150;
+    [SerializeField] private AudioClip winSFX;
+    private IEnumerator activateIntermissionCoroutine;
 
     [Header("Item Spawning")]
     public float itemSpawnCooldown = 3.0f;
@@ -55,15 +58,12 @@ public class GameStateManager : MonoBehaviour
     [HideInInspector] public Dictionary<Vector3, GameObject> itemSpawnDictionary = new Dictionary<Vector3, GameObject>();
     [HideInInspector] public bool itemsSpawning;
     private IEnumerator itemSpawningCoroutine;
-    private IEnumerator roundTimerCoroutine;
+    [HideInInspector] public int cheesePity = 0;
+    [HideInInspector] public int uncommonPity = 0;
 
     [HideInInspector] public bool waitingForPlayersToJoin = false;
     [HideInInspector] public Transform player1GameplaySpawnPosition;
     [HideInInspector] public Transform player2GameplaySpawnPosition;
-
-    [HideInInspector] public int cheesePity = 0;
-    [HideInInspector] public int uncommonPity = 0;
-
 
     void Awake()
     {
@@ -105,12 +105,48 @@ public class GameStateManager : MonoBehaviour
             StopCoroutine(roundTimerCoroutine);
         }
     }
+    public void PlayerWonRound(PlayerHandler playerHandler)
+    {
+        if (winSFX != null && AudioManager.instance.audioSource != null)
+        {
+            AudioManager.instance.audioSource.PlayOneShot(winSFX);
+        }
+
+        playerHandler.playerTotalRoundScore++;
+        UIManager.instance.ActivateRoundWinText(playerHandler);
+
+        if (playerHandler.playerTotalRoundScore >= 2)
+        {
+            Debug.Log(playerHandler.playerNumber + " won the game!");
+            GameStateManager.instance._gameState = GameStateManager.GameState.endGame;
+            Time.timeScale = 0.0f;
+        }
+        else
+        {
+            activateIntermissionCoroutine = ActivateIntermission(GameStateManager.instance._currentRound + 1);
+            StartCoroutine(activateIntermissionCoroutine);
+        }
+
+        return;
+    }
+    private IEnumerator ActivateIntermission(GameStateManager.RoundNumber nextRoundNumber)
+    {
+        GameStateManager.instance._gameState = GameStateManager.GameState.intermission;
+
+        yield return new WaitForSeconds(GameStateManager.instance.intermissionLength);
+
+        StartCoroutine(GameStateManager.instance.LoadGameplaySceneAsync(nextRoundNumber));
+    }
 
     private IEnumerator StartRoundTimer()
     {
         yield return null;
 
-        currentRoundTime = roundLength;
+        //currentRoundTime = roundLength;
+
+        int minutes = (int)(GameStateManager.instance.currentRoundTime / 60);
+        int seconds = (int)(GameStateManager.instance.currentRoundTime % 60);
+        UIManager.instance.roundTimerText.text = $"{minutes}:{seconds:D2}";
 
         while (true)
         {
@@ -123,6 +159,22 @@ public class GameStateManager : MonoBehaviour
                 Debug.Log("Round over.");
                 _gameState = GameState.intermission;
                 // check for cheese tie here, if they have the same cheeses maybe we check who hit more attacks
+                PlayerHandler playerOneHandler = InputManager.instance.player1Input.GetComponent<PlayerHandler>();
+                PlayerHandler playerTwoHandler = InputManager.instance.player2Input.GetComponent<PlayerHandler>();
+
+                if (playerOneHandler.playerCurrentRoundScore > playerTwoHandler.playerCurrentRoundScore)
+                {
+                    PlayerWonRound(playerOneHandler);
+                }
+                else if (playerTwoHandler.playerCurrentRoundScore > playerOneHandler.playerCurrentRoundScore)
+                {
+                    PlayerWonRound(playerTwoHandler);
+                }
+                else if (playerOneHandler.playerCurrentRoundScore == playerTwoHandler.playerCurrentRoundScore)
+                {
+
+                }
+
                 yield break;
             }
         }
@@ -134,6 +186,9 @@ public class GameStateManager : MonoBehaviour
 
         float _countdownTime = countdownLength;
 
+        Color fullAlpha = UIManager.instance.preRoundTimerText.color;
+        fullAlpha.a = 1.0f;
+        UIManager.instance.preRoundTimerText.color = fullAlpha;
         UIManager.instance.preRoundTimerText.gameObject.SetActive(true);
 
         Debug.Log("Countdown started.");
@@ -177,6 +232,7 @@ public class GameStateManager : MonoBehaviour
                     UIManager.instance.preRoundTimerText.color = col;
                     yield return null;
                 }
+                UIManager.instance.preRoundTimerText.gameObject.SetActive(false);
                 yield break;
             }
         }
@@ -195,6 +251,11 @@ public class GameStateManager : MonoBehaviour
         InputManager.instance.player2Input.GetComponent<PlayerHandler>().playerCurrentHoldingCheeses = new List<GameObject>();
         InputManager.instance.player2Input.GetComponent<PlayerHandler>().playerCurrentRoundScore = 0;
         InputManager.instance.player2Input.GetComponent<PlayerHandler>().ResetPlayerValues();
+
+        currentRoundTime = roundLength;
+        int minutes = (int)(GameStateManager.instance.currentRoundTime / 60);
+        int seconds = (int)(GameStateManager.instance.currentRoundTime % 60);
+        UIManager.instance.roundTimerText.text = $"{minutes}:{seconds:D2}";
 
         UIManager.instance.GameplayUI.SetActive(true);
         UIManager.instance.DeactivateLoadingScreen();

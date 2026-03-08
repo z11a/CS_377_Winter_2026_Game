@@ -27,9 +27,10 @@ public class PlayerUIManager : MonoBehaviour
                 currentRoundScoreReq = GameStateManager.instance.roundThreeScoreRequirement;
                 break;
         }
+
         if (playerHandler != null)
         {
-            RoundWins.text = "Round wins: " + playerHandler.playerTotalRoundScore.ToString() + " / 3";
+            RoundWins.text = "Round wins: " + playerHandler.playerTotalRoundScore.ToString() + " / 2";
             HealthBar.value = playerHandler.playerHealth;
             PointsText.text = "Points: " + playerHandler.playerCurrentRoundScore.ToString() + " / " + currentRoundScoreReq.ToString();
             CheeseText.text = "Cheese: " + playerHandler.playerCurrentHoldingCheeses.Count.ToString();
