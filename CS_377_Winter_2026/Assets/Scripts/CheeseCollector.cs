@@ -6,8 +6,8 @@ public class CheeseCollector : MonoBehaviour
 {
 
     public PlayerHandler.PlayerNumber owner;
-    private IEnumerator activateIntermissionCoroutine;
-    [SerializeField] private AudioClip winSFX;
+    //private IEnumerator activateIntermissionCoroutine;
+    //[SerializeField] private AudioClip winSFX;
 
     //[SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip depositSFX;
@@ -15,6 +15,7 @@ public class CheeseCollector : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+
     }
 
     // Update is called once per frame
@@ -68,76 +69,75 @@ public class CheeseCollector : MonoBehaviour
             case GameStateManager.RoundNumber.One:
                 if (playerHandler.playerCurrentRoundScore >= GameStateManager.instance.roundOneScoreRequirement)
                 {
-                    if (activateIntermissionCoroutine == null)
-                    {
-                        if (winSFX != null && AudioManager.instance.audioSource != null)
-                        {
-                            AudioManager.instance.audioSource.PlayOneShot(winSFX);
-                        }
-                        playerHandler.playerTotalRoundScore++;
-                        activateIntermissionCoroutine = ActivateIntermission(GameStateManager.RoundNumber.Two);
-                        StartCoroutine(activateIntermissionCoroutine);
-                        UIManager.instance.ActivateRoundWinText(playerHandler);
-                    }
+                        //if (winSFX != null && AudioManager.instance.audioSource != null)
+                        //{
+                        //    AudioManager.instance.audioSource.PlayOneShot(winSFX);
+                        //}
+                        //playerHandler.playerTotalRoundScore++;
+                        //activateIntermissionCoroutine = ActivateIntermission(GameStateManager.RoundNumber.Two);
+                        //StartCoroutine(activateIntermissionCoroutine);
+                        //UIManager.instance.ActivateRoundWinText(playerHandler);
+                    GameStateManager.instance.PlayerWonRound(playerHandler);
                 }
                 break;
             case GameStateManager.RoundNumber.Two:
                 if (playerHandler.playerCurrentRoundScore >= GameStateManager.instance.roundTwoScoreRequirement)
                 {
-                    if (activateIntermissionCoroutine == null)
-                    {
-                        if (winSFX != null && AudioManager.instance.audioSource != null)
-                        {
-                            AudioManager.instance.audioSource.PlayOneShot(winSFX);
-                        }
-                        playerHandler.playerTotalRoundScore++;
-                        activateIntermissionCoroutine = ActivateIntermission(GameStateManager.RoundNumber.Three);
-                        StartCoroutine(activateIntermissionCoroutine);
-                        UIManager.instance.ActivateRoundWinText(playerHandler);
-                    }
+                        //if (winSFX != null && AudioManager.instance.audioSource != null)
+                        //{
+                        //    AudioManager.instance.audioSource.PlayOneShot(winSFX);
+                        //}
+                        //playerHandler.playerTotalRoundScore++;
+                        //activateIntermissionCoroutine = ActivateIntermission(GameStateManager.RoundNumber.Three);
+                        //StartCoroutine(activateIntermissionCoroutine);
+                        //UIManager.instance.ActivateRoundWinText(playerHandler);
+                    GameStateManager.instance.PlayerWonRound(playerHandler);
                 }
                 break;
             case GameStateManager.RoundNumber.Three:
                 if (playerHandler.playerCurrentRoundScore >= GameStateManager.instance.roundThreeScoreRequirement)
                 {
-                    GameStateManager.instance._gameState = GameStateManager.GameState.intermission;
-                    playerHandler.playerTotalRoundScore++;
-                    UIManager.instance.ActivateRoundWinText(playerHandler);
-                    Time.timeScale = 0.0f;
+                        //GameStateManager.instance._gameState = GameStateManager.GameState.intermission;
+                        //playerHandler.playerTotalRoundScore++;
+                        //UIManager.instance.ActivateRoundWinText(playerHandler);
+                        //Time.timeScale = 0.0f;
+                    GameStateManager.instance.PlayerWonRound(playerHandler);
                 }
                 break;
         }
     }
 
-    public void PlayerWonRound(PlayerHandler playerHandler, GameStateManager.RoundNumber roundNumber)
-    {
-        if (winSFX != null && AudioManager.instance.audioSource != null)
-        {
-            AudioManager.instance.audioSource.PlayOneShot(winSFX);
-        }
+    //public void PlayerWonRound(PlayerHandler playerHandler)
+    //{
+    //    if (winSFX != null && AudioManager.instance.audioSource != null)
+    //    {
+    //        AudioManager.instance.audioSource.PlayOneShot(winSFX);
+    //    }
 
-        playerHandler.playerTotalRoundScore++;
+    //    playerHandler.playerTotalRoundScore++;
+    //    UIManager.instance.ActivateRoundWinText(playerHandler);
 
-        if (roundNumber == GameStateManager.RoundNumber.Three)
-        {
-            GameStateManager.instance._gameState = GameStateManager.GameState.endGame;
-            UIManager.instance.ActivateRoundWinText(playerHandler);
-            Time.timeScale = 0.0f;
-        }
-        else
-        {
-            UIManager.instance.ActivateRoundWinText(playerHandler);
-            activateIntermissionCoroutine = ActivateIntermission(roundNumber++);
-            StartCoroutine(activateIntermissionCoroutine);
-        }
-        return;
-    }
-    private IEnumerator ActivateIntermission(GameStateManager.RoundNumber nextRoundNumber)
-    {
-        GameStateManager.instance._gameState = GameStateManager.GameState.intermission;
+    //    if (playerHandler.playerTotalRoundScore >= 2)
+    //    {
+    //        Debug.Log(playerHandler.playerNumber + " won the game!");
+    //        GameStateManager.instance._gameState = GameStateManager.GameState.endGame;
+    //        Time.timeScale = 0.0f;
+    //    }
+    //    else
+    //    {
+    //        activateIntermissionCoroutine = ActivateIntermission(GameStateManager.instance._currentRound++);
+    //        StartCoroutine(activateIntermissionCoroutine);
+    //    }
 
-        yield return new WaitForSeconds(GameStateManager.instance.intermissionLength);
+    //    return;
+    //}
 
-        StartCoroutine(GameStateManager.instance.LoadGameplaySceneAsync(nextRoundNumber));
-    }
+    //private IEnumerator ActivateIntermission(GameStateManager.RoundNumber nextRoundNumber)
+    //{
+    //    GameStateManager.instance._gameState = GameStateManager.GameState.intermission;
+
+    //    yield return new WaitForSeconds(GameStateManager.instance.intermissionLength);
+
+    //    StartCoroutine(GameStateManager.instance.LoadGameplaySceneAsync(nextRoundNumber));
+    //}
 }

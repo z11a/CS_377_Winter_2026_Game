@@ -86,6 +86,7 @@ public class UIManager : MonoBehaviour
     {
         StartMenuUI.SetActive(false);
         loadingScreen.gameObject.SetActive(true);
+
         Color fullAlpha = loadingScreen.color;
         fullAlpha.a = 1.0f;
         loadingScreen.color = fullAlpha;

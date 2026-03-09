@@ -53,6 +53,7 @@ MonoBehaviour:
   roundOneScoreRequirement: 70
   roundTwoScoreRequirement: 100
   roundThreeScoreRequirement: 120
+  winSFX: {fileID: 8300000, guid: 386ba01cc8824c1408564846e9c295df, type: 3}
   itemSpawnCooldown: 3.5
   uncommonItemSpawnChance: 45
   rareItemSpawnChance: 15
@@ -70,8 +71,8 @@ MonoBehaviour:
   rareItems:
   - {fileID: 2186262415711309002, guid: f4a06f44735f9124a889b39c08ab6f8d, type: 3}
   itemsSpawning: 0
+  cheesePity: 0
+  uncommonPity: 0
   waitingForPlayersToJoin: 0
   player1GameplaySpawnPosition: {fileID: 0}
   player2GameplaySpawnPosition: {fileID: 0}
-  cheesePity: 0
-  uncommonPity: 0
