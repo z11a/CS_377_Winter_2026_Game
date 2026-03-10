@@ -118,6 +118,8 @@ public class GameStateManager : MonoBehaviour
         if (playerHandler.playerTotalRoundScore >= 2)
         {
             Debug.Log(playerHandler.playerNumber + " won the game!");
+            UIManager.instance.roundWinText.text = $"{playerHandler.playerNumber} wins the game!";
+            UIManager.instance.roundWinText.gameObject.SetActive(true);
             GameStateManager.instance._gameState = GameStateManager.GameState.endGame;
             Time.timeScale = 0.0f;
         }

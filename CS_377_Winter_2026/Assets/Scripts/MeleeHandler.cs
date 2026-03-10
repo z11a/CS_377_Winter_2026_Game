@@ -196,6 +196,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
             {
                 owner.GetComponent<PlayerHandler>().weaponBreakParticleSystem.Play();
             }
+            owner.GetComponent<PlayerHandler>().SetupDefaultAttack();
             Destroy(this.gameObject);
         }
     }
