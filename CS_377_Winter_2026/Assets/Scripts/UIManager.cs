@@ -1,7 +1,10 @@
+using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.InputSystem;
+using NUnit.Framework;
 
 public class UIManager : MonoBehaviour
 {
@@ -11,6 +14,8 @@ public class UIManager : MonoBehaviour
     public GameObject StartMenuUI;
     public Button startMenuButton;
     public Button startGameButton;
+    public TextMeshProUGUI playerJoinText;
+    [HideInInspector] public List<TextMeshProUGUI> playerJoinTextList;
 
     [Header("Gameplay")]
     public GameObject GameplayUI;
@@ -21,6 +26,7 @@ public class UIManager : MonoBehaviour
     [Header("Other")]
     public RawImage loadingScreen;
     public float loadingScreenFadeDuration = 1.0f;
+    public Camera mainMenuCamera;
     
     void Awake()
     {
@@ -64,6 +70,18 @@ public class UIManager : MonoBehaviour
 
         startMenuButton.gameObject.SetActive(false);
         GameStateManager.instance.waitingForPlayersToJoin = true;
+        GameStateManager.instance._gameState = GameStateManager.GameState.inCharacterCustomization;
+
+        for (int i = 0; i < 2; i++)
+        {
+            Vector3 worldPos = InputManager.instance.playerStartSceneSpawnPositions[i].position;
+            Vector3 screenPos = mainMenuCamera.WorldToScreenPoint(worldPos);
+
+            TextMeshProUGUI newPlayerJoinText = Instantiate(playerJoinText, screenPos, Quaternion.identity, StartMenuUI.transform);
+            playerJoinTextList.Add(newPlayerJoinText);
+            //newPlayerJoinText.transform.SetParent(StartMenuUI.transform, false);
+        }
+
         InputManager.instance.playerInputManager.EnableJoining();
     }
 

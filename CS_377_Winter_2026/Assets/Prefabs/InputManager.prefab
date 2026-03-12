@@ -89,6 +89,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ce0ccd470ff6a241a1736e17062ecc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputManager
+  playerStartSceneSpawnPositions:
+  - {fileID: 0}
+  - {fileID: 0}
   player1StartSceneSpawnPosition: {fileID: 0}
   player2StartSceneSpawnPosition: {fileID: 0}
   mousePrefab: {fileID: 1851747289199441563, guid: 2685a4c542937fc45b7e39bc68ba2ed2, type: 3}
@@ -98,5 +101,6 @@ MonoBehaviour:
   playerInputManager: {fileID: 0}
   player1Input: {fileID: 0}
   player2Input: {fileID: 0}
+  PlayerInputs: []
   player1Joined: 0
   player2Joined: 0

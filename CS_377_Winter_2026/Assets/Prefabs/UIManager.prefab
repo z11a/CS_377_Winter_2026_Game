@@ -2613,12 +2613,14 @@ MonoBehaviour:
   StartMenuUI: {fileID: 1669667440076628306}
   startMenuButton: {fileID: 7809153717032005315}
   startGameButton: {fileID: 3398578504957355426}
+  playerJoinText: {fileID: 130263239670656742, guid: a8c0bb24fd1f7f64781fc6915703f65b, type: 3}
   GameplayUI: {fileID: 6107706367813665172}
   roundWinText: {fileID: 1239903061912647574}
   roundTimerText: {fileID: 2632849960139944308}
   preRoundTimerText: {fileID: 6421543219367201211}
   loadingScreen: {fileID: 3557441147086426463}
   loadingScreenFadeDuration: 1
+  mainMenuCamera: {fileID: 0}
 --- !u!1 &7612441160009067011
 GameObject:
   m_ObjectHideFlags: 0
