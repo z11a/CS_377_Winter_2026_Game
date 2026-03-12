@@ -69,6 +69,9 @@ public class PlayerHandler : MonoBehaviour
     [HideInInspector] public GameObject possibleWeaponPickup;
     [HideInInspector] public StatTracker stats = new StatTracker();
 
+    private GameStateManager.GameState gameStateBeforePause;
+    private string actionMapBeforePause;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -87,6 +90,8 @@ public class PlayerHandler : MonoBehaviour
         _playerState = PlayerState.Idle;
         playerCanMove = false;
         SetupDefaultAttack();
+
+        gameStateBeforePause = GameStateManager.GameState.notInGame;
         //weaponEquippedObject = defaultAttackWeapon;
         //weaponEquippedObject.GetComponent<DefaultAttack>().owner = this.gameObject;
         //animator.SetFloat("WeaponSwingSpeed", weaponEquippedObject.GetComponent<DefaultAttack>().swingSpeed);
@@ -419,5 +424,34 @@ public class PlayerHandler : MonoBehaviour
         yield return null;
         cheeseHandler.StartFloatingAnimation();
         cheeseCol.isTrigger = true;
+    }
+
+    public void OnPause()
+    {
+        // FIX: unpausing doesnt unpause the coroutines
+
+        if (GameStateManager.instance._gameState == GameStateManager.GameState.isLoading)
+        {
+            return;
+        }
+
+        if (GameStateManager.instance._gameState == GameStateManager.GameState.isPaused)
+        {
+            GameStateManager.instance._gameState = gameStateBeforePause;
+            playerInput.SwitchCurrentActionMap(actionMapBeforePause);
+            UIManager.instance.DeactivatePauseScreen();
+            Time.timeScale = 1.0f;
+        }
+        else
+        {
+            gameStateBeforePause = GameStateManager.instance._gameState;
+
+            actionMapBeforePause = playerInput.currentActionMap.name;
+            playerInput.SwitchCurrentActionMap("UI");     
+            
+            GameStateManager.instance._gameState = GameStateManager.GameState.isPaused;
+            UIManager.instance.ActivatePauseScreen();
+            Time.timeScale = 0.0f;
+        }
     }
 }

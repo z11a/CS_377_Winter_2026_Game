@@ -23,6 +23,9 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI roundTimerText;
     public TextMeshProUGUI preRoundTimerText;
 
+    [Header("Pause Menu")]
+    public GameObject PauseMenuUI;
+
     [Header("Other")]
     public RawImage loadingScreen;
     public float loadingScreenFadeDuration = 1.0f;
@@ -50,6 +53,7 @@ public class UIManager : MonoBehaviour
         loadingScreen.gameObject.SetActive(false);
         StartMenuUI.SetActive(true);
         GameplayUI.SetActive(false);
+        PauseMenuUI.SetActive(false);
         roundWinText.gameObject.SetActive(false);
     }
 
@@ -160,5 +164,15 @@ public class UIManager : MonoBehaviour
     public void DeactivateRoundWinText()
     {
         roundWinText.gameObject.SetActive(false);
+    }
+
+    public void ActivatePauseScreen()
+    {
+        PauseMenuUI.SetActive(true);
+    }
+
+    public void DeactivatePauseScreen()
+    {
+        PauseMenuUI.SetActive(false);
     }
 }

@@ -20,6 +20,7 @@ public class GameStateManager : MonoBehaviour
         //loadingScreen,
         //intermission, // in between rounds / before the first round starts.
         notInGame,
+        isLoading,
         inGame,
         isPaused,
         inCharacterCustomization
@@ -108,17 +109,22 @@ public class GameStateManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (itemSpawningCoroutine != null && _gameState != GameState.inGame)
-        {
-            StopCoroutine(itemSpawningCoroutine);
-            StopCoroutine(roundTimerCoroutine);
-        }
+
     }
     public void PlayerWonRound(PlayerHandler playerHandler)
     {
         if (winSFX != null && AudioManager.instance.audioSource != null)
         {
             AudioManager.instance.audioSource.PlayOneShot(winSFX);
+        }
+
+        if (itemSpawningCoroutine != null)
+        {
+            StopCoroutine(itemSpawningCoroutine);
+        }
+        if (roundTimerCoroutine != null)
+        {
+            StopCoroutine(roundTimerCoroutine);
         }
 
         playerHandler.playerTotalRoundScore++;
@@ -151,9 +157,10 @@ public class GameStateManager : MonoBehaviour
 
     private IEnumerator StartRoundTimer()
     {
-        yield return null;
+        _gameState = GameState.inGame;
+        _currentRoundState = RoundState.inRound;
 
-        //currentRoundTime = roundLength;
+        currentRoundTime = roundLength;
 
         int minutes = (int)(GameStateManager.instance.currentRoundTime / 60);
         int seconds = (int)(GameStateManager.instance.currentRoundTime % 60);
@@ -168,8 +175,9 @@ public class GameStateManager : MonoBehaviour
             if (currentRoundTime <= 0.0f)
             {
                 Debug.Log("Round over.");
-                //_gameState = GameState.intermission;
+
                 _currentRoundState = RoundState.postRound;
+
                 // check for cheese tie here, if they have the same cheeses maybe we check who hit more attacks
                 PlayerHandler playerOneHandler = InputManager.instance.PlayerInputs[0].GetComponent<PlayerHandler>();
                 PlayerHandler playerTwoHandler = InputManager.instance.PlayerInputs[1].GetComponent<PlayerHandler>();
@@ -186,7 +194,6 @@ public class GameStateManager : MonoBehaviour
                 {
 
                 }
-
                 yield break;
             }
         }
@@ -194,8 +201,6 @@ public class GameStateManager : MonoBehaviour
 
     private IEnumerator StartPreRoundCountdown()
     {
-        yield return null;
-
         _currentRoundState = RoundState.preRound;
 
         float _countdownTime = countdownLength;
@@ -209,6 +214,8 @@ public class GameStateManager : MonoBehaviour
 
         while (true)
         {
+            //yield return null;
+
             Debug.Log("Countdown: " + _countdownTime);
 
             UIManager.instance.preRoundTimerText.text = _countdownTime.ToString();
@@ -220,8 +227,6 @@ public class GameStateManager : MonoBehaviour
             if (_countdownTime <= 0.0f)
             {
                 Debug.Log("Countdown ended.");
-                _gameState = GameState.inGame;
-                _currentRoundState = RoundState.inRound;
 
                 foreach (PlayerInput playerInput in InputManager.instance.PlayerInputs)
                 {
@@ -292,12 +297,15 @@ public class GameStateManager : MonoBehaviour
     }
     public IEnumerator LoadGameplaySceneAsync(RoundNumber roundNumber)
     {
+        _gameState = GameState.isLoading;
+
         foreach (PlayerInput playerInput in InputManager.instance.PlayerInputs)
         {
             playerInput.StopAllCoroutines();
             playerInput.SwitchCurrentActionMap("UI");
             playerInput.GetComponent<PlayerHandler>().playerCanMove = false;
         }
+
         //InputManager.instance.player1Input.StopAllCoroutines();
         //InputManager.instance.player2Input.StopAllCoroutines();
         //InputManager.instance.player1Input.SwitchCurrentActionMap("UI");
@@ -376,6 +384,8 @@ public class GameStateManager : MonoBehaviour
 
         while (itemsSpawning)
         {
+            yield return null;
+
             bool allLocationsFull = itemSpawnDictionary.Values.All(value => value != null);
 
             if (allLocationsFull)

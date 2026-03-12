@@ -61,7 +61,6 @@ public class InputManager : MonoBehaviour
             PlayerInputs.Add(playerInput);
             PlayerInputs[0] = playerInput;
             PlayerInputs[0].GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.PlayerOne;
-            //PlayerInputs[0].GetComponent<PlayerHandler>().playerCanMove = false;
             PlayerInputs[0].GetComponent<Rigidbody>().position = playerStartSceneSpawnPositions[0].position;
             PlayerInputs[0].SwitchCurrentActionMap("UI");
             Destroy(UIManager.instance.playerJoinTextList[0]);
@@ -76,7 +75,6 @@ public class InputManager : MonoBehaviour
             player2Joined = true;
             PlayerInputs.Add(playerInput);
             PlayerInputs[1].GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.PlayerTwo;
-            //PlayerInputs[1].GetComponent<PlayerHandler>().playerCanMove = false;
             PlayerInputs[1].GetComponent<Rigidbody>().position = playerStartSceneSpawnPositions[1].position;
             PlayerInputs[1].SwitchCurrentActionMap("UI");
             Destroy(UIManager.instance.playerJoinTextList[1]);
