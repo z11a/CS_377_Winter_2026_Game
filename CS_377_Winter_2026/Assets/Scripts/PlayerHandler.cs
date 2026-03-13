@@ -15,7 +15,7 @@ public class PlayerHandler : MonoBehaviour
     private PlayerInput playerInput;
     private Vector2 moveAmount;
     private CharacterController controller;
-    private Rigidbody rb;
+    [HideInInspector] public Rigidbody rb;
     private Animator animator;
     private SkinnedMeshRenderer playerRenderer;
 
@@ -317,6 +317,7 @@ public class PlayerHandler : MonoBehaviour
         maxPlayerSpeed = 25.0f;
         playerWeight = 0.0f;
         _playerState = PlayerState.Idle;
+        playerCurrentHoldingCheeses.Clear();
 
         possibleWeaponPickup = null;
         if (weaponEquippedObject != null)
@@ -428,8 +429,6 @@ public class PlayerHandler : MonoBehaviour
 
     public void OnPause()
     {
-        // FIX: unpausing doesnt unpause the coroutines
-
         if (GameStateManager.instance._gameState == GameStateManager.GameState.isLoading)
         {
             return;
@@ -437,21 +436,35 @@ public class PlayerHandler : MonoBehaviour
 
         if (GameStateManager.instance._gameState == GameStateManager.GameState.isPaused)
         {
-            GameStateManager.instance._gameState = gameStateBeforePause;
             playerInput.SwitchCurrentActionMap(actionMapBeforePause);
+
+            InputManager.instance.playerInPauseMenu = null;
+            GameStateManager.instance._gameState = gameStateBeforePause;
             UIManager.instance.DeactivatePauseScreen();
             Time.timeScale = 1.0f;
         }
         else
         {
-            gameStateBeforePause = GameStateManager.instance._gameState;
-
             actionMapBeforePause = playerInput.currentActionMap.name;
-            playerInput.SwitchCurrentActionMap("UI");     
-            
+            playerInput.SwitchCurrentActionMap("UI");
+
+            InputManager.instance.playerInPauseMenu = this.playerInput;
+            gameStateBeforePause = GameStateManager.instance._gameState;
             GameStateManager.instance._gameState = GameStateManager.GameState.isPaused;
             UIManager.instance.ActivatePauseScreen();
             Time.timeScale = 0.0f;
+        }
+    }
+
+    public void OnReset()
+    {
+        if (SceneManager.GetActiveScene().name == "TrainingArea" & GameStateManager.instance._gameState == GameStateManager.GameState.inGame)
+        {
+            DontDestroyOnLoad(this.gameObject);
+            ResetPlayerValues();
+            currentSpawnPosition = GameplaySceneReferences.instance.playerSpawnLocations[0];
+            rb.position = currentSpawnPosition.position;
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 }

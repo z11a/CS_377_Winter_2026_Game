@@ -302,7 +302,7 @@ public class GameStateManager : MonoBehaviour
         foreach (PlayerInput playerInput in InputManager.instance.PlayerInputs)
         {
             playerInput.StopAllCoroutines();
-            playerInput.SwitchCurrentActionMap("UI");
+            //playerInput.SwitchCurrentActionMap("UI");
             playerInput.GetComponent<PlayerHandler>().playerCanMove = false;
         }
 
