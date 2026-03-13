@@ -3,14 +3,15 @@ using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class InputManager : MonoBehaviour
 {
     public static InputManager instance;
 
-
-    [SerializeField] public Transform player1StartSceneSpawnPosition;
-    [SerializeField] public Transform player2StartSceneSpawnPosition;
+    [SerializeField] public List<Transform> playerStartSceneSpawnPositions;
+    //[SerializeField] public Transform player1StartSceneSpawnPosition;
+    //[SerializeField] public Transform player2StartSceneSpawnPosition;
     [SerializeField] public GameObject mousePrefab;
     [SerializeField] public GameObject ratPrefab;
     [SerializeField] public PlayerUIManager playerOneUIManager;
@@ -19,6 +20,7 @@ public class InputManager : MonoBehaviour
     [HideInInspector] public PlayerInputManager playerInputManager;
     [HideInInspector] public PlayerInput player1Input;
     [HideInInspector] public PlayerInput player2Input;
+    [HideInInspector] public List<PlayerInput> PlayerInputs;
     [HideInInspector] public bool player1Joined = false;
     [HideInInspector] public bool player2Joined = false;
 
@@ -56,11 +58,13 @@ public class InputManager : MonoBehaviour
         {
             Debug.Log("Player 1 joined.");
             player1Joined = true;
-            player1Input = playerInput;
-            player1Input.GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.PlayerOne;
-            player1Input.GetComponent<Rigidbody>().position = player1StartSceneSpawnPosition.position;
-            player1Input.SwitchCurrentActionMap("UI");
-            playerOneUIManager.playerHandler = player1Input.GetComponent<PlayerHandler>();
+            PlayerInputs.Add(playerInput);
+            PlayerInputs[0] = playerInput;
+            PlayerInputs[0].GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.PlayerOne;
+            PlayerInputs[0].GetComponent<Rigidbody>().position = playerStartSceneSpawnPositions[0].position;
+            PlayerInputs[0].SwitchCurrentActionMap("UI");
+            Destroy(UIManager.instance.playerJoinTextList[0]);
+            playerOneUIManager.playerHandler = PlayerInputs[0].GetComponent<PlayerHandler>();
 
             playerInputManager.playerPrefab = ratPrefab;
 
@@ -69,11 +73,12 @@ public class InputManager : MonoBehaviour
         {
             Debug.Log("Player 2 joined.");
             player2Joined = true;
-            player2Input = playerInput;
-            player2Input.GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.PlayerTwo;
-            player2Input.GetComponent<Rigidbody>().position = player2StartSceneSpawnPosition.position;
-            player2Input.SwitchCurrentActionMap("UI");
-            playerTwoUIManager.playerHandler = player2Input.GetComponent<PlayerHandler>();
+            PlayerInputs.Add(playerInput);
+            PlayerInputs[1].GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.PlayerTwo;
+            PlayerInputs[1].GetComponent<Rigidbody>().position = playerStartSceneSpawnPositions[1].position;
+            PlayerInputs[1].SwitchCurrentActionMap("UI");
+            Destroy(UIManager.instance.playerJoinTextList[1]);
+            playerTwoUIManager.playerHandler = PlayerInputs[1].GetComponent<PlayerHandler>();
 
             StartCoroutine(enableStartButton());
         }

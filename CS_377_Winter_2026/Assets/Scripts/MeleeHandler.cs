@@ -153,8 +153,9 @@ public class MeleeHandler : MonoBehaviour, IWeapon
                 if (weaponDurability <= 0.0f)
                 {
                     this.GetComponent<MeshRenderer>().enabled = false;
-                    owner.GetComponent<PlayerHandler>().weaponBreakParticleSystem.Play();
-                    owner.GetComponent<PlayerHandler>().SetupDefaultAttack();
+                    PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
+                    ownerPlayerHandler.weaponBreakParticleSystem.Play();
+                    ownerPlayerHandler.SetupDefaultAttack();
                 }
             }
         }
@@ -190,13 +191,16 @@ public class MeleeHandler : MonoBehaviour, IWeapon
 
     private void DurabilityCheck()
     {
+        PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
+
         if (weaponDurability <= 0.0f && this.GetComponent<DefaultAttack>() == null)
         {
             if (this.GetComponent<MeshRenderer>().enabled == true)
             {
-                owner.GetComponent<PlayerHandler>().weaponBreakParticleSystem.Play();
+                ownerPlayerHandler.weaponBreakParticleSystem.Play();
             }
-            owner.GetComponent<PlayerHandler>().SetupDefaultAttack();
+            ownerPlayerHandler.playerWeight -= this.rb.mass;
+            ownerPlayerHandler.SetupDefaultAttack();
             Destroy(this.gameObject);
         }
     }

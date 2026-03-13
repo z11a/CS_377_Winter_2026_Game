@@ -14639,6 +14639,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 120818318}
     - target: {fileID: 4989887453253210298, guid: c4a479deb5e4aea4daca7f18984fc90c, type: 3}
+      propertyPath: playerSpawnLocations.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4989887453253210298, guid: c4a479deb5e4aea4daca7f18984fc90c, type: 3}
       propertyPath: 'itemSpawnLocations.Array.data[0]'
       value: 
       objectReference: {fileID: 1002397543}
@@ -14658,6 +14662,14 @@ PrefabInstance:
       propertyPath: 'itemSpawnLocations.Array.data[4]'
       value: 
       objectReference: {fileID: 672910701}
+    - target: {fileID: 4989887453253210298, guid: c4a479deb5e4aea4daca7f18984fc90c, type: 3}
+      propertyPath: 'playerSpawnLocations.Array.data[0]'
+      value: 
+      objectReference: {fileID: 381212006}
+    - target: {fileID: 4989887453253210298, guid: c4a479deb5e4aea4daca7f18984fc90c, type: 3}
+      propertyPath: 'playerSpawnLocations.Array.data[1]'
+      value: 
+      objectReference: {fileID: 120818318}
     - target: {fileID: 7666263459621785240, guid: c4a479deb5e4aea4daca7f18984fc90c, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.13486

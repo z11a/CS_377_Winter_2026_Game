@@ -36,6 +36,7 @@ public class PlayerHandler : MonoBehaviour
 
     [Header("Main Player Attributes")]
     public float playerHealth = 50.0f;
+    public bool playerCanMove;
     public float maxPlayerSpeed = 25.0f;
     [HideInInspector] public float playerWeight = 0.0f;
     public float respawnTime = 3.0f;
@@ -68,6 +69,9 @@ public class PlayerHandler : MonoBehaviour
     [HideInInspector] public GameObject possibleWeaponPickup;
     [HideInInspector] public StatTracker stats = new StatTracker();
 
+    private GameStateManager.GameState gameStateBeforePause;
+    private string actionMapBeforePause;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -77,15 +81,20 @@ public class PlayerHandler : MonoBehaviour
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
         rb.isKinematic = false;
+
         playerRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
         defaultMaterial = playerRenderer.material;
         maxWalkingParticleSpeed = PlayerWalkingParticleSystem.main.startSpeed.constant;
         maxEmissionRateOverTime = PlayerWalkingParticleSystem.emission.rateOverTime.constant;
 
         _playerState = PlayerState.Idle;
-        weaponEquippedObject = defaultAttackWeapon;
-        weaponEquippedObject.GetComponent<DefaultAttack>().owner = this.gameObject;
-        animator.SetFloat("WeaponSwingSpeed", weaponEquippedObject.GetComponent<DefaultAttack>().swingSpeed);
+        playerCanMove = false;
+        SetupDefaultAttack();
+
+        gameStateBeforePause = GameStateManager.GameState.notInGame;
+        //weaponEquippedObject = defaultAttackWeapon;
+        //weaponEquippedObject.GetComponent<DefaultAttack>().owner = this.gameObject;
+        //animator.SetFloat("WeaponSwingSpeed", weaponEquippedObject.GetComponent<DefaultAttack>().swingSpeed);
     }
 
     // Update is called once per frame
@@ -96,18 +105,29 @@ public class PlayerHandler : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (GameStateManager.instance._gameState == GameStateManager.GameState.inGame || GameStateManager.instance._gameState == GameStateManager.GameState.intermission)
-        {
-            MovementHandlerRigidbody();
-        }
+        //if (GameStateManager.instance._gameState == GameStateManager.GameState.inGame || GameStateManager.instance._gameState == GameStateManager.GameState.intermission)
+        //{
+        //    MovementHandlerRigidbody();
+        //}
+
+        MovementHandlerRigidbody();
     }
 
     private void MovementHandlerRigidbody()
     {
-        if (_playerState == PlayerState.Dead)
+        //rb.AddForce(Physics.gravity);
+
+        if (_playerState == PlayerState.Dead || !playerCanMove)
         {
             return;
         }
+
+        //if (!playerCanMove)
+        //{
+        //    rb.angularVelocity = Vector3.zero;
+        //    rb.linearVelocity = Vector3.zero;
+        //    return;
+        //}
 
         Vector3 movement = new Vector3(moveAmount.x, 0, moveAmount.y);
 
@@ -271,7 +291,7 @@ public class PlayerHandler : MonoBehaviour
     {
         Debug.Log(playerNumber + " died.");
 
-        GetComponent<PlayerInput>().DeactivateInput();
+        playerCanMove = false;
         rb.constraints = RigidbodyConstraints.None;
         animator.ResetTrigger("Idle");
         animator.SetTrigger("Death");
@@ -281,7 +301,7 @@ public class PlayerHandler : MonoBehaviour
 
         rb.position = currentSpawnPosition.position;
         ResetPlayerValues();
-        GetComponent<PlayerInput>().ActivateInput();
+        playerCanMove = true;
         //yield return new WaitForSeconds(invincibilityTime);
     }
 
@@ -404,5 +424,34 @@ public class PlayerHandler : MonoBehaviour
         yield return null;
         cheeseHandler.StartFloatingAnimation();
         cheeseCol.isTrigger = true;
+    }
+
+    public void OnPause()
+    {
+        // FIX: unpausing doesnt unpause the coroutines
+
+        if (GameStateManager.instance._gameState == GameStateManager.GameState.isLoading)
+        {
+            return;
+        }
+
+        if (GameStateManager.instance._gameState == GameStateManager.GameState.isPaused)
+        {
+            GameStateManager.instance._gameState = gameStateBeforePause;
+            playerInput.SwitchCurrentActionMap(actionMapBeforePause);
+            UIManager.instance.DeactivatePauseScreen();
+            Time.timeScale = 1.0f;
+        }
+        else
+        {
+            gameStateBeforePause = GameStateManager.instance._gameState;
+
+            actionMapBeforePause = playerInput.currentActionMap.name;
+            playerInput.SwitchCurrentActionMap("UI");     
+            
+            GameStateManager.instance._gameState = GameStateManager.GameState.isPaused;
+            UIManager.instance.ActivatePauseScreen();
+            Time.timeScale = 0.0f;
+        }
     }
 }

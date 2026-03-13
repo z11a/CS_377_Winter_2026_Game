@@ -60,8 +60,9 @@ public class CheeseCollector : MonoBehaviour
 
     private void RoundWinCheck(PlayerHandler playerHandler)
     {
-        if (GameStateManager.instance._gameState == GameStateManager.GameState.intermission)
+        if (GameStateManager.instance._currentRoundState == GameStateManager.RoundState.postRound)
         {
+            // someone already won, return
             return;
         }
         switch (GameStateManager.instance._currentRound)

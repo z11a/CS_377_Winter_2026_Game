@@ -15,12 +15,15 @@ public class GameStateManager : MonoBehaviour
 
     public enum GameState
     {
-        mainMenu,
-        pauseMenu,
-        loadingScreen,
+        //mainMenu,
+        //pauseMenu,
+        //loadingScreen,
+        //intermission, // in between rounds / before the first round starts.
+        notInGame,
+        isLoading,
         inGame,
-        intermission, // in between rounds / before the first round starts.
-        endGame
+        isPaused,
+        inCharacterCustomization
     }
     public enum RoundNumber
     {
@@ -28,10 +31,17 @@ public class GameStateManager : MonoBehaviour
         Two,
         Three
     }
+    public enum RoundState
+    {
+        preRound,
+        inRound,
+        postRound
+    }
 
     [Header("Game State Tracking")]
     public GameState _gameState;
     public RoundNumber _currentRound;
+    public RoundState _currentRoundState;
 
     [Header("Timing")]
     public float countdownLength = 3.0f;
@@ -62,8 +72,9 @@ public class GameStateManager : MonoBehaviour
     [HideInInspector] public int uncommonPity = 0;
 
     [HideInInspector] public bool waitingForPlayersToJoin = false;
-    [HideInInspector] public Transform player1GameplaySpawnPosition;
-    [HideInInspector] public Transform player2GameplaySpawnPosition;
+    [HideInInspector] public List<Transform> playerGameplaySpawnPositions;
+    //[HideInInspector] public Transform player1GameplaySpawnPosition;
+    //[HideInInspector] public Transform player2GameplaySpawnPosition;
 
     void Awake()
     {
@@ -88,28 +99,32 @@ public class GameStateManager : MonoBehaviour
             itemsSpawning = true;
             itemSpawningCoroutine = itemSpawning();
             StartCoroutine(itemSpawningCoroutine);
-            //StartCoroutine(StartPreRoundCountdown());
         }
         else
         {
-            _gameState = GameState.mainMenu;
+            _gameState = GameState.notInGame;
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (itemSpawningCoroutine != null && _gameState != GameState.inGame)
-        {
-            StopCoroutine(itemSpawningCoroutine);
-            StopCoroutine(roundTimerCoroutine);
-        }
+
     }
     public void PlayerWonRound(PlayerHandler playerHandler)
     {
         if (winSFX != null && AudioManager.instance.audioSource != null)
         {
             AudioManager.instance.audioSource.PlayOneShot(winSFX);
+        }
+
+        if (itemSpawningCoroutine != null)
+        {
+            StopCoroutine(itemSpawningCoroutine);
+        }
+        if (roundTimerCoroutine != null)
+        {
+            StopCoroutine(roundTimerCoroutine);
         }
 
         playerHandler.playerTotalRoundScore++;
@@ -120,7 +135,7 @@ public class GameStateManager : MonoBehaviour
             Debug.Log(playerHandler.playerNumber + " won the game!");
             UIManager.instance.roundWinText.text = $"{playerHandler.playerNumber} wins the game!";
             UIManager.instance.roundWinText.gameObject.SetActive(true);
-            GameStateManager.instance._gameState = GameStateManager.GameState.endGame;
+            GameStateManager.instance._gameState = GameStateManager.GameState.notInGame;
             Time.timeScale = 0.0f;
         }
         else
@@ -133,7 +148,7 @@ public class GameStateManager : MonoBehaviour
     }
     private IEnumerator ActivateIntermission(GameStateManager.RoundNumber nextRoundNumber)
     {
-        GameStateManager.instance._gameState = GameStateManager.GameState.intermission;
+        //.instance._gameState = GameStateManager.GameState.intermission;
 
         yield return new WaitForSeconds(GameStateManager.instance.intermissionLength);
 
@@ -142,9 +157,10 @@ public class GameStateManager : MonoBehaviour
 
     private IEnumerator StartRoundTimer()
     {
-        yield return null;
+        _gameState = GameState.inGame;
+        _currentRoundState = RoundState.inRound;
 
-        //currentRoundTime = roundLength;
+        currentRoundTime = roundLength;
 
         int minutes = (int)(GameStateManager.instance.currentRoundTime / 60);
         int seconds = (int)(GameStateManager.instance.currentRoundTime % 60);
@@ -159,10 +175,12 @@ public class GameStateManager : MonoBehaviour
             if (currentRoundTime <= 0.0f)
             {
                 Debug.Log("Round over.");
-                _gameState = GameState.intermission;
+
+                _currentRoundState = RoundState.postRound;
+
                 // check for cheese tie here, if they have the same cheeses maybe we check who hit more attacks
-                PlayerHandler playerOneHandler = InputManager.instance.player1Input.GetComponent<PlayerHandler>();
-                PlayerHandler playerTwoHandler = InputManager.instance.player2Input.GetComponent<PlayerHandler>();
+                PlayerHandler playerOneHandler = InputManager.instance.PlayerInputs[0].GetComponent<PlayerHandler>();
+                PlayerHandler playerTwoHandler = InputManager.instance.PlayerInputs[1].GetComponent<PlayerHandler>();
 
                 if (playerOneHandler.playerCurrentRoundScore > playerTwoHandler.playerCurrentRoundScore)
                 {
@@ -176,7 +194,6 @@ public class GameStateManager : MonoBehaviour
                 {
 
                 }
-
                 yield break;
             }
         }
@@ -184,7 +201,7 @@ public class GameStateManager : MonoBehaviour
 
     private IEnumerator StartPreRoundCountdown()
     {
-        yield return null;
+        _currentRoundState = RoundState.preRound;
 
         float _countdownTime = countdownLength;
 
@@ -197,6 +214,8 @@ public class GameStateManager : MonoBehaviour
 
         while (true)
         {
+            //yield return null;
+
             Debug.Log("Countdown: " + _countdownTime);
 
             UIManager.instance.preRoundTimerText.text = _countdownTime.ToString();
@@ -208,10 +227,14 @@ public class GameStateManager : MonoBehaviour
             if (_countdownTime <= 0.0f)
             {
                 Debug.Log("Countdown ended.");
-                _gameState = GameState.inGame;
 
-                InputManager.instance.player1Input.SwitchCurrentActionMap("Player");
-                InputManager.instance.player2Input.SwitchCurrentActionMap("Player");
+                foreach (PlayerInput playerInput in InputManager.instance.PlayerInputs)
+                {
+                    playerInput.SwitchCurrentActionMap("Player");
+                    playerInput.GetComponent<PlayerHandler>().playerCanMove = true;
+                }
+                //InputManager.instance.PlayerInputs[0].SwitchCurrentActionMap("Player");
+                //InputManager.instance.PlayerInputs[1].SwitchCurrentActionMap("Player");
 
                 itemsSpawning = true;
                 itemSpawningCoroutine = itemSpawning();
@@ -242,17 +265,26 @@ public class GameStateManager : MonoBehaviour
 
     private void GameplaySceneSetup()
     {
-        InputManager.instance.player1Input.GetComponent<Rigidbody>().position = player1GameplaySpawnPosition.position;
-        InputManager.instance.player1Input.GetComponent<PlayerHandler>().currentSpawnPosition = player1GameplaySpawnPosition;
-        InputManager.instance.player1Input.GetComponent<PlayerHandler>().playerCurrentHoldingCheeses = new List<GameObject>();
-        InputManager.instance.player1Input.GetComponent<PlayerHandler>().playerCurrentRoundScore = 0;
-        InputManager.instance.player1Input.GetComponent<PlayerHandler>().ResetPlayerValues();
+        for (int i = 0; i < InputManager.instance.PlayerInputs.Count; i++) 
+        {
+            PlayerInput playerInput = InputManager.instance.PlayerInputs[i];
+            playerInput.GetComponent<Rigidbody>().position = playerGameplaySpawnPositions[i].position;
+            playerInput.GetComponent<PlayerHandler>().currentSpawnPosition = playerGameplaySpawnPositions[i];
+            playerInput.GetComponent<PlayerHandler>().playerCurrentHoldingCheeses = new List<GameObject>();
+            playerInput.GetComponent<PlayerHandler>().playerCurrentRoundScore = 0;
+            playerInput.GetComponent<PlayerHandler>().ResetPlayerValues();
+        }
+        //InputManager.instance.player1Input.GetComponent<Rigidbody>().position = player1GameplaySpawnPosition.position;
+        //InputManager.instance.player1Input.GetComponent<PlayerHandler>().currentSpawnPosition = player1GameplaySpawnPosition;
+        //InputManager.instance.player1Input.GetComponent<PlayerHandler>().playerCurrentHoldingCheeses = new List<GameObject>();
+        //InputManager.instance.player1Input.GetComponent<PlayerHandler>().playerCurrentRoundScore = 0;
+        //InputManager.instance.player1Input.GetComponent<PlayerHandler>().ResetPlayerValues();
 
-        InputManager.instance.player2Input.GetComponent<Rigidbody>().position = player2GameplaySpawnPosition.position;
-        InputManager.instance.player2Input.GetComponent<PlayerHandler>().currentSpawnPosition = player2GameplaySpawnPosition;
-        InputManager.instance.player2Input.GetComponent<PlayerHandler>().playerCurrentHoldingCheeses = new List<GameObject>();
-        InputManager.instance.player2Input.GetComponent<PlayerHandler>().playerCurrentRoundScore = 0;
-        InputManager.instance.player2Input.GetComponent<PlayerHandler>().ResetPlayerValues();
+        //InputManager.instance.player2Input.GetComponent<Rigidbody>().position = player2GameplaySpawnPosition.position;
+        //InputManager.instance.player2Input.GetComponent<PlayerHandler>().currentSpawnPosition = player2GameplaySpawnPosition;
+        //InputManager.instance.player2Input.GetComponent<PlayerHandler>().playerCurrentHoldingCheeses = new List<GameObject>();
+        //InputManager.instance.player2Input.GetComponent<PlayerHandler>().playerCurrentRoundScore = 0;
+        //InputManager.instance.player2Input.GetComponent<PlayerHandler>().ResetPlayerValues();
 
         currentRoundTime = roundLength;
         int minutes = (int)(GameStateManager.instance.currentRoundTime / 60);
@@ -265,10 +297,19 @@ public class GameStateManager : MonoBehaviour
     }
     public IEnumerator LoadGameplaySceneAsync(RoundNumber roundNumber)
     {
-        InputManager.instance.player1Input.StopAllCoroutines();
-        InputManager.instance.player2Input.StopAllCoroutines();
-        InputManager.instance.player1Input.SwitchCurrentActionMap("UI");
-        InputManager.instance.player2Input.SwitchCurrentActionMap("UI");
+        _gameState = GameState.isLoading;
+
+        foreach (PlayerInput playerInput in InputManager.instance.PlayerInputs)
+        {
+            playerInput.StopAllCoroutines();
+            playerInput.SwitchCurrentActionMap("UI");
+            playerInput.GetComponent<PlayerHandler>().playerCanMove = false;
+        }
+
+        //InputManager.instance.player1Input.StopAllCoroutines();
+        //InputManager.instance.player2Input.StopAllCoroutines();
+        //InputManager.instance.player1Input.SwitchCurrentActionMap("UI");
+        //InputManager.instance.player2Input.SwitchCurrentActionMap("UI");
 
         UIManager.instance.ActivateLoadingScreen();
         yield return null;
@@ -291,7 +332,7 @@ public class GameStateManager : MonoBehaviour
                 break;
         }
 
-        _gameState = GameState.loadingScreen;
+        _gameState = GameState.notInGame;
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive);
         asyncLoad.allowSceneActivation = false;
 
@@ -308,14 +349,18 @@ public class GameStateManager : MonoBehaviour
 
                 yield return null;
 
-                SceneManager.MoveGameObjectToScene(InputManager.instance.player1Input.gameObject, SceneManager.GetSceneByBuildIndex(sceneIndex));
-                SceneManager.MoveGameObjectToScene(InputManager.instance.player2Input.gameObject, SceneManager.GetSceneByBuildIndex(sceneIndex));
+                foreach (PlayerInput playerInput in InputManager.instance.PlayerInputs)
+                {
+                    SceneManager.MoveGameObjectToScene(playerInput.gameObject, SceneManager.GetSceneByBuildIndex(sceneIndex));
+                }
+
                 SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
                 LightProbes.Tetrahedralize();
 
                 var refs = GameplaySceneReferences.instance;
-                player1GameplaySpawnPosition = refs.player1Spawn;
-                player2GameplaySpawnPosition = refs.player2Spawn;
+                //player1GameplaySpawnPosition = refs.player1Spawn;
+                //player2GameplaySpawnPosition = refs.player2Spawn;
+                playerGameplaySpawnPositions = refs.playerSpawnLocations;
                 possibleItemSpawnLocations = refs.itemSpawnLocations;
 
                 GameplaySceneSetup();
@@ -339,6 +384,8 @@ public class GameStateManager : MonoBehaviour
 
         while (itemsSpawning)
         {
+            yield return null;
+
             bool allLocationsFull = itemSpawnDictionary.Values.All(value => value != null);
 
             if (allLocationsFull)
