@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.InputSystem;
 using NUnit.Framework;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -14,7 +15,8 @@ public class UIManager : MonoBehaviour
     public GameObject StartMenuUI;
     public Button startMenuButton;
     public Button startGameButton;
-    public TextMeshProUGUI playerJoinText;
+    public Button trainingAreaButton;
+    public TextMeshProUGUI playerJoinTextPrefab;
     [HideInInspector] public List<TextMeshProUGUI> playerJoinTextList;
 
     [Header("Gameplay")]
@@ -48,13 +50,7 @@ public class UIManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        startGameButton.gameObject.SetActive(false);
-        startMenuButton.gameObject.SetActive(true);
-        loadingScreen.gameObject.SetActive(false);
-        StartMenuUI.SetActive(true);
-        GameplayUI.SetActive(false);
-        PauseMenuUI.SetActive(false);
-        roundWinText.gameObject.SetActive(false);
+        InitialUISetup();
     }
 
     // Update is called once per frame
@@ -68,11 +64,91 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void InitialUISetup()
+    {
+        startGameButton.gameObject.SetActive(false);
+        startMenuButton.gameObject.SetActive(true);
+        loadingScreen.gameObject.SetActive(false);
+        StartMenuUI.SetActive(true);
+        GameplayUI.SetActive(false);
+        PauseMenuUI.SetActive(false);
+        roundWinText.gameObject.SetActive(false);
+
+        // setup training area button to be faded and non-interactable until enabled
+        trainingAreaButton.gameObject.SetActive(false);
+        trainingAreaButton.interactable = false;
+        Color transparent = trainingAreaButton.image.color;
+        transparent.a = 0.3f;
+        trainingAreaButton.image.color = transparent;
+    }
+    public void ActivateTrainingAreaButton()
+    {
+        trainingAreaButton.interactable = true;
+        Color fullAlpha = trainingAreaButton.image.color;
+        fullAlpha.a = 1.0f;
+        trainingAreaButton.image.color = fullAlpha;
+    }
+
+    public void OnTrainingAreaButton()
+    {
+        StartCoroutine(LoadTrainingArea());
+    }
+
+    private IEnumerator LoadTrainingArea()
+    {
+        ActivateLoadingScreen();
+
+        GameStateManager.instance._gameState = GameStateManager.GameState.isLoading;
+        InputManager.instance.playerInputManager.DisableJoining();
+
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("TrainingArea", LoadSceneMode.Additive);
+        asyncLoad.allowSceneActivation = false;
+
+        while (!asyncLoad.isDone)
+        {
+            Debug.Log("Progress: " + asyncLoad.progress * 100 + "%");
+
+            if (asyncLoad.progress >= 0.9f)
+            {
+                Debug.Log("Loaded! Switching scene in 2 seconds...");
+
+                yield return new WaitForSeconds(2.0f);
+                asyncLoad.allowSceneActivation = true;
+
+                yield return null;
+
+                PlayerInput playerOneInput = InputManager.instance.PlayerInputs[0];
+
+                SceneManager.MoveGameObjectToScene(InputManager.instance.PlayerInputs[0].gameObject, SceneManager.GetSceneByName("TrainingArea"));
+
+                SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
+                LightProbes.Tetrahedralize();
+
+                var refs = GameplaySceneReferences.instance;
+                
+                Transform playerSpawnPosition = refs.playerSpawnLocations[0];
+
+                PlayerHandler playerOnePlayerHandler = playerOneInput.GetComponent<PlayerHandler>();
+                playerOnePlayerHandler.rb.position = playerSpawnPosition.position;
+                playerOnePlayerHandler.currentSpawnPosition = playerSpawnPosition;
+                playerOnePlayerHandler.playerCanMove = true;
+                playerOneInput.SwitchCurrentActionMap("Player");
+
+                DeactivateLoadingScreen();
+                GameStateManager.instance._gameState = GameStateManager.GameState.inGame;
+            }
+            
+            yield return null;
+        }
+    }
+
     public void OnStartButton()
     {
         Debug.Log("Start Menu button pressed.");
 
         startMenuButton.gameObject.SetActive(false);
+        trainingAreaButton.gameObject.SetActive(true);
+
         GameStateManager.instance.waitingForPlayersToJoin = true;
         GameStateManager.instance._gameState = GameStateManager.GameState.inCharacterCustomization;
 
@@ -81,9 +157,8 @@ public class UIManager : MonoBehaviour
             Vector3 worldPos = InputManager.instance.playerStartSceneSpawnPositions[i].position;
             Vector3 screenPos = mainMenuCamera.WorldToScreenPoint(worldPos);
 
-            TextMeshProUGUI newPlayerJoinText = Instantiate(playerJoinText, screenPos, Quaternion.identity, StartMenuUI.transform);
+            TextMeshProUGUI newPlayerJoinText = Instantiate(playerJoinTextPrefab, screenPos, Quaternion.identity, StartMenuUI.transform);
             playerJoinTextList.Add(newPlayerJoinText);
-            //newPlayerJoinText.transform.SetParent(StartMenuUI.transform, false);
         }
 
         InputManager.instance.playerInputManager.EnableJoining();
@@ -91,8 +166,6 @@ public class UIManager : MonoBehaviour
 
     public void OnStartGameButton()
     {
-        Debug.Log("Start Game button pressed.");
-
         startGameButton.gameObject.SetActive(false);
         StartCoroutine(GameStateManager.instance.LoadGameplaySceneAsync(GameStateManager.RoundNumber.One));
     }
@@ -174,5 +247,36 @@ public class UIManager : MonoBehaviour
     public void DeactivatePauseScreen()
     {
         PauseMenuUI.SetActive(false);
+    }
+
+    
+
+    public void OnQuitButton()
+    {
+        //InputManager.instance.StopAllCoroutines();
+
+        //foreach (PlayerInput playerInput in InputManager.instance.PlayerInputs)
+        //{
+        //    Destroy(playerInput.gameObject);
+        //}
+
+        //InputManager.instance.PlayerInputs.Clear();
+        //InputManager.instance.player1Joined = false;
+        //InputManager.instance.player2Joined = false;
+
+        //GameStateManager.instance.StopAllCoroutines();
+        //GameStateManager.instance.waitingForPlayersToJoin = false;
+        //GameStateManager.instance._gameState = GameStateManager.GameState.notInGame;
+        //GameStateManager.instance.itemSpawnDictionary.Clear();
+
+        foreach (PlayerInput playerInput in InputManager.instance.PlayerInputs)
+        {
+            Destroy(playerInput.gameObject);
+        }
+        Destroy(InputManager.instance.gameObject);
+        Destroy(GameStateManager.instance.gameObject);
+        Time.timeScale = 1.0f;
+        SceneManager.LoadScene("StartScene");
+        Destroy(this.gameObject);
     }
 }
