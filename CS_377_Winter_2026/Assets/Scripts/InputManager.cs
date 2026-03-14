@@ -67,7 +67,8 @@ public class InputManager : MonoBehaviour
 
             Destroy(UIManager.instance.playerJoinTextList[0]);
             playerOneUIManager.playerHandler = PlayerInputs[0].GetComponent<PlayerHandler>();
-            UIManager.instance.ActivateTrainingAreaButton();
+
+            StartCoroutine(UIManager.instance.ActivateTrainingAreaButton());
 
             playerInputManager.playerPrefab = ratPrefab;
 
@@ -80,19 +81,12 @@ public class InputManager : MonoBehaviour
             PlayerInputs[1].GetComponent<PlayerHandler>().playerNumber = PlayerHandler.PlayerNumber.PlayerTwo;
             PlayerInputs[1].GetComponent<Rigidbody>().position = playerStartSceneSpawnPositions[1].position;
             PlayerInputs[1].SwitchCurrentActionMap("UI");
+
             Destroy(UIManager.instance.playerJoinTextList[1]);
             playerTwoUIManager.playerHandler = PlayerInputs[1].GetComponent<PlayerHandler>();
 
-            StartCoroutine(enableStartButton());
+            StartCoroutine(UIManager.instance.ActivateStartGameButton());
+            playerInputManager.DisableJoining();
         }
-    }
-
-    private IEnumerator enableStartButton()     // This is in a coroutine because we need to pause one frame before enabling the start button. This is because clicking Submit on my Xbox controller to join the game also instantly presses the start button. 
-    {
-        yield return null;
-
-        UIManager.instance.startGameButton.gameObject.SetActive(true);
-        EventSystem.current.SetSelectedGameObject(UIManager.instance.startGameButton.gameObject);
-        playerInputManager.DisableJoining();
     }
 }

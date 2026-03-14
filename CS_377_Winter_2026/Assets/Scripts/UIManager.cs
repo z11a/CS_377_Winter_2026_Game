@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine.InputSystem;
 using NUnit.Framework;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class UIManager : MonoBehaviour
 {
@@ -66,27 +67,32 @@ public class UIManager : MonoBehaviour
 
     public void InitialUISetup()
     {
-        startGameButton.gameObject.SetActive(false);
+        StartMenuUI.SetActive(true);
         startMenuButton.gameObject.SetActive(true);
         loadingScreen.gameObject.SetActive(false);
-        StartMenuUI.SetActive(true);
         GameplayUI.SetActive(false);
         PauseMenuUI.SetActive(false);
         roundWinText.gameObject.SetActive(false);
 
-        // setup training area button to be faded and non-interactable until enabled
+        startGameButton.gameObject.SetActive(false);
+        startGameButton.interactable = false;
+
         trainingAreaButton.gameObject.SetActive(false);
         trainingAreaButton.interactable = false;
-        Color transparent = trainingAreaButton.image.color;
-        transparent.a = 0.3f;
-        trainingAreaButton.image.color = transparent;
     }
-    public void ActivateTrainingAreaButton()
+
+    public IEnumerator ActivateStartGameButton() // This is in a coroutine because we need to pause one frame before enabling the start button. This is because clicking A on my Xbox controller to join the game also instantly presses the start button. 
     {
+        yield return null;
+        startGameButton.interactable = true;
+        EventSystem.current.SetSelectedGameObject(UIManager.instance.startGameButton.gameObject);
+    }
+
+    public IEnumerator ActivateTrainingAreaButton()
+    {
+        yield return null;
         trainingAreaButton.interactable = true;
-        Color fullAlpha = trainingAreaButton.image.color;
-        fullAlpha.a = 1.0f;
-        trainingAreaButton.image.color = fullAlpha;
+        EventSystem.current.SetSelectedGameObject(UIManager.instance.trainingAreaButton.gameObject);
     }
 
     public void OnTrainingAreaButton()
@@ -147,6 +153,7 @@ public class UIManager : MonoBehaviour
         Debug.Log("Start Menu button pressed.");
 
         startMenuButton.gameObject.SetActive(false);
+        startGameButton.gameObject.SetActive(true);
         trainingAreaButton.gameObject.SetActive(true);
 
         GameStateManager.instance.waitingForPlayersToJoin = true;
@@ -248,8 +255,6 @@ public class UIManager : MonoBehaviour
     {
         PauseMenuUI.SetActive(false);
     }
-
-    
 
     public void OnQuitButton()
     {

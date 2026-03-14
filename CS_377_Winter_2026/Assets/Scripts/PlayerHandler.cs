@@ -117,7 +117,7 @@ public class PlayerHandler : MonoBehaviour
     {
         //rb.AddForce(Physics.gravity);
 
-        if (_playerState == PlayerState.Dead || !playerCanMove)
+        if (_playerState == PlayerState.Dead || !playerCanMove || GameStateManager.instance._gameState == GameStateManager.GameState.isLoading || GameStateManager.instance._gameState == GameStateManager.GameState.isPaused)
         {
             return;
         }
@@ -295,6 +295,12 @@ public class PlayerHandler : MonoBehaviour
         rb.constraints = RigidbodyConstraints.None;
         animator.ResetTrigger("Idle");
         animator.SetTrigger("Death");
+
+        IEnumerator weaponAttackCoroutine = weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine;
+        if (weaponAttackCoroutine != null)
+        {
+            StopCoroutine(weaponAttackCoroutine);
+        }
 
         DropCheeses();
         yield return new WaitForSeconds(respawnTime);
