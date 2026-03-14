@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class MeleeHandler : MonoBehaviour, IWeapon
 {
-    [HideInInspector] public GameObject owner;
+    [HideInInspector] public GameObject owner { get; set; }
     [HideInInspector] public BoxCollider unequippedCollider;
     [HideInInspector] public CapsuleCollider equippedCollider;
     private Rigidbody rb;
@@ -27,6 +27,12 @@ public class MeleeHandler : MonoBehaviour, IWeapon
     [Header("Other")]
     public float floatingAnimationRotationSpeed = 30.0f;
     public Material highlightMaterial;
+    [SerializeField] private ParticleSystem _despawnParticleSystem;
+    public ParticleSystem despawnParticleSystem
+    {
+        get => _despawnParticleSystem;
+        set => _despawnParticleSystem = value;
+    }
 
     protected bool canSwing = true;
 
@@ -82,6 +88,47 @@ public class MeleeHandler : MonoBehaviour, IWeapon
     {
         attackCoroutine = SwingWeapon();
         StartCoroutine(attackCoroutine);
+    }
+
+    public void PickupWeapon(GameObject _owner)
+    {
+        owner = _owner;
+        unequippedCollider.enabled = false;
+        meshRenderer.materials = defaultMaterialList;
+        _ItemState = IItem.ItemState.Collected;
+        GameStateManager.instance.itemSpawnDictionary[initialSpawnPosition] = null;
+
+        PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
+        ownerPlayerHandler.playerWeight += rb.mass;
+        ownerPlayerHandler.animator.SetFloat("WeaponSwingSpeed", swingSpeed);
+
+        transform.parent = ownerPlayerHandler.weaponPlaceholderTransform;
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.Euler(30.864f, -8.384f, -38.901f);
+    }
+
+    public void DropWeapon()
+    {
+        this.StopAllCoroutines();
+        equippedCollider.enabled = false;
+
+        PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
+        ownerPlayerHandler.playerWeight -= rb.mass;
+        rb.transform.parent = null;
+        unequippedCollider.isTrigger = false;
+        unequippedCollider.enabled = true;
+        rb.isKinematic = false;
+        rb.useGravity = true;
+
+        StartCoroutine(DespawnWeapon());
+    }
+
+    private IEnumerator DespawnWeapon()
+    {
+        yield return new WaitForSeconds(1.0f);
+        ParticleSystem despawnParticle = Instantiate(despawnParticleSystem, transform.position, Quaternion.identity);
+        despawnParticle.Play();
+        Destroy(this.gameObject);
     }
 
     public IEnumerator SwingWeapon()
@@ -153,9 +200,9 @@ public class MeleeHandler : MonoBehaviour, IWeapon
                 if (weaponDurability <= 0.0f)
                 {
                     this.GetComponent<MeshRenderer>().enabled = false;
-                    PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
-                    ownerPlayerHandler.weaponBreakParticleSystem.Play();
-                    ownerPlayerHandler.SetupDefaultAttack();
+                    ParticleSystem despawnParticle = Instantiate(despawnParticleSystem, transform.position, Quaternion.identity);
+                    despawnParticle.Play();
+                    owner.GetComponent<PlayerHandler>().SetupDefaultAttack();
                 }
             }
         }
@@ -197,10 +244,11 @@ public class MeleeHandler : MonoBehaviour, IWeapon
         {
             if (this.GetComponent<MeshRenderer>().enabled == true)
             {
-                ownerPlayerHandler.weaponBreakParticleSystem.Play();
+                ParticleSystem despawnParticle = Instantiate(despawnParticleSystem, transform.position, Quaternion.identity);
+                despawnParticle.Play();
+                ownerPlayerHandler.SetupDefaultAttack();
             }
             ownerPlayerHandler.playerWeight -= this.rb.mass;
-            ownerPlayerHandler.SetupDefaultAttack();
             Destroy(this.gameObject);
         }
     }

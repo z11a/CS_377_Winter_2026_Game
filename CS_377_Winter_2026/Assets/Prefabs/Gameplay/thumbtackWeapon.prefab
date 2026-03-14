@@ -127,7 +127,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79d9a79f2d27abe47a05bf6f62c7055b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HammerHandler
-  owner: {fileID: 0}
   unequippedCollider: {fileID: 0}
   equippedCollider: {fileID: 0}
   meshRenderer: {fileID: 0}
@@ -139,6 +138,7 @@ MonoBehaviour:
   weaponDurability: 5
   floatingAnimationRotationSpeed: 30
   highlightMaterial: {fileID: 2100000, guid: f6826286dcb636347a39ccece15b0647, type: 2}
+  _despawnParticleSystem: {fileID: 8245051818807280991, guid: 560e3512ac625c548ad8f7e6fbfdab2a, type: 3}
   highlightMaterialList: []
   defaultMaterialList: []
 --- !u!136 &6851329412536825272

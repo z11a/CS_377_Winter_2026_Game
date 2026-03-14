@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8245051818807280991}
   - component: {fileID: 1940512464950414642}
   m_Layer: 0
-  m_Name: WeaponBreakParticle
+  m_Name: ItemDespawnParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -109,7 +109,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -1829161558
+  randomSeed: 0
   InitialModule:
     serializedVersion: 3
     enabled: 1

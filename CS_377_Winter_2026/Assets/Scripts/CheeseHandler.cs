@@ -23,6 +23,7 @@ public class CheeseHandler : MonoBehaviour, IItem
     [HideInInspector] public bool isGrounded = false;
     [HideInInspector] public IItem.ItemState _ItemState { get; set; }
     [HideInInspector] public Vector3 initialSpawnPosition {  get; set; }
+    [HideInInspector] public ParticleSystem despawnParticleSystem { get; set; }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

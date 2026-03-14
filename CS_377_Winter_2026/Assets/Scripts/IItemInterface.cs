@@ -12,5 +12,5 @@ public interface IItem
 
     Vector3 initialSpawnPosition { get; set; }
 
-    //ParticleSystem itemSpawnParticleSystem { get; set; }
+    ParticleSystem despawnParticleSystem { get; set; }
 }

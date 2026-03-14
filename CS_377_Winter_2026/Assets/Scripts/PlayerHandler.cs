@@ -16,7 +16,7 @@ public class PlayerHandler : MonoBehaviour
     private Vector2 moveAmount;
     private CharacterController controller;
     [HideInInspector] public Rigidbody rb;
-    private Animator animator;
+    [HideInInspector] public Animator animator;
     private SkinnedMeshRenderer playerRenderer;
 
     [SerializeField] private AudioClip dmgSFX;
@@ -48,7 +48,7 @@ public class PlayerHandler : MonoBehaviour
     [Header("Weapon Info")]
     public Transform weaponPlaceholderTransform;
     public GameObject defaultAttackWeapon;
-    public ParticleSystem weaponBreakParticleSystem;
+    //public ParticleSystem weaponBreakParticleSystem;
 
     [Header("Appearance")]
     public Material flashMaterial;
@@ -92,9 +92,6 @@ public class PlayerHandler : MonoBehaviour
         SetupDefaultAttack();
 
         gameStateBeforePause = GameStateManager.GameState.notInGame;
-        //weaponEquippedObject = defaultAttackWeapon;
-        //weaponEquippedObject.GetComponent<DefaultAttack>().owner = this.gameObject;
-        //animator.SetFloat("WeaponSwingSpeed", weaponEquippedObject.GetComponent<DefaultAttack>().swingSpeed);
     }
 
     // Update is called once per frame
@@ -105,11 +102,6 @@ public class PlayerHandler : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //if (GameStateManager.instance._gameState == GameStateManager.GameState.inGame || GameStateManager.instance._gameState == GameStateManager.GameState.intermission)
-        //{
-        //    MovementHandlerRigidbody();
-        //}
-
         MovementHandlerRigidbody();
     }
 
@@ -218,30 +210,38 @@ public class PlayerHandler : MonoBehaviour
 
         if (weaponEquippedObject != null)
         {
-            if (weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine != null)       // stop swinging a previous weapon
+            if (weaponEquippedObject.GetComponent<DefaultAttack>() != null)
             {
-                StopCoroutine(weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine);
+                weaponEquippedObject.GetComponent<DefaultAttack>().equippedCollider.enabled = false;
             }
-            OnDropWeapon();
+            else
+            {
+                weaponEquippedObject.GetComponent<IWeapon>().DropWeapon();
+            }
         }
 
         weaponEquippedObject = possibleWeaponPickup;
+        weaponEquippedObject.GetComponent<IWeapon>().PickupWeapon(this.gameObject);
         possibleWeaponPickup = null;
 
-        MeleeHandler weaponMeleeHandler = weaponEquippedObject.GetComponent<MeleeHandler>();
-        weaponMeleeHandler.owner = this.gameObject;
-        weaponMeleeHandler.unequippedCollider.enabled = false;
-        weaponMeleeHandler.meshRenderer.materials = weaponMeleeHandler.defaultMaterialList;
+        //IWeapon equippedIWeapon = weaponEquippedObject.GetComponent<IWeapon>();
+        //equippedIWeapon.owner = this.gameObject;
+        //equippedIWeapon.unequippedCollider.enabled = false;
+        //equippedIWeapon.meshRenderer.materials = equippedIWeapon.defaultMaterialList;
 
-        weaponMeleeHandler._ItemState = IItem.ItemState.Collected;
-        GameStateManager.instance.itemSpawnDictionary[weaponMeleeHandler.initialSpawnPosition] = null;
+        //equippedIWeapon._ItemState = IItem.ItemState.Collected;
+        //GameStateManager.instance.itemSpawnDictionary[equippedIWeapon.initialSpawnPosition] = null;
 
-        playerWeight += weaponEquippedObject.GetComponent<Rigidbody>().mass;
-        animator.SetFloat("WeaponSwingSpeed", weaponMeleeHandler.swingSpeed);
+        //playerWeight += weaponEquippedObject.GetComponent<Rigidbody>().mass;
 
-        weaponEquippedObject.transform.parent = weaponPlaceholderTransform;
-        weaponEquippedObject.transform.localPosition = Vector3.zero;
-        weaponEquippedObject.transform.localRotation = Quaternion.Euler(30.864f, -8.384f, -38.901f);
+        //if (weaponEquippedObject.GetComponent<MeleeHandler>() != null)
+        //{
+        //    animator.SetFloat("WeaponSwingSpeed", weaponEquippedObject.GetComponent<MeleeHandler>().swingSpeed);
+        //}
+
+        //weaponEquippedObject.transform.parent = weaponPlaceholderTransform;
+        //weaponEquippedObject.transform.localPosition = Vector3.zero;
+        //weaponEquippedObject.transform.localRotation = Quaternion.Euler(30.864f, -8.384f, -38.901f);
 
         return;
     }
@@ -253,31 +253,8 @@ public class PlayerHandler : MonoBehaviour
             return;
         }
 
-        if (weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine != null)       // stop swinging a previous weapon
-        {
-            StopCoroutine(weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine);
-        }
-
-        Rigidbody weaponRB = weaponEquippedObject.GetComponent<Rigidbody>();
-        weaponEquippedObject = null;
-        weaponRB.transform.parent = null;
-
-        //weaponRB.transform.position += transform.right * 0.25f;       // i was trying to get the player to throw the weapon slightly ahead of them, but it feels janky
-        weaponRB.GetComponent<MeleeHandler>().unequippedCollider.isTrigger = false;
-        weaponRB.GetComponent<MeleeHandler>().unequippedCollider.enabled = true;
-        weaponRB.isKinematic = false;
-        weaponRB.useGravity = true;
-        //weaponRB.AddForce(transform.up / 3, ForceMode.Force);
-        playerWeight -= weaponRB.mass;
-
-        StartCoroutine(DespawnWeapon(weaponRB.gameObject));
+        weaponEquippedObject.GetComponent<IWeapon>().DropWeapon();
         SetupDefaultAttack();
-    }
-
-    private IEnumerator DespawnWeapon(GameObject weapon)
-    {
-        yield return new WaitForSeconds(1.0f);
-        Destroy(weapon);
     }
 
     private IEnumerator HitFlash()
@@ -296,10 +273,21 @@ public class PlayerHandler : MonoBehaviour
         animator.ResetTrigger("Idle");
         animator.SetTrigger("Death");
 
-        IEnumerator weaponAttackCoroutine = weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine;
-        if (weaponAttackCoroutine != null)
+        //IEnumerator weaponAttackCoroutine = weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine;
+        //if (weaponAttackCoroutine != null)
+        //{
+        //    StopCoroutine(weaponAttackCoroutine);
+        //}
+        if (weaponEquippedObject != null)
         {
-            StopCoroutine(weaponAttackCoroutine);
+            if (weaponEquippedObject.GetComponent<DefaultAttack>() != null)
+            {
+                weaponEquippedObject.GetComponent<DefaultAttack>().equippedCollider.enabled = false;
+            }
+            else
+            {
+                weaponEquippedObject.GetComponent<IWeapon>().DropWeapon();
+            }
         }
 
         DropCheeses();
@@ -343,6 +331,7 @@ public class PlayerHandler : MonoBehaviour
 
     public void SetupDefaultAttack()
     {
+        Debug.Log("default weapon: " + defaultAttackWeapon.name);
         weaponEquippedObject = defaultAttackWeapon;
         weaponEquippedObject.GetComponent<DefaultAttack>().owner = this.gameObject;
         animator.SetFloat("WeaponSwingSpeed", weaponEquippedObject.GetComponent<DefaultAttack>().swingSpeed);
