@@ -25,6 +25,7 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI roundWinText;
     public TextMeshProUGUI roundTimerText;
     public TextMeshProUGUI preRoundTimerText;
+    public GameObject itemSpawnIndicator;
 
     [Header("Pause Menu")]
     public GameObject PauseMenuUI;
@@ -99,6 +100,7 @@ public class UIManager : MonoBehaviour
 
     public void OnTrainingAreaButton()
     {
+        trainingAreaButton.gameObject.SetActive(false);
         StartCoroutine(GameStateManager.instance.LoadTrainingArea());
     }
 
@@ -237,5 +239,25 @@ public class UIManager : MonoBehaviour
         Time.timeScale = 1.0f;
         SceneManager.LoadScene("StartScene");
         Destroy(this.gameObject);
+    }
+
+    public IEnumerator activateItemSpawnIndicator(float length, Vector3 itemPosition)
+    {
+        Debug.Log("here");
+        yield return null;
+        Vector3 screenPos = GameObject.FindAnyObjectByType<Camera>().WorldToScreenPoint(itemPosition);
+
+        GameObject newIndicator = Instantiate(itemSpawnIndicator, screenPos, Quaternion.identity, GameplayUI.transform);
+        TextMeshProUGUI lengthText = newIndicator.GetComponentInChildren<TextMeshProUGUI>();
+
+        int timeLeft = (int)length;
+        while (timeLeft > 0)
+        {
+            lengthText.text = timeLeft.ToString();
+            yield return new WaitForSeconds(1.0f);
+            timeLeft -= 1;
+            yield return null;
+        }
+        Destroy(newIndicator);
     }
 }

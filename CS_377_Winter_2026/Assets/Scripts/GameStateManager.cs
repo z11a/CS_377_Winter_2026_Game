@@ -61,6 +61,7 @@ public class GameStateManager : MonoBehaviour
     public float itemSpawnCooldown = 3.0f;
     public float uncommonItemSpawnChance = 40.0f;
     public float rareItemSpawnChance = 15.0f;
+    public float itemSpawnIndicationLength = 2.0f;
     public List<Transform> possibleItemSpawnLocations;     // first transform in the list will spawn at the start of the round, this list is set by the "GameplayReferences" gameObject in each round scene.
     public List<GameObject> commonItems;
     public List<GameObject> uncommonItems;
@@ -395,7 +396,7 @@ public class GameStateManager : MonoBehaviour
             }
             else
             {
-                yield return new WaitForSeconds(itemSpawnCooldown);
+                yield return new WaitForSeconds(itemSpawnCooldown - itemSpawnIndicationLength);
             }
 
             var emptyLocations = itemSpawnDictionary
@@ -407,6 +408,9 @@ public class GameStateManager : MonoBehaviour
             {
                 Vector3 newSpawnIndex = emptyLocations[Random.Range(0, emptyLocations.Count)];
                 GameObject randomObject = ChooseRandomItem();
+
+                StartCoroutine(UIManager.instance.activateItemSpawnIndicator(itemSpawnIndicationLength, newSpawnIndex));
+                yield return new WaitForSeconds(itemSpawnIndicationLength);
 
                 itemSpawnDictionary[newSpawnIndex] = Instantiate(randomObject, newSpawnIndex, randomObject.transform.rotation);
             }
