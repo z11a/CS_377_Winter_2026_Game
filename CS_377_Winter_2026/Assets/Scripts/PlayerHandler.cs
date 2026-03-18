@@ -89,6 +89,7 @@ public class PlayerHandler : MonoBehaviour
 
         _playerState = PlayerState.Idle;
         playerCanMove = false;
+        //currentSpawnPosition = transform;
         SetupDefaultAttack();
 
         gameStateBeforePause = GameStateManager.GameState.notInGame;
@@ -223,25 +224,6 @@ public class PlayerHandler : MonoBehaviour
         weaponEquippedObject = possibleWeaponPickup;
         weaponEquippedObject.GetComponent<IWeapon>().PickupWeapon(this.gameObject);
         possibleWeaponPickup = null;
-
-        //IWeapon equippedIWeapon = weaponEquippedObject.GetComponent<IWeapon>();
-        //equippedIWeapon.owner = this.gameObject;
-        //equippedIWeapon.unequippedCollider.enabled = false;
-        //equippedIWeapon.meshRenderer.materials = equippedIWeapon.defaultMaterialList;
-
-        //equippedIWeapon._ItemState = IItem.ItemState.Collected;
-        //GameStateManager.instance.itemSpawnDictionary[equippedIWeapon.initialSpawnPosition] = null;
-
-        //playerWeight += weaponEquippedObject.GetComponent<Rigidbody>().mass;
-
-        //if (weaponEquippedObject.GetComponent<MeleeHandler>() != null)
-        //{
-        //    animator.SetFloat("WeaponSwingSpeed", weaponEquippedObject.GetComponent<MeleeHandler>().swingSpeed);
-        //}
-
-        //weaponEquippedObject.transform.parent = weaponPlaceholderTransform;
-        //weaponEquippedObject.transform.localPosition = Vector3.zero;
-        //weaponEquippedObject.transform.localRotation = Quaternion.Euler(30.864f, -8.384f, -38.901f);
 
         return;
     }

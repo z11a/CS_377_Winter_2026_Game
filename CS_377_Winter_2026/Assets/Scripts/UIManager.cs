@@ -83,6 +83,7 @@ public class UIManager : MonoBehaviour
 
     public IEnumerator ActivateStartGameButton() // This is in a coroutine because we need to pause one frame before enabling the start button. This is because clicking A on my Xbox controller to join the game also instantly presses the start button. 
     {
+        EventSystem.current.SetSelectedGameObject(null);
         yield return null;
         startGameButton.interactable = true;
         EventSystem.current.SetSelectedGameObject(UIManager.instance.startGameButton.gameObject);
@@ -90,6 +91,7 @@ public class UIManager : MonoBehaviour
 
     public IEnumerator ActivateTrainingAreaButton()
     {
+        EventSystem.current.SetSelectedGameObject(null);
         yield return null;
         trainingAreaButton.interactable = true;
         EventSystem.current.SetSelectedGameObject(UIManager.instance.trainingAreaButton.gameObject);
@@ -97,55 +99,7 @@ public class UIManager : MonoBehaviour
 
     public void OnTrainingAreaButton()
     {
-        StartCoroutine(LoadTrainingArea());
-    }
-
-    private IEnumerator LoadTrainingArea()
-    {
-        ActivateLoadingScreen();
-
-        GameStateManager.instance._gameState = GameStateManager.GameState.isLoading;
-        InputManager.instance.playerInputManager.DisableJoining();
-
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("TrainingArea", LoadSceneMode.Additive);
-        asyncLoad.allowSceneActivation = false;
-
-        while (!asyncLoad.isDone)
-        {
-            Debug.Log("Progress: " + asyncLoad.progress * 100 + "%");
-
-            if (asyncLoad.progress >= 0.9f)
-            {
-                Debug.Log("Loaded! Switching scene in 2 seconds...");
-
-                yield return new WaitForSeconds(2.0f);
-                asyncLoad.allowSceneActivation = true;
-
-                yield return null;
-
-                PlayerInput playerOneInput = InputManager.instance.PlayerInputs[0];
-
-                SceneManager.MoveGameObjectToScene(InputManager.instance.PlayerInputs[0].gameObject, SceneManager.GetSceneByName("TrainingArea"));
-
-                SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
-                LightProbes.Tetrahedralize();
-
-                var refs = GameplaySceneReferences.instance;
-                
-                Transform playerSpawnPosition = refs.playerSpawnLocations[0];
-
-                PlayerHandler playerOnePlayerHandler = playerOneInput.GetComponent<PlayerHandler>();
-                playerOnePlayerHandler.rb.position = playerSpawnPosition.position;
-                playerOnePlayerHandler.currentSpawnPosition = playerSpawnPosition;
-                playerOnePlayerHandler.playerCanMove = true;
-                playerOneInput.SwitchCurrentActionMap("Player");
-
-                DeactivateLoadingScreen();
-                GameStateManager.instance._gameState = GameStateManager.GameState.inGame;
-            }
-            
-            yield return null;
-        }
+        StartCoroutine(GameStateManager.instance.LoadTrainingArea());
     }
 
     public void OnStartButton()

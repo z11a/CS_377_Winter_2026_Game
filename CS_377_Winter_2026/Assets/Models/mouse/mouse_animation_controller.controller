@@ -21,7 +21,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 1181166581937171823, guid: b11ab302ae8d67743b549adac9ce1b7f, type: 3}
+  m_Motion: {fileID: 1181166581937171823, guid: cb7a7c7e3e5db3f4a80f4bdbd0fcd14c, type: 3}
   m_Tag: 
   m_SpeedParameter: WeaponSwingSpeed
   m_MirrorParameter: 
@@ -228,7 +228,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -3740454996327337397, guid: b11ab302ae8d67743b549adac9ce1b7f, type: 3}
+  m_Motion: {fileID: 2793592441361026899, guid: b11ab302ae8d67743b549adac9ce1b7f, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

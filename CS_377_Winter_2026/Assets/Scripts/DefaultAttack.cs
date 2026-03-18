@@ -9,7 +9,7 @@ public class DefaultAttack : MeleeHandler
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        //_ItemState = IItem.ItemState.Collected;
+        _ItemState = IItem.ItemState.Collected;
         equippedCollider = GetComponent<CapsuleCollider>();
         equippedCollider.enabled = false;
     }
@@ -39,8 +39,6 @@ public class DefaultAttack : MeleeHandler
                 playerHitPlayerHandler.TakeDamage(weaponDamage);
 
                 StartCoroutine(ApplyKnockback(playerHitPlayerHandler.GetComponent<Rigidbody>(), (playerHitPlayerHandler.transform.position - owner.transform.position).normalized));
-
-               
             }
         }
     }

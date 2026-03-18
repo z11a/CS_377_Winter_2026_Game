@@ -462,4 +462,50 @@ public class GameStateManager : MonoBehaviour
 
         return randomItem;
     }
+
+    public IEnumerator LoadTrainingArea()
+    {
+        UIManager.instance.ActivateLoadingScreen();
+
+        GameStateManager.instance._gameState = GameStateManager.GameState.isLoading;
+        InputManager.instance.playerInputManager.DisableJoining();
+
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("TrainingArea", LoadSceneMode.Additive);
+        asyncLoad.allowSceneActivation = false;
+
+        while (!asyncLoad.isDone)
+        {
+            Debug.Log("Progress: " + asyncLoad.progress * 100 + "%");
+
+            if (asyncLoad.progress >= 0.9f)
+            {
+                Debug.Log("Loaded! Switching scene in 2 seconds...");
+
+                yield return new WaitForSeconds(2.0f);
+                asyncLoad.allowSceneActivation = true;
+
+                yield return null;
+
+                SceneManager.MoveGameObjectToScene(InputManager.instance.PlayerInputs[0].gameObject, SceneManager.GetSceneByName("TrainingArea"));
+
+                SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
+                LightProbes.Tetrahedralize();
+
+                var refs = GameplaySceneReferences.instance;
+
+                Transform playerSpawnPosition = refs.playerSpawnLocations[0];
+
+                PlayerHandler playerOnePlayerHandler = InputManager.instance.PlayerInputs[0].GetComponent<PlayerHandler>();
+                playerOnePlayerHandler.rb.position = playerSpawnPosition.position;
+                playerOnePlayerHandler.currentSpawnPosition = playerSpawnPosition;
+                playerOnePlayerHandler.playerCanMove = true;
+                playerOnePlayerHandler.GetComponent<PlayerInput>().SwitchCurrentActionMap("Player");
+
+                UIManager.instance.DeactivateLoadingScreen();
+                GameStateManager.instance._gameState = GameStateManager.GameState.inGame;
+            }
+
+            yield return null;
+        }
+    }
 }
