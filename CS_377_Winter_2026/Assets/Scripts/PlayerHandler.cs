@@ -35,11 +35,14 @@ public class PlayerHandler : MonoBehaviour
     }
 
     [Header("Main Player Attributes")]
+    public PlayerState _playerState;
+    public PlayerNumber playerNumber;
     public float playerHealth = 50.0f;
     public bool playerCanMove;
     public float maxPlayerSpeed = 25.0f;
-    [HideInInspector] public float playerWeight = 0.0f;
+    public float playerWeight = 0.0f;
     public float respawnTime = 3.0f;
+    public bool invincible = false;
     public float invincibilityTime = 3.0f;
     public float healthRegenDelay = 4.0f;
     public float healthRegenPerSecond = 5.0f;
@@ -56,9 +59,6 @@ public class PlayerHandler : MonoBehaviour
     public ParticleSystem PlayerWalkingParticleSystem;
     private float maxWalkingParticleSpeed;
     private float maxEmissionRateOverTime;
-
-    [HideInInspector] public PlayerState _playerState;
-    [HideInInspector] public PlayerNumber playerNumber;
 
     [HideInInspector] public bool knockedBack = false;
     [HideInInspector] public Transform currentSpawnPosition;
@@ -175,7 +175,10 @@ public class PlayerHandler : MonoBehaviour
 
     private void AnimationHandler()
     {
-        if (_playerState == PlayerState.Dead) return;
+        if (_playerState == PlayerState.Dead)
+        {
+            return;
+        }
 
         switch (_playerState)
         {
@@ -321,9 +324,8 @@ public class PlayerHandler : MonoBehaviour
 
     public void TakeDamage(float damageAmount)
     {
-        if (_playerState == PlayerState.Dead)
+        if (_playerState == PlayerState.Dead || invincible)
         {
-            Debug.Log("Player is already dead.");
             return;
         }
        

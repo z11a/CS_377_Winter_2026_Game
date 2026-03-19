@@ -109,7 +109,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
 
     public void DropWeapon()
     {
-        this.StopAllCoroutines();
+        StopCoroutine(attackCoroutine);
         equippedCollider.enabled = false;
 
         PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
@@ -202,7 +202,9 @@ public class MeleeHandler : MonoBehaviour, IWeapon
                     this.GetComponent<MeshRenderer>().enabled = false;
                     ParticleSystem despawnParticle = Instantiate(despawnParticleSystem, transform.position, Quaternion.identity);
                     despawnParticle.Play();
-                    owner.GetComponent<PlayerHandler>().SetupDefaultAttack();
+                    PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
+                    ownerPlayerHandler.playerWeight -= this.rb.mass;
+                    ownerPlayerHandler.SetupDefaultAttack();
                 }
             }
         }
@@ -246,9 +248,9 @@ public class MeleeHandler : MonoBehaviour, IWeapon
             {
                 ParticleSystem despawnParticle = Instantiate(despawnParticleSystem, transform.position, Quaternion.identity);
                 despawnParticle.Play();
+                ownerPlayerHandler.playerWeight -= this.rb.mass;
                 ownerPlayerHandler.SetupDefaultAttack();
             }
-            ownerPlayerHandler.playerWeight -= this.rb.mass;
             Destroy(this.gameObject);
         }
     }
