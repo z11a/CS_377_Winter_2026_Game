@@ -195,7 +195,9 @@ public class MeleeHandler : MonoBehaviour, IWeapon
 
                 weaponDurability -= 1.0f;
 
-                StartCoroutine(ApplyKnockback(playerHitPlayerHandler.GetComponent<Rigidbody>(), (playerHitPlayerHandler.transform.position - owner.transform.position).normalized));
+                Vector3 knockbackDirection = (playerHitPlayerHandler.transform.position - owner.transform.position).normalized;
+                StartCoroutine(playerHitPlayerHandler.TakeKnockback(knockbackDirection, weaponknockbackDuration, weaponKnockbackStrength));
+                //StartCoroutine(ApplyKnockback(playerHitPlayerHandler.GetComponent<Rigidbody>(), (playerHitPlayerHandler.transform.position - owner.transform.position).normalized));
 
                 if (weaponDurability <= 0.0f)
                 {
@@ -210,20 +212,20 @@ public class MeleeHandler : MonoBehaviour, IWeapon
         }
     }
 
-    protected IEnumerator ApplyKnockback(Rigidbody _rb, Vector3 direction)
-    {
-        _rb.GetComponent<PlayerHandler>().knockedBack = true;
-        _rb.linearVelocity = Vector3.zero;
-        _rb.angularVelocity = Vector3.zero;
+    //protected IEnumerator ApplyKnockback(Rigidbody _rb, Vector3 direction)
+    //{
+    //    _rb.GetComponent<PlayerHandler>().knockedBack = true;
+    //    _rb.linearVelocity = Vector3.zero;
+    //    _rb.angularVelocity = Vector3.zero;
 
-        _rb.AddForce(direction * weaponKnockbackStrength, ForceMode.Impulse);
-        _rb.angularVelocity = Vector3.zero;
+    //    _rb.AddForce(direction * weaponKnockbackStrength, ForceMode.Impulse);
+    //    _rb.angularVelocity = Vector3.zero;
 
-        yield return new WaitForSeconds(weaponknockbackDuration);
-        _rb.GetComponent<PlayerHandler>().knockedBack = false;
+    //    yield return new WaitForSeconds(weaponknockbackDuration);
+    //    _rb.GetComponent<PlayerHandler>().knockedBack = false;
 
-        DurabilityCheck();
-    }
+    //    DurabilityCheck();
+    //}
 
     private void OnTriggerExit(Collider collider)
     {

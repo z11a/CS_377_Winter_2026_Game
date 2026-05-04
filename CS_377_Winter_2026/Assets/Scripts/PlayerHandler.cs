@@ -9,6 +9,11 @@ using static PlayerHandler;
 using static UnityEngine.UI.GridLayoutGroup;
 using System.Security.Claims;
 using static UnityEngine.Rendering.DebugUI;
+using TMPro;
+using System;
+
+
+public delegate void PlayerAction();
 
 public class PlayerHandler : MonoBehaviour
 {
@@ -51,6 +56,8 @@ public class PlayerHandler : MonoBehaviour
     [Header("Weapon Info")]
     public Transform weaponPlaceholderTransform;
     public GameObject defaultAttackWeapon;
+    public GameObject staminaBar;  
+    public float attackStamina = 1.0f;
     //public ParticleSystem weaponBreakParticleSystem;
 
     [Header("Appearance")]
@@ -72,6 +79,7 @@ public class PlayerHandler : MonoBehaviour
     private GameStateManager.GameState gameStateBeforePause;
     private string actionMapBeforePause;
 
+    public event Action OnStaminaUse;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -202,8 +210,28 @@ public class PlayerHandler : MonoBehaviour
         {
             weaponEquippedObject.GetComponent<IWeapon>().Attack();
             stats.timesAttack++;
+            OnStaminaUse?.Invoke();
         }
     }
+
+    //public void StartStaminaCooldown()
+    //{
+
+    //}
+
+    //private IEnumerator StaminaIncrement()
+    //{
+    //    yield return null;
+    //}
+
+    //public void StopStaminaCooldown()
+    //{
+    //    if (attackStamina != 1.0f)
+    //    {
+    //        StopCoroutine(StaminaIncrement());
+    //    }
+    //}
+
     public void OnInteract()
     {
         if (possibleWeaponPickup == null)
@@ -361,6 +389,21 @@ public class PlayerHandler : MonoBehaviour
             playerHealth += healthRegenPerSecond;
             yield return new WaitForSeconds(1.0f);
         }
+    }
+
+    public IEnumerator TakeKnockback(Vector3 direction, float duration, float strength)
+    {
+        knockedBack = true;
+
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        rb.AddForce(direction * strength, ForceMode.Impulse);
+        rb.angularVelocity = Vector3.zero;
+
+        yield return new WaitForSeconds(duration);
+
+        knockedBack = false;
     }
 
     public void DropCheeses()

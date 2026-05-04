@@ -60,10 +60,15 @@ public class UIManager : MonoBehaviour
     {
         if (GameStateManager.instance._gameState == GameStateManager.GameState.inGame)
         {
-            int minutes = (int)(GameStateManager.instance.currentRoundTime / 60);
-            int seconds = (int)(GameStateManager.instance.currentRoundTime % 60);
-            roundTimerText.text = $"{minutes}:{seconds:D2}";
+            Timer();
         }
+    }
+
+    private void Timer()
+    {
+        int minutes = (int)(GameStateManager.instance.currentRoundTime / 60);
+        int seconds = (int)(GameStateManager.instance.currentRoundTime % 60);
+        roundTimerText.text = $"{minutes}:{seconds:D2}";
     }
 
     public void InitialUISetup()

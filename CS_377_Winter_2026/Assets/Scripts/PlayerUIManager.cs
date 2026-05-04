@@ -49,4 +49,8 @@ public class PlayerUIManager : MonoBehaviour
             }
         }
     }
+    public void StaminaUpdate()
+    {
+
+    }
 }

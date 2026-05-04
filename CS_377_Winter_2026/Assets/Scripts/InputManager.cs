@@ -68,6 +68,8 @@ public class InputManager : MonoBehaviour
             Destroy(UIManager.instance.playerJoinTextList[0]);
             playerOneUIManager.playerHandler = PlayerInputs[0].GetComponent<PlayerHandler>();
 
+            //PlayerInputs[0].GetComponent<PlayerHandler>().OnStaminaUse += playerOneUIManager.StaminaUpdate;
+
             StartCoroutine(UIManager.instance.ActivateTrainingAreaButton());
 
             playerInputManager.playerPrefab = ratPrefab;
@@ -90,3 +92,4 @@ public class InputManager : MonoBehaviour
         }
     }
 }
+A
