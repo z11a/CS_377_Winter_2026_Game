@@ -210,6 +210,7 @@ GameObject:
   - component: {fileID: 4907030377170466395}
   - component: {fileID: -438824195280977144}
   - component: {fileID: 8092442832189589222}
+  - component: {fileID: 1650764146571636737}
   - component: {fileID: 7986193701225777442}
   - component: {fileID: 5532171085399843074}
   m_Layer: 7
@@ -301,21 +302,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e633ba575a664047a03852410eba5f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHandler
+  rb: {fileID: 0}
+  animator: {fileID: 0}
   dmgSFX: {fileID: 8300000, guid: 82bc2d27ef0401d4191657b95293d43e, type: 3}
+  _playerState: 0
+  playerNumber: 0
   playerHealth: 50
+  playerCanMove: 0
   maxPlayerSpeed: 25
   playerWeight: 0
   respawnTime: 3
+  invincible: 0
   invincibilityTime: 3
   healthRegenDelay: 4
   healthRegenPerSecond: 5
   weaponPlaceholderTransform: {fileID: 2966530009653085850}
   defaultAttackWeapon: {fileID: 8473979483074362463}
-  weaponBreakParticleSystem: {fileID: 7796830305358436660}
+  staminaBar: {fileID: 0}
+  attackStamina: 1
   flashMaterial: {fileID: 2100000, guid: 50a3b01df15b0e246a6d9e0cfd562d65, type: 2}
   PlayerWalkingParticleSystem: {fileID: 4160432019842922736}
-  _playerState: 0
-  playerNumber: 0
   knockedBack: 0
   currentSpawnPosition: {fileID: 0}
   playerCurrentRoundScore: 0
@@ -323,6 +329,25 @@ MonoBehaviour:
   playerTotalRoundScore: 0
   weaponEquippedObject: {fileID: 0}
   possibleWeaponPickup: {fileID: 0}
+  playerUIHandler: {fileID: 0}
+--- !u!114 &1650764146571636737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1851747289199441563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22dc2baf9e440d249ade6fcd96c9cc2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerUIHandler
+  playerHandler: {fileID: 0}
+  PlayerAvatar: {fileID: 0}
+  RoundWinsText: {fileID: 0}
+  PointsText: {fileID: 0}
+  CheeseText: {fileID: 0}
+  HealthBar: {fileID: 0}
 --- !u!54 &7986193701225777442
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -981,11 +1006,6 @@ PrefabInstance:
 --- !u!4 &7052315999799449176 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9187753507485649459, guid: 560e3512ac625c548ad8f7e6fbfdab2a, type: 3}
-  m_PrefabInstance: {fileID: 2188653948663077995}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &7796830305358436660 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 8245051818807280991, guid: 560e3512ac625c548ad8f7e6fbfdab2a, type: 3}
   m_PrefabInstance: {fileID: 2188653948663077995}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2987597039231833944
