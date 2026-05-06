@@ -129,6 +129,7 @@ public class GameStateManager : MonoBehaviour
         }
 
         playerHandler.playerTotalRoundScore++;
+        playerHandler.playerUIHandler.RoundWinUpdate(playerHandler.playerTotalRoundScore);
         UIManager.instance.ActivateRoundWinText(playerHandler);
 
         if (playerHandler.playerTotalRoundScore >= 2)

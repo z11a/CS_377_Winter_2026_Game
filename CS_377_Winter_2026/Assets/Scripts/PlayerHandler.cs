@@ -10,7 +10,7 @@ using static UnityEngine.UI.GridLayoutGroup;
 using System.Security.Claims;
 using static UnityEngine.Rendering.DebugUI;
 using TMPro;
-using System;
+//using System;
 
 
 public delegate void PlayerAction();
@@ -75,11 +75,12 @@ public class PlayerHandler : MonoBehaviour
     [HideInInspector] public GameObject weaponEquippedObject;
     [HideInInspector] public GameObject possibleWeaponPickup;
     [HideInInspector] public StatTracker stats = new StatTracker();
+    public PlayerUIHandler playerUIHandler;
 
     private GameStateManager.GameState gameStateBeforePause;
     private string actionMapBeforePause;
 
-    public event Action OnStaminaUse;
+    //public event Action OnStaminaUse;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -87,6 +88,7 @@ public class PlayerHandler : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+        playerUIHandler = GetComponent<PlayerUIHandler>();
         rb = GetComponent<Rigidbody>();
         rb.isKinematic = false;
 
@@ -210,7 +212,7 @@ public class PlayerHandler : MonoBehaviour
         {
             weaponEquippedObject.GetComponent<IWeapon>().Attack();
             stats.timesAttack++;
-            OnStaminaUse?.Invoke();
+            //OnStaminaUse?.Invoke();
         }
     }
 
@@ -363,6 +365,7 @@ public class PlayerHandler : MonoBehaviour
         }
 
         playerHealth -= damageAmount;
+        playerUIHandler.HealthUpdate(playerHealth);
         StartCoroutine(HitFlash());
 
         if (playerHealth <= 0.0f)
@@ -387,6 +390,7 @@ public class PlayerHandler : MonoBehaviour
         while (playerHealth < 50.0f)
         {
             playerHealth += healthRegenPerSecond;
+            playerUIHandler.HealthUpdate(playerHealth);
             yield return new WaitForSeconds(1.0f);
         }
     }

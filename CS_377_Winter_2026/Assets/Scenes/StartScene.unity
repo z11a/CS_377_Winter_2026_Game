@@ -1292,6 +1292,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2811054491873301595, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
+      propertyPath: m_Name
+      value: PlayerTwoUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 2811054491873301595, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -1302,6 +1306,14 @@ PrefabInstance:
     - target: {fileID: 3677994519629409094, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4656905079829119662, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
+      propertyPath: m_Name
+      value: PlayerOneUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 4656905079829119662, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4718053678530967523, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
       propertyPath: m_fontStyle

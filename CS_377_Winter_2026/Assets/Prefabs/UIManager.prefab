@@ -3548,6 +3548,8 @@ MonoBehaviour:
   roundTimerText: {fileID: 2632849960139944308}
   preRoundTimerText: {fileID: 6421543219367201211}
   itemSpawnIndicator: {fileID: 5711159880587654429, guid: 869c020b0367bb7438ecb52c0a7c4519, type: 3}
+  PlayerOneUI: {fileID: 4656905079829119662}
+  PlayerTwoUI: {fileID: 2811054491873301595}
   PauseMenuUI: {fileID: 1981692483840945551}
   loadingScreen: {fileID: 3557441147086426463}
   loadingScreenFadeDuration: 1

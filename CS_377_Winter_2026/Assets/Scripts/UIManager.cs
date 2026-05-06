@@ -26,6 +26,8 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI roundTimerText;
     public TextMeshProUGUI preRoundTimerText;
     public GameObject itemSpawnIndicator;
+    public GameObject PlayerOneUI;
+    public GameObject PlayerTwoUI;
 
     [Header("Pause Menu")]
     public GameObject PauseMenuUI;

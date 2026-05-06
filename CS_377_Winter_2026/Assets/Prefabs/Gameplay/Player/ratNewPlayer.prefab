@@ -139,6 +139,7 @@ GameObject:
   - component: {fileID: 3406779691250225918}
   - component: {fileID: 170626947616609217}
   - component: {fileID: 2062126482382765971}
+  - component: {fileID: -8189590822036264170}
   - component: {fileID: 4897142971705418802}
   - component: {fileID: 5122302185019709668}
   m_Layer: 7
@@ -246,6 +247,8 @@ MonoBehaviour:
   healthRegenPerSecond: 5
   weaponPlaceholderTransform: {fileID: 6494924168312210611}
   defaultAttackWeapon: {fileID: 5053856000708882500}
+  staminaBar: {fileID: 0}
+  attackStamina: 1
   flashMaterial: {fileID: 2100000, guid: 50a3b01df15b0e246a6d9e0cfd562d65, type: 2}
   PlayerWalkingParticleSystem: {fileID: 3809866935063315642}
   knockedBack: 0
@@ -255,6 +258,25 @@ MonoBehaviour:
   playerTotalRoundScore: 0
   weaponEquippedObject: {fileID: 0}
   possibleWeaponPickup: {fileID: 0}
+  playerUIHandler: {fileID: 0}
+--- !u!114 &-8189590822036264170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3084827248702809869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22dc2baf9e440d249ade6fcd96c9cc2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerUIHandler
+  playerHandler: {fileID: 0}
+  PlayerAvatar: {fileID: 0}
+  RoundWinsText: {fileID: 0}
+  PointsText: {fileID: 0}
+  CheeseText: {fileID: 0}
+  HealthBar: {fileID: 0}
 --- !u!54 &4897142971705418802
 Rigidbody:
   m_ObjectHideFlags: 0
