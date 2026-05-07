@@ -31,11 +31,15 @@ public class UIManager : MonoBehaviour
 
     [Header("Pause Menu")]
     public GameObject PauseMenuUI;
+    public GameObject ContinueButton;
+    public GameObject QuitButton;
 
     [Header("Other")]
     public RawImage loadingScreen;
     public float loadingScreenFadeDuration = 1.0f;
     public Camera mainMenuCamera;
+
+    private GameObject selectedGameObjectBeforePause;
     
     void Awake()
     {
@@ -209,34 +213,39 @@ public class UIManager : MonoBehaviour
         roundWinText.gameObject.SetActive(false);
     }
 
-    public void ActivatePauseScreen()
+    public IEnumerator ActivatePauseScreen()
     {
+        selectedGameObjectBeforePause = EventSystem.current.currentSelectedGameObject;
+        EventSystem.current.SetSelectedGameObject(null);
+        yield return null;
         PauseMenuUI.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(ContinueButton);
     }
+
 
     public void DeactivatePauseScreen()
     {
         PauseMenuUI.SetActive(false);
+        EventSystem.current.SetSelectedGameObject(selectedGameObjectBeforePause);
+    }
+
+    public void OnContinueButton()
+    {
+        if(GameStateManager.instance._gameState == GameStateManager.GameState.isPaused) {
+            PlayerInput playerInput = InputManager.instance.playerInPauseMenu;
+            PlayerHandler playerHandler = playerInput.GetComponent<PlayerHandler>();
+
+            playerInput.SwitchCurrentActionMap(playerHandler.actionMapBeforePause);
+            playerInput = null;
+
+            GameStateManager.instance._gameState = playerHandler.gameStateBeforePause;
+            UIManager.instance.DeactivatePauseScreen();
+            Time.timeScale = 1.0f;
+        }
     }
 
     public void OnQuitButton()
     {
-        //InputManager.instance.StopAllCoroutines();
-
-        //foreach (PlayerInput playerInput in InputManager.instance.PlayerInputs)
-        //{
-        //    Destroy(playerInput.gameObject);
-        //}
-
-        //InputManager.instance.PlayerInputs.Clear();
-        //InputManager.instance.player1Joined = false;
-        //InputManager.instance.player2Joined = false;
-
-        //GameStateManager.instance.StopAllCoroutines();
-        //GameStateManager.instance.waitingForPlayersToJoin = false;
-        //GameStateManager.instance._gameState = GameStateManager.GameState.notInGame;
-        //GameStateManager.instance.itemSpawnDictionary.Clear();
-
         foreach (PlayerInput playerInput in InputManager.instance.PlayerInputs)
         {
             Destroy(playerInput.gameObject);

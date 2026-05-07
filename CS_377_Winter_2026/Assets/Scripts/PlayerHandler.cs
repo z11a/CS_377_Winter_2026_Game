@@ -77,8 +77,8 @@ public class PlayerHandler : MonoBehaviour
     [HideInInspector] public StatTracker stats = new StatTracker();
     public PlayerUIHandler playerUIHandler;
 
-    private GameStateManager.GameState gameStateBeforePause;
-    private string actionMapBeforePause;
+    [HideInInspector] public GameStateManager.GameState gameStateBeforePause;
+    [HideInInspector] public string actionMapBeforePause;
 
     //public event Action OnStaminaUse;
 
@@ -208,6 +208,11 @@ public class PlayerHandler : MonoBehaviour
 
     public void OnAttack()
     {
+        if (GameStateManager.instance._gameState == GameStateManager.GameState.isLoading || GameStateManager.instance._gameState == GameStateManager.GameState.isPaused)
+        {
+            return;
+        }
+
         if (weaponEquippedObject != null)
         {
             weaponEquippedObject.GetComponent<IWeapon>().Attack();
@@ -236,6 +241,11 @@ public class PlayerHandler : MonoBehaviour
 
     public void OnInteract()
     {
+        if (GameStateManager.instance._gameState == GameStateManager.GameState.isLoading || GameStateManager.instance._gameState == GameStateManager.GameState.isPaused)
+        {
+            return;
+        }
+
         if (possibleWeaponPickup == null)
         {
             Debug.Log("Nothing to pick up.");
@@ -459,6 +469,10 @@ public class PlayerHandler : MonoBehaviour
         {
             return;
         }
+        if (InputManager.instance.playerInPauseMenu != null && InputManager.instance.playerInPauseMenu != this.playerInput)
+        {
+            return;
+        }
 
         if (GameStateManager.instance._gameState == GameStateManager.GameState.isPaused)
         {
@@ -477,7 +491,7 @@ public class PlayerHandler : MonoBehaviour
             InputManager.instance.playerInPauseMenu = this.playerInput;
             gameStateBeforePause = GameStateManager.instance._gameState;
             GameStateManager.instance._gameState = GameStateManager.GameState.isPaused;
-            UIManager.instance.ActivatePauseScreen();
+            StartCoroutine(UIManager.instance.ActivatePauseScreen());
             Time.timeScale = 0.0f;
         }
     }
