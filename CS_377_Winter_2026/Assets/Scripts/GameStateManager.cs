@@ -54,7 +54,7 @@ public class GameStateManager : MonoBehaviour
     public int roundOneScoreRequirement = 50;
     public int roundTwoScoreRequirement = 100;
     public int roundThreeScoreRequirement = 150;
-    [SerializeField] private AudioClip winSFX;
+    //[SerializeField] private AudioClip winSFX;
     private IEnumerator activateIntermissionCoroutine;
 
     [Header("Item Spawning")]
@@ -114,10 +114,7 @@ public class GameStateManager : MonoBehaviour
     }
     public void PlayerWonRound(PlayerHandler playerHandler)
     {
-        if (winSFX != null && AudioManager.instance.audioSource != null)
-        {
-            AudioManager.instance.audioSource.PlayOneShot(winSFX);
-        }
+        AudioManager.instance.PlaySFX(AudioManager.SFXType.WinRound);
 
         if (itemSpawningCoroutine != null)
         {

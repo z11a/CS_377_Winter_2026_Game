@@ -5,6 +5,19 @@ public class AudioManager : MonoBehaviour
     public static AudioManager instance;
 
     [HideInInspector] public AudioSource audioSource;
+    public AudioClip dmgSFX;
+    public AudioClip nomSFX;
+    public AudioClip depositSFX;
+    public AudioClip winRoundSFX;
+
+    public enum SFXType
+    {
+        Damage,
+        Nom,
+        Deposit,
+        WinRound
+    }
+
     void Awake()
     {
         if (instance != null && instance != this)
@@ -28,5 +41,26 @@ public class AudioManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void PlaySFX(SFXType sfx)
+    {
+        if (audioSource != null) {
+            switch (sfx)
+            {
+                case SFXType.Damage:
+                    audioSource.PlayOneShot(dmgSFX);
+                    break;
+                case SFXType.Nom:
+                    audioSource.PlayOneShot(nomSFX);
+                    break;
+                case SFXType.Deposit:
+                    audioSource.PlayOneShot(depositSFX);
+                    break;
+                case SFXType.WinRound:
+                    audioSource.PlayOneShot(winRoundSFX);
+                    break;
+            }
+        }
     }
 }

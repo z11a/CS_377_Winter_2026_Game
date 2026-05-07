@@ -24,7 +24,7 @@ public class PlayerHandler : MonoBehaviour
     [HideInInspector] public Animator animator;
     private SkinnedMeshRenderer playerRenderer;
 
-    [SerializeField] private AudioClip dmgSFX;
+    //[SerializeField] private AudioClip dmgSFX;
 
     public enum PlayerNumber
     {
@@ -368,11 +368,8 @@ public class PlayerHandler : MonoBehaviour
         {
             return;
         }
-       
-        if (dmgSFX != null && AudioManager.instance.audioSource != null)
-        {
-            AudioManager.instance.audioSource.PlayOneShot(dmgSFX);
-        }
+
+        AudioManager.instance.PlaySFX(AudioManager.SFXType.Damage);
 
         playerHealth -= damageAmount;
         playerUIHandler.HealthUpdate(playerHealth);
