@@ -152,6 +152,8 @@ public class MeleeHandler : MonoBehaviour, IWeapon
         float animationLength = ownerAnimator.GetCurrentAnimatorStateInfo(0).length;
         float actualHitboxDuration = (animationLength / swingSpeed) * 0.5f;
 
+        owner.GetComponent<PlayerUIHandler>().StartStaminaCooldown(actualHitboxDuration + swingCooldown);
+
         equippedCollider.enabled = true;
         yield return new WaitForSeconds(actualHitboxDuration);
         equippedCollider.enabled = false;

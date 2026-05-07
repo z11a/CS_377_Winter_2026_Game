@@ -9,4 +9,5 @@ public class PlayerUIReferences : MonoBehaviour
     public TextMeshProUGUI PointsText;
     public TextMeshProUGUI CheeseText;
     public Slider HealthBar;
+    public Slider StaminaBar;
 }

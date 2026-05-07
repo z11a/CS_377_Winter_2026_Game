@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 public class PlayerUIHandler : MonoBehaviour
 {
     [Header("Player Information")]
@@ -13,6 +14,9 @@ public class PlayerUIHandler : MonoBehaviour
     public TextMeshProUGUI PointsText;
     public TextMeshProUGUI CheeseText;
     public Slider HealthBar;
+    public Slider StaminaBar;
+
+    [HideInInspector] private IEnumerator staminaCoroutine;
 
     void Start()
     {
@@ -37,7 +41,17 @@ public class PlayerUIHandler : MonoBehaviour
         CheeseText = playerUIReferences.CheeseText;
         CheeseText.text = "Cheese: 0";
         HealthBar = playerUIReferences.HealthBar;
+        StaminaBar = playerUIReferences.StaminaBar;
+        StaminaBar.gameObject.SetActive(false);
+    }
 
+    void Update()
+    {
+        Vector2 offset = new Vector2(0, -50);
+        Vector3 screenPosition = Camera.main.WorldToScreenPoint(playerHandler.rb.position);
+        Vector2 newScreenPosition = new Vector2(screenPosition.x, screenPosition.y) + offset;
+
+        StaminaBar.GetComponent<RectTransform>().position = newScreenPosition;
     }
 
     public void RoundWinUpdate(int roundsWon)
@@ -88,8 +102,29 @@ public class PlayerUIHandler : MonoBehaviour
         PlayerAvatar.color = fullAlpha;
     }
 
-    public void StaminaUpdate()
+    public void StartStaminaCooldown(float duration)
     {
+        if (staminaCoroutine != null)
+        {
+            StopCoroutine(staminaCoroutine);
+        }
+        StaminaBar.gameObject.SetActive(true);
+        staminaCoroutine = StaminaCooldown(duration);
+        StartCoroutine(StaminaCooldown(duration));
+    }
 
+    private IEnumerator StaminaCooldown(float duration)
+    {
+        float elapsedTime = 0.0f;
+
+        while (elapsedTime < duration)
+        {
+            yield return null;
+            StaminaBar.value = elapsedTime / duration;
+            elapsedTime += Time.deltaTime;
+        }
+        StaminaBar.value = 1.0f;
+        StaminaBar.gameObject.SetActive(false);
+        yield return null;
     }
 }
