@@ -23,9 +23,6 @@ public class PlayerHandler : MonoBehaviour
     [HideInInspector] public Rigidbody rb;
     [HideInInspector] public Animator animator;
     private SkinnedMeshRenderer playerRenderer;
-
-    //[SerializeField] private AudioClip dmgSFX;
-
     public enum PlayerNumber
     {
         PlayerOne, 
@@ -72,8 +69,8 @@ public class PlayerHandler : MonoBehaviour
     [HideInInspector] public int playerCurrentRoundScore;
     [HideInInspector] public List<GameObject> playerCurrentHoldingCheeses;
     [HideInInspector] public int playerTotalRoundScore = 0;
-    [HideInInspector] public GameObject weaponEquippedObject;
-    [HideInInspector] public GameObject possibleWeaponPickup;
+    [HideInInspector] public GameObject itemPickupObject;
+    [HideInInspector] public GameObject possibleItemPickup;
     [HideInInspector] public StatTracker stats = new StatTracker();
     public PlayerUIHandler playerUIHandler;
 
@@ -213,9 +210,9 @@ public class PlayerHandler : MonoBehaviour
             return;
         }
 
-        if (weaponEquippedObject != null)
+        if (itemPickupObject != null)
         {
-            weaponEquippedObject.GetComponent<IWeapon>().Attack();
+            itemPickupObject.GetComponent<IPickupableItem>().Use();
             stats.timesAttack++;
             //OnStaminaUse?.Invoke();
         }
@@ -246,39 +243,39 @@ public class PlayerHandler : MonoBehaviour
             return;
         }
 
-        if (possibleWeaponPickup == null)
+        if (possibleItemPickup == null)
         {
             Debug.Log("Nothing to pick up.");
             return;
         }
 
-        if (weaponEquippedObject != null)
+        if (itemPickupObject != null)
         {
-            if (weaponEquippedObject.GetComponent<DefaultAttack>() != null)
+            if (itemPickupObject.GetComponent<DefaultAttack>() != null)
             {
-                weaponEquippedObject.GetComponent<DefaultAttack>().equippedCollider.enabled = false;
+                itemPickupObject.GetComponent<DefaultAttack>().equippedCollider.enabled = false;
             }
             else
             {
-                weaponEquippedObject.GetComponent<IWeapon>().DropWeapon();
+                itemPickupObject.GetComponent<IPickupableItem>().DropItem();
             }
         }
 
-        weaponEquippedObject = possibleWeaponPickup;
-        weaponEquippedObject.GetComponent<IWeapon>().PickupWeapon(this.gameObject);
-        possibleWeaponPickup = null;
+        itemPickupObject = possibleItemPickup;
+        itemPickupObject.GetComponent<IPickupableItem>().PickupItem(this.gameObject);
+        possibleItemPickup = null;
 
         return;
     }
 
     public void OnDropWeapon()
     {
-        if (weaponEquippedObject == null || weaponEquippedObject.GetComponent<DefaultAttack>() != null)
+        if (itemPickupObject == null || itemPickupObject.GetComponent<DefaultAttack>() != null)
         {
             return;
         }
 
-        weaponEquippedObject.GetComponent<IWeapon>().DropWeapon();
+        itemPickupObject.GetComponent<IPickupableItem>().DropItem();
         SetupDefaultAttack();
     }
 
@@ -303,15 +300,15 @@ public class PlayerHandler : MonoBehaviour
         //{
         //    StopCoroutine(weaponAttackCoroutine);
         //}
-        if (weaponEquippedObject != null)
+        if (itemPickupObject != null)
         {
-            if (weaponEquippedObject.GetComponent<DefaultAttack>() != null)
+            if (itemPickupObject.GetComponent<DefaultAttack>() != null)
             {
-                weaponEquippedObject.GetComponent<DefaultAttack>().equippedCollider.enabled = false;
+                itemPickupObject.GetComponent<DefaultAttack>().equippedCollider.enabled = false;
             }
             else
             {
-                weaponEquippedObject.GetComponent<IWeapon>().DropWeapon();
+                itemPickupObject.GetComponent<IPickupableItem>().DropItem();
             }
         }
 
@@ -338,12 +335,12 @@ public class PlayerHandler : MonoBehaviour
         _playerState = PlayerState.Idle;
         playerCurrentHoldingCheeses.Clear();
 
-        possibleWeaponPickup = null;
-        if (weaponEquippedObject != null)
+        possibleItemPickup = null;
+        if (itemPickupObject != null)
         {
-            if (weaponEquippedObject.GetComponent<DefaultAttack>() == null)
+            if (itemPickupObject.GetComponent<DefaultAttack>() == null)
             {
-                Destroy(weaponEquippedObject);
+                Destroy(itemPickupObject);
             }
         }
         SetupDefaultAttack();
@@ -357,9 +354,9 @@ public class PlayerHandler : MonoBehaviour
     public void SetupDefaultAttack()
     {
         Debug.Log("default weapon: " + defaultAttackWeapon.name);
-        weaponEquippedObject = defaultAttackWeapon;
-        weaponEquippedObject.GetComponent<DefaultAttack>().owner = this.gameObject;
-        animator.SetFloat("WeaponSwingSpeed", weaponEquippedObject.GetComponent<DefaultAttack>().swingSpeed);
+        itemPickupObject = defaultAttackWeapon;
+        itemPickupObject.GetComponent<DefaultAttack>().owner = this.gameObject;
+        animator.SetFloat("WeaponSwingSpeed", itemPickupObject.GetComponent<DefaultAttack>().swingSpeed);
     }
 
     public void TakeDamage(float damageAmount)

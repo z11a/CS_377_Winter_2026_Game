@@ -5,7 +5,7 @@ using System.Reflection;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class MeleeHandler : MonoBehaviour, IWeapon
+public class MeleeHandler : MonoBehaviour, IPickupableItem
 {
     [HideInInspector] public GameObject owner { get; set; }
     [HideInInspector] public BoxCollider unequippedCollider;
@@ -13,7 +13,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
     private Rigidbody rb;
     [HideInInspector] public MeshRenderer meshRenderer;
     [HideInInspector] public IItem.ItemState _ItemState {  get; set; }
-    [HideInInspector] public IEnumerator attackCoroutine { get; set; }
+    [HideInInspector] public IEnumerator useCoroutine { get; set; }
     [HideInInspector] public Vector3 initialSpawnPosition { get; set; }
 
     [Header("Attack Properties")]
@@ -84,13 +84,13 @@ public class MeleeHandler : MonoBehaviour, IWeapon
         }
     }
 
-    public void Attack()
+    public void Use()
     {
-        attackCoroutine = SwingWeapon();
-        StartCoroutine(attackCoroutine);
+        useCoroutine = SwingWeapon();
+        StartCoroutine(useCoroutine);
     }
 
-    public void PickupWeapon(GameObject _owner)
+    public void PickupItem(GameObject _owner)
     {
         owner = _owner;
         unequippedCollider.enabled = false;
@@ -107,9 +107,9 @@ public class MeleeHandler : MonoBehaviour, IWeapon
         transform.localRotation = Quaternion.Euler(30.864f, -8.384f, -38.901f);
     }
 
-    public void DropWeapon()
+    public void DropItem()
     {
-        StopCoroutine(attackCoroutine);
+        StopCoroutine(useCoroutine);
         equippedCollider.enabled = false;
 
         PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
@@ -182,7 +182,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
         {
             Debug.Log("Able to pick up " + this.gameObject.name);
             meshRenderer.materials = highlightMaterialList;
-            playerHitPlayerHandler.possibleWeaponPickup = this.gameObject;
+            playerHitPlayerHandler.possibleItemPickup = this.gameObject;
         }
 
         if (_ItemState == IItem.ItemState.Collected)   // player is swinging the weapon
@@ -239,7 +239,7 @@ public class MeleeHandler : MonoBehaviour, IWeapon
         }
         Debug.Log("No longer able to pick up " + this.gameObject.name);
         meshRenderer.materials = defaultMaterialList;
-        playerHitPlayerHandler.possibleWeaponPickup = null;
+        playerHitPlayerHandler.possibleItemPickup = null;
     }
 
     private void DurabilityCheck()
