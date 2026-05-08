@@ -110,17 +110,24 @@ public class PlayerHandler : MonoBehaviour
 
     private void FixedUpdate()
     {
-        MovementHandlerRigidbody();
+        if (_playerState == PlayerState.Dead || !playerCanMove || GameStateManager.instance._gameState == GameStateManager.GameState.isLoading || GameStateManager.instance._gameState == GameStateManager.GameState.isPaused)
+        {
+            return;
+        }
+
+        if (_playerState == PlayerState.Aiming)
+        {
+            AimHandler();
+        }
+        else
+        {
+            MovementHandlerRigidbody();
+        }
     }
 
     private void MovementHandlerRigidbody()
     {
         //rb.AddForce(Physics.gravity);
-
-        if (_playerState == PlayerState.Dead || !playerCanMove || GameStateManager.instance._gameState == GameStateManager.GameState.isLoading || GameStateManager.instance._gameState == GameStateManager.GameState.isPaused)
-        {
-            return;
-        }
 
         //if (!playerCanMove)
         //{
@@ -203,7 +210,32 @@ public class PlayerHandler : MonoBehaviour
         moveAmount = value.Get<Vector2>();
     }
 
-    public void OnAttack()
+    public void OnAim(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            _playerState = PlayerState.Aiming;
+            if (!knockedBack)
+            {
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
+        }
+        else
+        {
+            _playerState = PlayerState.Idle;
+        }
+    }
+
+    private void AimHandler()
+    {
+        if (moveAmount.magnitude > 0.001f)
+        {
+            this.transform.rotation = Quaternion.LookRotation(new Vector3(moveAmount.x, 0, moveAmount.y));
+        }
+    }
+
+    public void OnUse()
     {
         if (GameStateManager.instance._gameState == GameStateManager.GameState.isLoading || GameStateManager.instance._gameState == GameStateManager.GameState.isPaused)
         {
@@ -214,27 +246,8 @@ public class PlayerHandler : MonoBehaviour
         {
             itemPickupObject.GetComponent<IPickupableItem>().Use();
             stats.timesAttack++;
-            //OnStaminaUse?.Invoke();
         }
     }
-
-    //public void StartStaminaCooldown()
-    //{
-
-    //}
-
-    //private IEnumerator StaminaIncrement()
-    //{
-    //    yield return null;
-    //}
-
-    //public void StopStaminaCooldown()
-    //{
-    //    if (attackStamina != 1.0f)
-    //    {
-    //        StopCoroutine(StaminaIncrement());
-    //    }
-    //}
 
     public void OnInteract()
     {
@@ -268,7 +281,7 @@ public class PlayerHandler : MonoBehaviour
         return;
     }
 
-    public void OnDropWeapon()
+    public void OnDropItem()
     {
         if (itemPickupObject == null || itemPickupObject.GetComponent<DefaultAttack>() != null)
         {

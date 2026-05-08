@@ -259,7 +259,6 @@ public class UIManager : MonoBehaviour
 
     public IEnumerator activateItemSpawnIndicator(float length, Vector3 itemPosition)
     {
-        Debug.Log("here");
         yield return null;
         Vector3 screenPos = GameObject.FindAnyObjectByType<Camera>().WorldToScreenPoint(itemPosition);
 

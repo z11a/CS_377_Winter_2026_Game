@@ -8,9 +8,9 @@ using UnityEngine;
 public class MeleeHandler : MonoBehaviour, IPickupableItem
 {
     [HideInInspector] public GameObject owner { get; set; }
-    [HideInInspector] public BoxCollider unequippedCollider;
+    [HideInInspector] public BoxCollider unequippedCollider { get; set; }
     [HideInInspector] public CapsuleCollider equippedCollider;
-    private Rigidbody rb;
+    [HideInInspector] public Rigidbody rb { get; set; }
     [HideInInspector] public MeshRenderer meshRenderer;
     [HideInInspector] public IItem.ItemState _ItemState {  get; set; }
     [HideInInspector] public IEnumerator useCoroutine { get; set; }
@@ -25,7 +25,7 @@ public class MeleeHandler : MonoBehaviour, IPickupableItem
     public float weaponDurability = 5;
 
     [Header("Other")]
-    public float floatingAnimationRotationSpeed = 30.0f;
+    [SerializeField] public float floatingAnimationRotationSpeed = 30.0f;
     public Material highlightMaterial;
     [SerializeField] private ParticleSystem _despawnParticleSystem;
     public ParticleSystem despawnParticleSystem
@@ -49,10 +49,18 @@ public class MeleeHandler : MonoBehaviour, IPickupableItem
         equippedCollider.enabled = false;
         rb = GetComponent<Rigidbody>();
         canSwing = true;
+        floatingAnimationRotationSpeed = 30.0f;
 
         _ItemState = IItem.ItemState.NotCollected;
         initialSpawnPosition = transform.position;
 
+        SetupHighlightMaterial();
+
+        StartCoroutine(AnimationHandler());
+    }
+
+    void SetupHighlightMaterial()
+    {
         meshRenderer = GetComponent<MeshRenderer>();
         defaultMaterialList = meshRenderer.materials;
         highlightMaterialList = new Material[defaultMaterialList.Length + 1];
@@ -60,9 +68,7 @@ public class MeleeHandler : MonoBehaviour, IPickupableItem
         {
             highlightMaterialList[i] = defaultMaterialList[i];
         }
-        highlightMaterialList[highlightMaterialList.Length - 1] = highlightMaterial; 
-
-        StartCoroutine(AnimationHandler());
+        highlightMaterialList[highlightMaterialList.Length - 1] = highlightMaterial;
     }
 
     // Update is called once per frame
@@ -109,7 +115,10 @@ public class MeleeHandler : MonoBehaviour, IPickupableItem
 
     public void DropItem()
     {
-        StopCoroutine(useCoroutine);
+        if (useCoroutine != null)
+        {
+            StopCoroutine(useCoroutine);
+        }
         equippedCollider.enabled = false;
 
         PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();

@@ -10,4 +10,6 @@ public interface IPickupableItem : IItem
     IEnumerator useCoroutine { get; set; }
     void PickupItem(GameObject _owner);
     void DropItem();
+    BoxCollider unequippedCollider { get; set; }
+    Rigidbody rb { get; set; }
 }

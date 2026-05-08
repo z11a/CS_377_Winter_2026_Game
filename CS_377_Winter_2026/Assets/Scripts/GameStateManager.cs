@@ -72,6 +72,10 @@ public class GameStateManager : MonoBehaviour
     [HideInInspector] public int cheesePity = 0;
     [HideInInspector] public int uncommonPity = 0;
 
+    [Header("Projectiles")]
+    public GameObject bulletPrefab;
+    public GameObject rocketPrefab;
+
     [HideInInspector] public bool waitingForPlayersToJoin = false;
     [HideInInspector] public List<Transform> playerGameplaySpawnPositions;
     //[HideInInspector] public Transform player1GameplaySpawnPosition;

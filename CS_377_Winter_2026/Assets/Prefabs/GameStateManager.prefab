@@ -46,6 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SceneManager
   _gameState: 0
   _currentRound: 0
+  _currentRoundState: 0
   countdownLength: 3
   roundLength: 120
   currentRoundTime: 0
@@ -53,10 +54,10 @@ MonoBehaviour:
   roundOneScoreRequirement: 70
   roundTwoScoreRequirement: 100
   roundThreeScoreRequirement: 120
-  winSFX: {fileID: 8300000, guid: 386ba01cc8824c1408564846e9c295df, type: 3}
   itemSpawnCooldown: 3.5
   uncommonItemSpawnChance: 45
   rareItemSpawnChance: 15
+  itemSpawnIndicationLength: 2
   possibleItemSpawnLocations:
   - {fileID: 0}
   - {fileID: 0}
@@ -65,6 +66,7 @@ MonoBehaviour:
   - {fileID: 0}
   commonItems:
   - {fileID: 7846301342053070152, guid: 0d5e0f8b678bd834284ca64556531823, type: 3}
+  - {fileID: 769477063499096365, guid: 781909e1c826449489e1ba48e3d6b321, type: 3}
   uncommonItems:
   - {fileID: 2498599946575675284, guid: 4ea1a632372797d41b490283b91c1ae0, type: 3}
   - {fileID: 1206104607816383204, guid: 0e1b8e1303f362a4489ed67f31c6244a, type: 3}
@@ -73,6 +75,7 @@ MonoBehaviour:
   itemsSpawning: 0
   cheesePity: 0
   uncommonPity: 0
+  bulletPrefab: {fileID: 0}
+  rocketPrefab: {fileID: 0}
   waitingForPlayersToJoin: 0
-  player1GameplaySpawnPosition: {fileID: 0}
-  player2GameplaySpawnPosition: {fileID: 0}
+  playerGameplaySpawnPositions: []
