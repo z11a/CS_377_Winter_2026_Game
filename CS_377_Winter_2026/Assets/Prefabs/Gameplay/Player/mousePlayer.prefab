@@ -93,7 +93,7 @@ Transform:
   m_LocalRotation: {x: 0, y: -0.00000008742278, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1367241565071092769}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -252,7 +252,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 0f73a2f1869a3864790830103c71862a, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
@@ -305,7 +305,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHandler
   rb: {fileID: 0}
   animator: {fileID: 0}
-  dmgSFX: {fileID: 8300000, guid: 82bc2d27ef0401d4191657b95293d43e, type: 3}
   _playerState: 0
   playerNumber: 0
   playerHealth: 50
@@ -328,9 +327,11 @@ MonoBehaviour:
   playerCurrentRoundScore: 0
   playerCurrentHoldingCheeses: []
   playerTotalRoundScore: 0
-  weaponEquippedObject: {fileID: 0}
-  possibleWeaponPickup: {fileID: 0}
+  itemPickupObject: {fileID: 0}
+  possibleItemPickup: {fileID: 0}
   playerUIHandler: {fileID: 0}
+  gameStateBeforePause: 0
+  actionMapBeforePause: 
 --- !u!114 &1650764146571636737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -349,6 +350,7 @@ MonoBehaviour:
   PointsText: {fileID: 0}
   CheeseText: {fileID: 0}
   HealthBar: {fileID: 0}
+  StaminaBar: {fileID: 0}
 --- !u!54 &7986193701225777442
 Rigidbody:
   m_ObjectHideFlags: 0

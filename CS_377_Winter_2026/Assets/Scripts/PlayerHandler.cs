@@ -198,6 +198,10 @@ public class PlayerHandler : MonoBehaviour
         {
             case PlayerState.Idle:
                 animator.SetBool("Running", false);
+                animator.SetBool("Aiming", false);
+                break;
+            case PlayerState.Aiming:
+                animator.SetBool("Aiming", true);
                 break;
             case PlayerState.Running:
                 animator.SetBool("Running", true);
@@ -208,6 +212,7 @@ public class PlayerHandler : MonoBehaviour
     public void OnMove(InputValue value)
     {
         moveAmount = value.Get<Vector2>();
+        Debug.Log("Knockback: " + knockedBack);
     }
 
     public void OnAim(InputValue value)
@@ -244,6 +249,8 @@ public class PlayerHandler : MonoBehaviour
 
         if (itemPickupObject != null)
         {
+            animator.SetBool("Aiming", false);
+            animator.SetBool("Running", false);
             itemPickupObject.GetComponent<IPickupableItem>().Use();
             stats.timesAttack++;
         }
@@ -411,8 +418,12 @@ public class PlayerHandler : MonoBehaviour
             yield return new WaitForSeconds(1.0f);
         }
     }
+    public void TakeKnockback(Vector3 direction, float duration, float strength)
+    {
+        StartCoroutine(KnockbackCoroutine(direction, duration, strength));
+    }
 
-    public IEnumerator TakeKnockback(Vector3 direction, float duration, float strength)
+    public IEnumerator KnockbackCoroutine(Vector3 direction, float duration, float strength)
     {
         knockedBack = true;
 

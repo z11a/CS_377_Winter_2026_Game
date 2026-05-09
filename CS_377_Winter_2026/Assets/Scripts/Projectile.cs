@@ -1,16 +1,19 @@
 using UnityEngine;
 using System.Collections;
+using static UnityEngine.UI.GridLayoutGroup;
 
 public class Projectile : MonoBehaviour
 {
     public float damage = 10.0f;
+    public float knockbackStrength = 20.0f;
+    public float knockbackDuration = 0.25f;
     public float maxTravelTime = 15.0f;
     private Rigidbody rb;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        rb = GetComponentInChildren<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -27,6 +30,7 @@ public class Projectile : MonoBehaviour
         while (travelTime < maxTravelTime)
         {
             yield return null;
+            if (this == null) { yield break; }
             rb.MovePosition(transform.position + direction * strength * Time.deltaTime);
             travelTime += Time.deltaTime;
         }
@@ -39,8 +43,11 @@ public class Projectile : MonoBehaviour
         if (playerHit != null)
         {
             playerHit.TakeDamage(damage);
-            StopAllCoroutines();
-            Destroy(gameObject);
+
+            Vector3 knockbackDirection = (other.transform.position - transform.position).normalized;
+            playerHit.TakeKnockback(knockbackDirection, knockbackDuration, knockbackStrength);
         }
+        StopAllCoroutines();
+        Destroy(gameObject);
     }
 }

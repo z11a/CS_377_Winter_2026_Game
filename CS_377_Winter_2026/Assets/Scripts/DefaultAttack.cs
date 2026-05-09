@@ -39,7 +39,7 @@ public class DefaultAttack : MeleeHandler
                 playerHitPlayerHandler.TakeDamage(weaponDamage);
 
                 Vector3 knockbackDirection = (playerHitPlayerHandler.transform.position - owner.transform.position).normalized;
-                StartCoroutine(playerHitPlayerHandler.TakeKnockback(knockbackDirection, weaponknockbackDuration, weaponKnockbackStrength));
+                playerHitPlayerHandler.TakeKnockback(knockbackDirection, weaponknockbackDuration, weaponKnockbackStrength);
                 //StartCoroutine(ApplyKnockback(playerHitPlayerHandler.GetComponent<Rigidbody>(), (playerHitPlayerHandler.transform.position - owner.transform.position).normalized));
             }
         }

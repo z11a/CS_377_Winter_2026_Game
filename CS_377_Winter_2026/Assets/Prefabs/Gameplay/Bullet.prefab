@@ -47,6 +47,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Projectile
   damage: 10
+  knockbackStrength: 20
+  knockbackDuration: 0.25
   maxTravelTime: 15
 --- !u!54 &118626403445807139
 Rigidbody:

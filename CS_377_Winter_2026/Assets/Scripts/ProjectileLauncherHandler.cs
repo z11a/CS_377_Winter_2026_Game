@@ -88,7 +88,7 @@ public class ProjectileLauncherHandler : MonoBehaviour, IPickupableItem
                 break;
         }
         GameObject projectile = GameObject.Instantiate(projectilePrefab, projectileSpawnPlaceholder.transform.position, Quaternion.identity);
-        StartCoroutine(projectile.GetComponent<Projectile>().ProjectileMove(projectileSpawnPlaceholder.transform.right, projectileSpeed));
+        StartCoroutine(projectile.GetComponent<Projectile>().ProjectileMove(projectileSpawnPlaceholder.transform.forward, projectileSpeed));
     }
     
 
@@ -127,7 +127,7 @@ public class ProjectileLauncherHandler : MonoBehaviour, IPickupableItem
         PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
         transform.parent = ownerPlayerHandler.weaponPlaceholderTransform;
         transform.localPosition = Vector3.zero;
-        transform.localRotation = Quaternion.Euler(30.864f, -8.384f, -38.901f);
+        transform.localRotation = Quaternion.identity;
     }
 
     private void OnTriggerEnter(Collider collider)

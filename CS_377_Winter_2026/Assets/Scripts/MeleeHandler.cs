@@ -207,8 +207,7 @@ public class MeleeHandler : MonoBehaviour, IPickupableItem
                 weaponDurability -= 1.0f;
 
                 Vector3 knockbackDirection = (playerHitPlayerHandler.transform.position - owner.transform.position).normalized;
-                StartCoroutine(playerHitPlayerHandler.TakeKnockback(knockbackDirection, weaponknockbackDuration, weaponKnockbackStrength));
-                //StartCoroutine(ApplyKnockback(playerHitPlayerHandler.GetComponent<Rigidbody>(), (playerHitPlayerHandler.transform.position - owner.transform.position).normalized));
+                playerHitPlayerHandler.TakeKnockback(knockbackDirection, weaponknockbackDuration, weaponKnockbackStrength);
 
                 if (weaponDurability <= 0.0f)
                 {
