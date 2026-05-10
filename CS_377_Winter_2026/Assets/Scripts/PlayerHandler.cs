@@ -251,7 +251,7 @@ public class PlayerHandler : MonoBehaviour
         {
             animator.SetBool("Aiming", false);
             animator.SetBool("Running", false);
-            itemPickupObject.GetComponent<IPickupableItem>().Use();
+            itemPickupObject.GetComponent<PickupableItem>().Use();
             stats.timesAttack++;
         }
     }
@@ -277,12 +277,12 @@ public class PlayerHandler : MonoBehaviour
             }
             else
             {
-                itemPickupObject.GetComponent<IPickupableItem>().DropItem();
+                itemPickupObject.GetComponent<PickupableItem>().DropItem();
             }
         }
 
         itemPickupObject = possibleItemPickup;
-        itemPickupObject.GetComponent<IPickupableItem>().PickupItem(this.gameObject);
+        itemPickupObject.GetComponent<PickupableItem>().PickupItem(this.gameObject);
         possibleItemPickup = null;
 
         return;
@@ -295,7 +295,7 @@ public class PlayerHandler : MonoBehaviour
             return;
         }
 
-        itemPickupObject.GetComponent<IPickupableItem>().DropItem();
+        itemPickupObject.GetComponent<PickupableItem>().DropItem();
         SetupDefaultAttack();
     }
 
@@ -328,7 +328,7 @@ public class PlayerHandler : MonoBehaviour
             }
             else
             {
-                itemPickupObject.GetComponent<IPickupableItem>().DropItem();
+                itemPickupObject.GetComponent<PickupableItem>().DropItem();
             }
         }
 
@@ -389,7 +389,10 @@ public class PlayerHandler : MonoBehaviour
         AudioManager.instance.PlaySFX(AudioManager.SFXType.Damage);
 
         playerHealth -= damageAmount;
-        playerUIHandler.HealthUpdate(playerHealth);
+        if (playerUIHandler != null)
+        {
+            playerUIHandler.HealthUpdate(playerHealth);
+        }
         StartCoroutine(HitFlash());
 
         if (playerHealth <= 0.0f)

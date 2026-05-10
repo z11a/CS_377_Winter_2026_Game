@@ -5,16 +5,9 @@ using System.Reflection;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class MeleeHandler : MonoBehaviour, IPickupableItem
+public class MeleeHandler : PickupableItem
 {
-    [HideInInspector] public GameObject owner { get; set; }
-    [HideInInspector] public BoxCollider unequippedCollider { get; set; }
     [HideInInspector] public CapsuleCollider equippedCollider;
-    [HideInInspector] public Rigidbody rb { get; set; }
-    [HideInInspector] public MeshRenderer meshRenderer;
-    [HideInInspector] public IItem.ItemState _ItemState {  get; set; }
-    [HideInInspector] public IEnumerator useCoroutine { get; set; }
-    [HideInInspector] public Vector3 initialSpawnPosition { get; set; }
 
     [Header("Attack Properties")]
     public float swingSpeed = 1.0f;
@@ -25,50 +18,21 @@ public class MeleeHandler : MonoBehaviour, IPickupableItem
     public float weaponDurability = 5;
 
     [Header("Other")]
-    [SerializeField] public float floatingAnimationRotationSpeed = 30.0f;
-    public Material highlightMaterial;
-    [SerializeField] private ParticleSystem _despawnParticleSystem;
-    public ParticleSystem despawnParticleSystem
-    {
-        get => _despawnParticleSystem;
-        set => _despawnParticleSystem = value;
-    }
-
     protected bool canSwing = true;
-
     protected List<GameObject> playersHit = new List<GameObject>();
-    [HideInInspector] public Material[] highlightMaterialList;
-    [HideInInspector] public Material[] defaultMaterialList;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        unequippedCollider = GetComponent<BoxCollider>();
-        unequippedCollider.enabled = true;
-        equippedCollider = GetComponent<CapsuleCollider>();
-        equippedCollider.enabled = false;
-        rb = GetComponent<Rigidbody>();
-        canSwing = true;
-        floatingAnimationRotationSpeed = 30.0f;
-
-        _ItemState = IItem.ItemState.NotCollected;
-        initialSpawnPosition = transform.position;
-
-        SetupHighlightMaterial();
-
-        StartCoroutine(AnimationHandler());
+        InitPickupableItem();
     }
 
-    void SetupHighlightMaterial()
+    public override void InitPickupableItem()
     {
-        meshRenderer = GetComponent<MeshRenderer>();
-        defaultMaterialList = meshRenderer.materials;
-        highlightMaterialList = new Material[defaultMaterialList.Length + 1];
-        for (int i = 0; i < defaultMaterialList.Length; i++)
-        {
-            highlightMaterialList[i] = defaultMaterialList[i];
-        }
-        highlightMaterialList[highlightMaterialList.Length - 1] = highlightMaterial;
+        base.InitPickupableItem();
+        equippedCollider = GetComponent<CapsuleCollider>();
+        equippedCollider.enabled = false;
+        canSwing = true;
     }
 
     // Update is called once per frame
@@ -77,67 +41,24 @@ public class MeleeHandler : MonoBehaviour, IPickupableItem
 
     }
 
-    private IEnumerator AnimationHandler()
-    {
-        while (_ItemState == IItem.ItemState.NotCollected)
-        {
-            transform.position = new Vector3(initialSpawnPosition.x,
-                                 initialSpawnPosition.y + (Mathf.Sin(Time.time) * 0.25f),
-                                 initialSpawnPosition.z);
-
-            transform.Rotate(Vector3.up * floatingAnimationRotationSpeed * Time.deltaTime);
-            yield return null;
-        }
-    }
-
-    public void Use()
+    public override void Use()
     {
         useCoroutine = SwingWeapon();
         StartCoroutine(useCoroutine);
     }
 
-    public void PickupItem(GameObject _owner)
+    public override void PickupItem(GameObject _owner)
     {
-        owner = _owner;
-        unequippedCollider.enabled = false;
-        meshRenderer.materials = defaultMaterialList;
-        _ItemState = IItem.ItemState.Collected;
-        GameStateManager.instance.itemSpawnDictionary[initialSpawnPosition] = null;
-
-        PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
-        ownerPlayerHandler.playerWeight += rb.mass;
-        ownerPlayerHandler.animator.SetFloat("WeaponSwingSpeed", swingSpeed);
-
-        transform.parent = ownerPlayerHandler.weaponPlaceholderTransform;
-        transform.localPosition = Vector3.zero;
+        base.PickupItem(_owner);
+        Animator ownerPlayerAnimator = owner.GetComponent<Animator>();
+        ownerPlayerAnimator.SetFloat("WeaponSwingSpeed", swingSpeed);
         transform.localRotation = Quaternion.Euler(30.864f, -8.384f, -38.901f);
     }
 
-    public void DropItem()
+    public override void DropItem()
     {
-        if (useCoroutine != null)
-        {
-            StopCoroutine(useCoroutine);
-        }
+        base.DropItem();
         equippedCollider.enabled = false;
-
-        PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
-        ownerPlayerHandler.playerWeight -= rb.mass;
-        rb.transform.parent = null;
-        unequippedCollider.isTrigger = false;
-        unequippedCollider.enabled = true;
-        rb.isKinematic = false;
-        rb.useGravity = true;
-
-        StartCoroutine(DespawnWeapon());
-    }
-
-    private IEnumerator DespawnWeapon()
-    {
-        yield return new WaitForSeconds(1.0f);
-        ParticleSystem despawnParticle = Instantiate(despawnParticleSystem, transform.position, Quaternion.identity);
-        despawnParticle.Play();
-        Destroy(this.gameObject);
     }
 
     public IEnumerator SwingWeapon()
@@ -178,20 +99,13 @@ public class MeleeHandler : MonoBehaviour, IPickupableItem
         canSwing = true;
     }
 
-    private void OnTriggerEnter(Collider collider)
+    public override void OnTriggerEnter(Collider collider)
     {
-        PlayerHandler playerHitPlayerHandler = collider.gameObject.GetComponent<PlayerHandler>();
+        PlayerHandler playerHitPlayerHandler = BasicTriggerEnterCheck(collider);
 
-        if (playerHitPlayerHandler == null || playerHitPlayerHandler._playerState == PlayerHandler.PlayerState.Dead)
+        if (playerHitPlayerHandler == null)
         {
             return;
-        }
-
-        if (_ItemState == IItem.ItemState.NotCollected)
-        {
-            Debug.Log("Able to pick up " + this.gameObject.name);
-            meshRenderer.materials = highlightMaterialList;
-            playerHitPlayerHandler.possibleItemPickup = this.gameObject;
         }
 
         if (_ItemState == IItem.ItemState.Collected)   // player is swinging the weapon
@@ -220,34 +134,6 @@ public class MeleeHandler : MonoBehaviour, IPickupableItem
                 }
             }
         }
-    }
-
-    //protected IEnumerator ApplyKnockback(Rigidbody _rb, Vector3 direction)
-    //{
-    //    _rb.GetComponent<PlayerHandler>().knockedBack = true;
-    //    _rb.linearVelocity = Vector3.zero;
-    //    _rb.angularVelocity = Vector3.zero;
-
-    //    _rb.AddForce(direction * weaponKnockbackStrength, ForceMode.Impulse);
-    //    _rb.angularVelocity = Vector3.zero;
-
-    //    yield return new WaitForSeconds(weaponknockbackDuration);
-    //    _rb.GetComponent<PlayerHandler>().knockedBack = false;
-
-    //    DurabilityCheck();
-    //}
-
-    private void OnTriggerExit(Collider collider)
-    {
-        PlayerHandler playerHitPlayerHandler = collider.gameObject.GetComponent<PlayerHandler>();
-
-        if (playerHitPlayerHandler == null || owner != null)
-        {
-            return;
-        }
-        Debug.Log("No longer able to pick up " + this.gameObject.name);
-        meshRenderer.materials = defaultMaterialList;
-        playerHitPlayerHandler.possibleItemPickup = null;
     }
 
     private void DurabilityCheck()

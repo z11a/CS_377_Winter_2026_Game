@@ -46,14 +46,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 357fab23e24d31a41bcbf5bbda526d24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  floatingAnimationRotationSpeed: 30
+  rb: {fileID: 0}
+  meshRenderer: {fileID: 0}
+  highlightMaterialList: []
+  defaultMaterialList: []
+  highlightMaterial: {fileID: 2100000, guid: f6826286dcb636347a39ccece15b0647, type: 2}
+  despawnParticleSystem: {fileID: 8245051818807280991, guid: 560e3512ac625c548ad8f7e6fbfdab2a, type: 3}
   projectileType: 0
   projectileSpawnPlaceholder: {fileID: 2378952032278252706}
   projectileSpeed: 5
   maxTravelTime: 15
-  highlightMaterial: {fileID: 2100000, guid: f6826286dcb636347a39ccece15b0647, type: 2}
-  highlightMaterialList: []
-  defaultMaterialList: []
 --- !u!54 &5395737044750764172
 Rigidbody:
   m_ObjectHideFlags: 0

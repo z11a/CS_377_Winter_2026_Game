@@ -21,7 +21,11 @@ public class Projectile : MonoBehaviour
     {
         
     }
-    public IEnumerator ProjectileMove(Vector3 direction, float strength)
+    public void ProjectileMove(Vector3 direction, float strength)
+    {
+        StartCoroutine(ProjectileMoveCoroutine(direction, strength));
+    }
+    public IEnumerator ProjectileMoveCoroutine(Vector3 direction, float strength)
     {
         yield return null;
 

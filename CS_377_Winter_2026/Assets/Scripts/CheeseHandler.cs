@@ -14,7 +14,7 @@ public class CheeseHandler : MonoBehaviour, IItem
     }
 
     public CheeseType _CheeseType;
-    public float floatingAnimationRotationSpeed = 30.0f;
+    public float floatingAnimationRotationSpeed { get; set; }
     private Coroutine floatingAnimationCoroutine;
     //[SerializeField] private AudioClip nomSFX;
 
@@ -23,7 +23,6 @@ public class CheeseHandler : MonoBehaviour, IItem
     [HideInInspector] public bool isGrounded = false;
     [HideInInspector] public IItem.ItemState _ItemState { get; set; }
     [HideInInspector] public Vector3 initialSpawnPosition {  get; set; }
-    [HideInInspector] public ParticleSystem despawnParticleSystem { get; set; }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

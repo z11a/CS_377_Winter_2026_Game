@@ -19,7 +19,7 @@ public class DefaultAttack : MeleeHandler
     {
         
     }
-    private void OnTriggerEnter(Collider collider)
+    private new void OnTriggerEnter(Collider collider)
     {
         PlayerHandler playerHitPlayerHandler = collider.gameObject.GetComponent<PlayerHandler>();
 
@@ -43,8 +43,5 @@ public class DefaultAttack : MeleeHandler
                 //StartCoroutine(ApplyKnockback(playerHitPlayerHandler.GetComponent<Rigidbody>(), (playerHitPlayerHandler.transform.position - owner.transform.position).normalized));
             }
         }
-    }
-    private void OnTriggerExit(Collider collider)
-    {
     }
 }
