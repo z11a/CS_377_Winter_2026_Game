@@ -49,6 +49,7 @@ public class PlayerHandler : MonoBehaviour
     public float healthRegenDelay = 4.0f;
     public float healthRegenPerSecond = 5.0f;
     private IEnumerator healthRegenCoroutine;
+    private IEnumerator knockbackCoroutine;
 
     [Header("Weapon Info")]
     public Transform weaponPlaceholderTransform;
@@ -315,11 +316,6 @@ public class PlayerHandler : MonoBehaviour
         animator.ResetTrigger("Idle");
         animator.SetTrigger("Death");
 
-        //IEnumerator weaponAttackCoroutine = weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine;
-        //if (weaponAttackCoroutine != null)
-        //{
-        //    StopCoroutine(weaponAttackCoroutine);
-        //}
         if (itemPickupObject != null)
         {
             if (itemPickupObject.GetComponent<DefaultAttack>() != null)
@@ -350,6 +346,7 @@ public class PlayerHandler : MonoBehaviour
         animator.SetTrigger("Idle");
         knockedBack = false;
         playerHealth = 50.0f;
+        playerUIHandler.HealthUpdate(50.0f);
         maxPlayerSpeed = 25.0f;
         playerWeight = 0.0f;
         _playerState = PlayerState.Idle;
@@ -423,7 +420,12 @@ public class PlayerHandler : MonoBehaviour
     }
     public void TakeKnockback(Vector3 direction, float duration, float strength)
     {
-        StartCoroutine(KnockbackCoroutine(direction, duration, strength));
+        if (knockbackCoroutine != null)
+        {
+            StopCoroutine(knockbackCoroutine);
+        }
+        knockbackCoroutine = KnockbackCoroutine(direction, duration, strength);
+        StartCoroutine(knockbackCoroutine);
     }
 
     public IEnumerator KnockbackCoroutine(Vector3 direction, float duration, float strength)

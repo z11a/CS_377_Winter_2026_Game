@@ -24,12 +24,12 @@ public class MeleeHandler : PickupableItem
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        InitPickupableItem();
+        InitItem();
     }
 
-    public override void InitPickupableItem()
+    public override void InitItem()
     {
-        base.InitPickupableItem();
+        base.InitItem();
         equippedCollider = GetComponent<CapsuleCollider>();
         equippedCollider.enabled = false;
         canSwing = true;
@@ -101,14 +101,14 @@ public class MeleeHandler : PickupableItem
 
     public override void OnTriggerEnter(Collider collider)
     {
-        PlayerHandler playerHitPlayerHandler = BasicTriggerEnterCheck(collider);
+        PlayerHandler playerHitPlayerHandler = ItemTriggerEnterCheck(collider);
 
         if (playerHitPlayerHandler == null)
         {
             return;
         }
 
-        if (_ItemState == IItem.ItemState.Collected)   // player is swinging the weapon
+        if (_ItemState == Item.ItemState.Collected)   // player is swinging the weapon
         {
             if (playerHitPlayerHandler.gameObject != owner && !playersHit.Contains(playerHitPlayerHandler.gameObject))
             {
@@ -123,15 +123,17 @@ public class MeleeHandler : PickupableItem
                 Vector3 knockbackDirection = (playerHitPlayerHandler.transform.position - owner.transform.position).normalized;
                 playerHitPlayerHandler.TakeKnockback(knockbackDirection, weaponknockbackDuration, weaponKnockbackStrength);
 
-                if (weaponDurability <= 0.0f)
-                {
-                    this.GetComponent<MeshRenderer>().enabled = false;
-                    ParticleSystem despawnParticle = Instantiate(despawnParticleSystem, transform.position, Quaternion.identity);
-                    despawnParticle.Play();
-                    PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
-                    ownerPlayerHandler.playerWeight -= this.rb.mass;
-                    ownerPlayerHandler.SetupDefaultAttack();
-                }
+                DurabilityCheck();
+
+                //if (weaponDurability <= 0.0f)
+                //{
+                //    //this.GetComponent<MeshRenderer>().enabled = false;
+                //    //ParticleSystem despawnParticle = Instantiate(despawnParticleSystem, transform.position, Quaternion.identity);
+                //    //despawnParticle.Play();
+                //    //PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
+                //    //ownerPlayerHandler.playerWeight -= this.rb.mass;
+                //    //ownerPlayerHandler.SetupDefaultAttack();
+                //}
             }
         }
     }

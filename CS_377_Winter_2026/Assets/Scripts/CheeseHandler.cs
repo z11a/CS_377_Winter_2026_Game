@@ -3,7 +3,7 @@ using System.Collections;
 using NUnit.Framework.Internal.Execution;
 
 
-public class CheeseHandler : MonoBehaviour, IItem
+public class CheeseHandler : Item
 {
     public enum CheeseType
     {
@@ -14,19 +14,14 @@ public class CheeseHandler : MonoBehaviour, IItem
     }
 
     public CheeseType _CheeseType;
-    public float floatingAnimationRotationSpeed { get; set; }
-    private Coroutine floatingAnimationCoroutine;
-    //[SerializeField] private AudioClip nomSFX;
-
     [HideInInspector] public int cheeseValue;
-    [HideInInspector] public Rigidbody rb;
     [HideInInspector] public bool isGrounded = false;
-    [HideInInspector] public IItem.ItemState _ItemState { get; set; }
-    [HideInInspector] public Vector3 initialSpawnPosition {  get; set; }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        InitItem();
+
         switch (_CheeseType)
         {
             case CheeseType.Swiss:
@@ -42,10 +37,6 @@ public class CheeseHandler : MonoBehaviour, IItem
                 cheeseValue = 10;
                 break;
         }
-        _ItemState = IItem.ItemState.NotCollected;
-        initialSpawnPosition = transform.position;
-        rb = GetComponent<Rigidbody>();
-        StartFloatingAnimation();
     }
 
     // Update is called once per frame
@@ -53,32 +44,7 @@ public class CheeseHandler : MonoBehaviour, IItem
     {
         isGrounded = Physics.Raycast(transform.position, Vector3.down, 0.75f);
     }
-
-    public void StartFloatingAnimation()
-    {
-        if (floatingAnimationCoroutine != null)
-        {
-            StopCoroutine(floatingAnimationCoroutine);
-        }
-
-            floatingAnimationCoroutine = StartCoroutine(FloatingAnimation());
-    }
-
-    private IEnumerator FloatingAnimation()
-    {
-        Vector3 animationStartingPosition = rb.position;
-        while (true)
-        {
-            transform.position = new Vector3(animationStartingPosition.x,
-                                             animationStartingPosition.y + (Mathf.Sin(Time.time) * 0.25f),
-                                             animationStartingPosition.z);
-
-            transform.Rotate(Vector3.up * floatingAnimationRotationSpeed * Time.deltaTime);
-            yield return null;
-        }
-    }
-
-    private void OnTriggerEnter(Collider collider)
+    public override void OnTriggerEnter(Collider collider)
     {
         // player collecting cheeses
         PlayerHandler playerHandler = collider.GetComponent<PlayerHandler>();
@@ -107,11 +73,5 @@ public class CheeseHandler : MonoBehaviour, IItem
         playerHandler.playerWeight += rb.mass;
         playerHandler.playerUIHandler.CheeseUpdate(playerHandler.playerCurrentHoldingCheeses.Count);
         StopCoroutine(floatingAnimationCoroutine);
-
-        if (_ItemState == IItem.ItemState.NotCollected)
-        {
-            GameStateManager.instance.itemSpawnDictionary[initialSpawnPosition] = null;
-            _ItemState = IItem.ItemState.Collected;
-        }
     }
 }

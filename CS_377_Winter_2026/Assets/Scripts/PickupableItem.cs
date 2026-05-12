@@ -2,18 +2,11 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class PickupableItem : MonoBehaviour, IItem
+public class PickupableItem : Item
 {
-    // IItem requirements
-    [HideInInspector] public GameObject owner { get; set; }
-    [HideInInspector] public IItem.ItemState _ItemState { get; set; }
-    [HideInInspector] public IEnumerator useCoroutine { get; set; }
-    [HideInInspector] public Vector3 initialSpawnPosition { get; set; }
-    [HideInInspector] public BoxCollider unequippedCollider { get; set; }
-    public float floatingAnimationRotationSpeed { get; set; }
-
-    // PickableItem requirements
-    [HideInInspector] public Rigidbody rb;
+    [HideInInspector] public GameObject owner;
+    [HideInInspector] public IEnumerator useCoroutine;
+    [HideInInspector] public BoxCollider unequippedCollider;
     [HideInInspector] public MeshRenderer meshRenderer;
     [HideInInspector] public Material[] highlightMaterialList;
     [HideInInspector] public Material[] defaultMaterialList;
@@ -23,7 +16,7 @@ public class PickupableItem : MonoBehaviour, IItem
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        InitPickupableItem();
+        InitItem();
     }
 
     // Update is called once per frame
@@ -37,15 +30,11 @@ public class PickupableItem : MonoBehaviour, IItem
         throw new NotImplementedException();
     }
 
-    public virtual void InitPickupableItem()
+    public override void InitItem()
     {
+        base.InitItem();
         unequippedCollider = GetComponentInChildren<BoxCollider>();
-        rb = GetComponent<Rigidbody>();
-        _ItemState = IItem.ItemState.NotCollected;
-        floatingAnimationRotationSpeed = 30.0f;
-        initialSpawnPosition = transform.position;
         SetupHighlightMaterial();
-        StartCoroutine(FloatingAnimation());
     }
     void SetupHighlightMaterial()
     {
@@ -58,18 +47,7 @@ public class PickupableItem : MonoBehaviour, IItem
         }
         highlightMaterialList[highlightMaterialList.Length - 1] = highlightMaterial;
     }
-    private IEnumerator FloatingAnimation()
-    {
-        while (_ItemState == IItem.ItemState.NotCollected)
-        {
-            transform.position = new Vector3(initialSpawnPosition.x,
-                                 initialSpawnPosition.y + (Mathf.Sin(Time.time) * 0.25f),
-                                 initialSpawnPosition.z);
 
-            transform.Rotate(Vector3.up * floatingAnimationRotationSpeed * Time.deltaTime);
-            yield return null;
-        }
-    }
     public virtual void DropItem()
     {
         if (useCoroutine != null)
@@ -97,10 +75,11 @@ public class PickupableItem : MonoBehaviour, IItem
     }
     public virtual void PickupItem(GameObject _owner)
     {
+        StopCoroutine(floatingAnimationCoroutine);
         owner = _owner;
         unequippedCollider.enabled = false;
         meshRenderer.materials = defaultMaterialList;
-        _ItemState = IItem.ItemState.Collected;
+        _ItemState = Item.ItemState.Collected;
         GameStateManager.instance.itemSpawnDictionary[initialSpawnPosition] = null;
         PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
         ownerPlayerHandler.playerWeight += rb.mass;
@@ -108,12 +87,12 @@ public class PickupableItem : MonoBehaviour, IItem
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;
     }
-    public virtual void OnTriggerEnter(Collider collider)
+    public override void OnTriggerEnter(Collider collider)
     {
-        BasicTriggerEnterCheck(collider);
+        ItemTriggerEnterCheck(collider);
     }
 
-    public PlayerHandler BasicTriggerEnterCheck(Collider collider)
+    public override PlayerHandler ItemTriggerEnterCheck(Collider collider)
     {
         PlayerHandler playerHitPlayerHandler = collider.gameObject.GetComponent<PlayerHandler>();
 
@@ -122,7 +101,7 @@ public class PickupableItem : MonoBehaviour, IItem
             return null;
         }
 
-        if (_ItemState == IItem.ItemState.NotCollected)
+        if (_ItemState == Item.ItemState.NotCollected)
         {
             Debug.Log("Able to pick up " + this.gameObject.name);
             meshRenderer.materials = highlightMaterialList;
@@ -134,10 +113,10 @@ public class PickupableItem : MonoBehaviour, IItem
 
     public virtual void OnTriggerExit(Collider collider)
     {
-        BasicTriggerExitCheck(collider);
+        ItemTriggerExitCheck(collider);
     }
 
-    public void BasicTriggerExitCheck(Collider collider)
+    public void ItemTriggerExitCheck(Collider collider)
     {
         PlayerHandler playerHitPlayerHandler = collider.gameObject.GetComponent<PlayerHandler>();
 
