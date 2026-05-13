@@ -54,13 +54,14 @@ public class GameStateManager : MonoBehaviour
     public int roundOneScoreRequirement = 50;
     public int roundTwoScoreRequirement = 100;
     public int roundThreeScoreRequirement = 150;
-    [SerializeField] private AudioClip winSFX;
+    //[SerializeField] private AudioClip winSFX;
     private IEnumerator activateIntermissionCoroutine;
 
     [Header("Item Spawning")]
     public float itemSpawnCooldown = 3.0f;
     public float uncommonItemSpawnChance = 40.0f;
     public float rareItemSpawnChance = 15.0f;
+    public float itemSpawnIndicationLength = 2.0f;
     public List<Transform> possibleItemSpawnLocations;     // first transform in the list will spawn at the start of the round, this list is set by the "GameplayReferences" gameObject in each round scene.
     public List<GameObject> commonItems;
     public List<GameObject> uncommonItems;
@@ -70,6 +71,10 @@ public class GameStateManager : MonoBehaviour
     private IEnumerator itemSpawningCoroutine;
     [HideInInspector] public int cheesePity = 0;
     [HideInInspector] public int uncommonPity = 0;
+
+    [Header("Projectiles")]
+    public GameObject bulletPrefab;
+    public GameObject rocketPrefab;
 
     [HideInInspector] public bool waitingForPlayersToJoin = false;
     [HideInInspector] public List<Transform> playerGameplaySpawnPositions;
@@ -113,10 +118,7 @@ public class GameStateManager : MonoBehaviour
     }
     public void PlayerWonRound(PlayerHandler playerHandler)
     {
-        if (winSFX != null && AudioManager.instance.audioSource != null)
-        {
-            AudioManager.instance.audioSource.PlayOneShot(winSFX);
-        }
+        AudioManager.instance.PlaySFX(AudioManager.SFXType.WinRound);
 
         if (itemSpawningCoroutine != null)
         {
@@ -128,6 +130,7 @@ public class GameStateManager : MonoBehaviour
         }
 
         playerHandler.playerTotalRoundScore++;
+        playerHandler.playerUIHandler.RoundWinUpdate(playerHandler.playerTotalRoundScore);
         UIManager.instance.ActivateRoundWinText(playerHandler);
 
         if (playerHandler.playerTotalRoundScore >= 2)
@@ -395,7 +398,7 @@ public class GameStateManager : MonoBehaviour
             }
             else
             {
-                yield return new WaitForSeconds(itemSpawnCooldown);
+                yield return new WaitForSeconds(itemSpawnCooldown - itemSpawnIndicationLength);
             }
 
             var emptyLocations = itemSpawnDictionary
@@ -407,6 +410,9 @@ public class GameStateManager : MonoBehaviour
             {
                 Vector3 newSpawnIndex = emptyLocations[Random.Range(0, emptyLocations.Count)];
                 GameObject randomObject = ChooseRandomItem();
+
+                StartCoroutine(UIManager.instance.activateItemSpawnIndicator(itemSpawnIndicationLength, newSpawnIndex));
+                yield return new WaitForSeconds(itemSpawnIndicationLength);
 
                 itemSpawnDictionary[newSpawnIndex] = Instantiate(randomObject, newSpawnIndex, randomObject.transform.rotation);
             }
@@ -461,5 +467,51 @@ public class GameStateManager : MonoBehaviour
         }
 
         return randomItem;
+    }
+
+    public IEnumerator LoadTrainingArea()
+    {
+        UIManager.instance.ActivateLoadingScreen();
+
+        GameStateManager.instance._gameState = GameStateManager.GameState.isLoading;
+        InputManager.instance.playerInputManager.DisableJoining();
+
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("TrainingArea", LoadSceneMode.Additive);
+        asyncLoad.allowSceneActivation = false;
+
+        while (!asyncLoad.isDone)
+        {
+            Debug.Log("Progress: " + asyncLoad.progress * 100 + "%");
+
+            if (asyncLoad.progress >= 0.9f)
+            {
+                Debug.Log("Loaded! Switching scene in 2 seconds...");
+
+                yield return new WaitForSeconds(2.0f);
+                asyncLoad.allowSceneActivation = true;
+
+                yield return null;
+
+                SceneManager.MoveGameObjectToScene(InputManager.instance.PlayerInputs[0].gameObject, SceneManager.GetSceneByName("TrainingArea"));
+
+                SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
+                LightProbes.Tetrahedralize();
+
+                var refs = GameplaySceneReferences.instance;
+
+                Transform playerSpawnPosition = refs.playerSpawnLocations[0];
+
+                PlayerHandler playerOnePlayerHandler = InputManager.instance.PlayerInputs[0].GetComponent<PlayerHandler>();
+                playerOnePlayerHandler.rb.position = playerSpawnPosition.position;
+                playerOnePlayerHandler.currentSpawnPosition = playerSpawnPosition;
+                playerOnePlayerHandler.playerCanMove = true;
+                playerOnePlayerHandler.GetComponent<PlayerInput>().SwitchCurrentActionMap("Player");
+
+                UIManager.instance.DeactivateLoadingScreen();
+                GameStateManager.instance._gameState = GameStateManager.GameState.inGame;
+            }
+
+            yield return null;
+        }
     }
 }

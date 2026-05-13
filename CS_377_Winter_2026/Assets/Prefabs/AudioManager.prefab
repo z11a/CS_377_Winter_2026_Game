@@ -143,3 +143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   audioSource: {fileID: 0}
+  dmgSFX: {fileID: 8300000, guid: 82bc2d27ef0401d4191657b95293d43e, type: 3}
+  nomSFX: {fileID: 8300000, guid: 22af5b6e96819004cb8842786b0b021e, type: 3}
+  depositSFX: {fileID: 8300000, guid: 01aa6f5b022eab0409f1815c9a2539ea, type: 3}
+  winRoundSFX: {fileID: 8300000, guid: 386ba01cc8824c1408564846e9c295df, type: 3}

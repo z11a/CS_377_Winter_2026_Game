@@ -5,16 +5,9 @@ using System.Reflection;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class MeleeHandler : MonoBehaviour, IWeapon
+public class MeleeHandler : PickupableItem
 {
-    [HideInInspector] public GameObject owner;
-    [HideInInspector] public BoxCollider unequippedCollider;
     [HideInInspector] public CapsuleCollider equippedCollider;
-    private Rigidbody rb;
-    [HideInInspector] public MeshRenderer meshRenderer;
-    [HideInInspector] public IItem.ItemState _ItemState {  get; set; }
-    [HideInInspector] public IEnumerator attackCoroutine { get; set; }
-    [HideInInspector] public Vector3 initialSpawnPosition { get; set; }
 
     [Header("Attack Properties")]
     public float swingSpeed = 1.0f;
@@ -25,38 +18,21 @@ public class MeleeHandler : MonoBehaviour, IWeapon
     public float weaponDurability = 5;
 
     [Header("Other")]
-    public float floatingAnimationRotationSpeed = 30.0f;
-    public Material highlightMaterial;
-
     protected bool canSwing = true;
-
     protected List<GameObject> playersHit = new List<GameObject>();
-    [HideInInspector] public Material[] highlightMaterialList;
-    [HideInInspector] public Material[] defaultMaterialList;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        unequippedCollider = GetComponent<BoxCollider>();
-        unequippedCollider.enabled = true;
+        InitItem();
+    }
+
+    public override void InitItem()
+    {
+        base.InitItem();
         equippedCollider = GetComponent<CapsuleCollider>();
         equippedCollider.enabled = false;
-        rb = GetComponent<Rigidbody>();
         canSwing = true;
-
-        _ItemState = IItem.ItemState.NotCollected;
-        initialSpawnPosition = transform.position;
-
-        meshRenderer = GetComponent<MeshRenderer>();
-        defaultMaterialList = meshRenderer.materials;
-        highlightMaterialList = new Material[defaultMaterialList.Length + 1];
-        for (int i = 0; i < defaultMaterialList.Length; i++)
-        {
-            highlightMaterialList[i] = defaultMaterialList[i];
-        }
-        highlightMaterialList[highlightMaterialList.Length - 1] = highlightMaterial; 
-
-        StartCoroutine(AnimationHandler());
     }
 
     // Update is called once per frame
@@ -65,23 +41,24 @@ public class MeleeHandler : MonoBehaviour, IWeapon
 
     }
 
-    private IEnumerator AnimationHandler()
+    public override void Use()
     {
-        while (_ItemState == IItem.ItemState.NotCollected)
-        {
-            transform.position = new Vector3(initialSpawnPosition.x,
-                                 initialSpawnPosition.y + (Mathf.Sin(Time.time) * 0.25f),
-                                 initialSpawnPosition.z);
-
-            transform.Rotate(Vector3.up * floatingAnimationRotationSpeed * Time.deltaTime);
-            yield return null;
-        }
+        useCoroutine = SwingWeapon();
+        StartCoroutine(useCoroutine);
     }
 
-    public void Attack()
+    public override void PickupItem(GameObject _owner)
     {
-        attackCoroutine = SwingWeapon();
-        StartCoroutine(attackCoroutine);
+        base.PickupItem(_owner);
+        Animator ownerPlayerAnimator = owner.GetComponent<Animator>();
+        ownerPlayerAnimator.SetFloat("WeaponSwingSpeed", swingSpeed);
+        transform.localRotation = Quaternion.Euler(30.864f, -8.384f, -38.901f);
+    }
+
+    public override void DropItem()
+    {
+        base.DropItem();
+        equippedCollider.enabled = false;
     }
 
     public IEnumerator SwingWeapon()
@@ -105,6 +82,8 @@ public class MeleeHandler : MonoBehaviour, IWeapon
         float animationLength = ownerAnimator.GetCurrentAnimatorStateInfo(0).length;
         float actualHitboxDuration = (animationLength / swingSpeed) * 0.5f;
 
+        owner.GetComponent<PlayerUIHandler>().StartStaminaCooldown(actualHitboxDuration + swingCooldown);
+
         equippedCollider.enabled = true;
         yield return new WaitForSeconds(actualHitboxDuration);
         equippedCollider.enabled = false;
@@ -120,23 +99,16 @@ public class MeleeHandler : MonoBehaviour, IWeapon
         canSwing = true;
     }
 
-    private void OnTriggerEnter(Collider collider)
+    public override void OnTriggerEnter(Collider collider)
     {
-        PlayerHandler playerHitPlayerHandler = collider.gameObject.GetComponent<PlayerHandler>();
+        PlayerHandler playerHitPlayerHandler = ItemTriggerEnterCheck(collider);
 
-        if (playerHitPlayerHandler == null || playerHitPlayerHandler._playerState == PlayerHandler.PlayerState.Dead)
+        if (playerHitPlayerHandler == null)
         {
             return;
         }
 
-        if (_ItemState == IItem.ItemState.NotCollected)
-        {
-            Debug.Log("Able to pick up " + this.gameObject.name);
-            meshRenderer.materials = highlightMaterialList;
-            playerHitPlayerHandler.possibleWeaponPickup = this.gameObject;
-        }
-
-        if (_ItemState == IItem.ItemState.Collected)   // player is swinging the weapon
+        if (_ItemState == Item.ItemState.Collected)   // player is swinging the weapon
         {
             if (playerHitPlayerHandler.gameObject != owner && !playersHit.Contains(playerHitPlayerHandler.gameObject))
             {
@@ -148,45 +120,22 @@ public class MeleeHandler : MonoBehaviour, IWeapon
 
                 weaponDurability -= 1.0f;
 
-                StartCoroutine(ApplyKnockback(playerHitPlayerHandler.GetComponent<Rigidbody>(), (playerHitPlayerHandler.transform.position - owner.transform.position).normalized));
+                Vector3 knockbackDirection = (playerHitPlayerHandler.transform.position - owner.transform.position).normalized;
+                playerHitPlayerHandler.TakeKnockback(knockbackDirection, weaponknockbackDuration, weaponKnockbackStrength);
 
-                if (weaponDurability <= 0.0f)
-                {
-                    this.GetComponent<MeshRenderer>().enabled = false;
-                    PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
-                    ownerPlayerHandler.weaponBreakParticleSystem.Play();
-                    ownerPlayerHandler.SetupDefaultAttack();
-                }
+                DurabilityCheck();
+
+                //if (weaponDurability <= 0.0f)
+                //{
+                //    //this.GetComponent<MeshRenderer>().enabled = false;
+                //    //ParticleSystem despawnParticle = Instantiate(despawnParticleSystem, transform.position, Quaternion.identity);
+                //    //despawnParticle.Play();
+                //    //PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
+                //    //ownerPlayerHandler.playerWeight -= this.rb.mass;
+                //    //ownerPlayerHandler.SetupDefaultAttack();
+                //}
             }
         }
-    }
-
-    protected IEnumerator ApplyKnockback(Rigidbody _rb, Vector3 direction)
-    {
-        _rb.GetComponent<PlayerHandler>().knockedBack = true;
-        _rb.linearVelocity = Vector3.zero;
-        _rb.angularVelocity = Vector3.zero;
-
-        _rb.AddForce(direction * weaponKnockbackStrength, ForceMode.Impulse);
-        _rb.angularVelocity = Vector3.zero;
-
-        yield return new WaitForSeconds(weaponknockbackDuration);
-        _rb.GetComponent<PlayerHandler>().knockedBack = false;
-
-        DurabilityCheck();
-    }
-
-    private void OnTriggerExit(Collider collider)
-    {
-        PlayerHandler playerHitPlayerHandler = collider.gameObject.GetComponent<PlayerHandler>();
-
-        if (playerHitPlayerHandler == null || owner != null)
-        {
-            return;
-        }
-        Debug.Log("No longer able to pick up " + this.gameObject.name);
-        meshRenderer.materials = defaultMaterialList;
-        playerHitPlayerHandler.possibleWeaponPickup = null;
     }
 
     private void DurabilityCheck()
@@ -197,10 +146,11 @@ public class MeleeHandler : MonoBehaviour, IWeapon
         {
             if (this.GetComponent<MeshRenderer>().enabled == true)
             {
-                ownerPlayerHandler.weaponBreakParticleSystem.Play();
+                ParticleSystem despawnParticle = Instantiate(despawnParticleSystem, transform.position, Quaternion.identity);
+                despawnParticle.Play();
+                ownerPlayerHandler.playerWeight -= this.rb.mass;
+                ownerPlayerHandler.SetupDefaultAttack();
             }
-            ownerPlayerHandler.playerWeight -= this.rb.mass;
-            ownerPlayerHandler.SetupDefaultAttack();
             Destroy(this.gameObject);
         }
     }

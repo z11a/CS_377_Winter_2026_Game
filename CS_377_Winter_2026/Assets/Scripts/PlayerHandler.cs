@@ -9,6 +9,11 @@ using static PlayerHandler;
 using static UnityEngine.UI.GridLayoutGroup;
 using System.Security.Claims;
 using static UnityEngine.Rendering.DebugUI;
+using TMPro;
+//using System;
+
+
+public delegate void PlayerAction();
 
 public class PlayerHandler : MonoBehaviour
 {
@@ -16,11 +21,8 @@ public class PlayerHandler : MonoBehaviour
     private Vector2 moveAmount;
     private CharacterController controller;
     [HideInInspector] public Rigidbody rb;
-    private Animator animator;
+    [HideInInspector] public Animator animator;
     private SkinnedMeshRenderer playerRenderer;
-
-    [SerializeField] private AudioClip dmgSFX;
-
     public enum PlayerNumber
     {
         PlayerOne, 
@@ -35,20 +37,26 @@ public class PlayerHandler : MonoBehaviour
     }
 
     [Header("Main Player Attributes")]
+    public PlayerState _playerState;
+    public PlayerNumber playerNumber;
     public float playerHealth = 50.0f;
     public bool playerCanMove;
     public float maxPlayerSpeed = 25.0f;
-    [HideInInspector] public float playerWeight = 0.0f;
+    public float playerWeight = 0.0f;
     public float respawnTime = 3.0f;
+    public bool invincible = false;
     public float invincibilityTime = 3.0f;
     public float healthRegenDelay = 4.0f;
     public float healthRegenPerSecond = 5.0f;
     private IEnumerator healthRegenCoroutine;
+    private IEnumerator knockbackCoroutine;
 
     [Header("Weapon Info")]
     public Transform weaponPlaceholderTransform;
     public GameObject defaultAttackWeapon;
-    public ParticleSystem weaponBreakParticleSystem;
+    public GameObject staminaBar;  
+    public float attackStamina = 1.0f;
+    //public ParticleSystem weaponBreakParticleSystem;
 
     [Header("Appearance")]
     public Material flashMaterial;
@@ -57,21 +65,20 @@ public class PlayerHandler : MonoBehaviour
     private float maxWalkingParticleSpeed;
     private float maxEmissionRateOverTime;
 
-    [HideInInspector] public PlayerState _playerState;
-    [HideInInspector] public PlayerNumber playerNumber;
-
     [HideInInspector] public bool knockedBack = false;
     [HideInInspector] public Transform currentSpawnPosition;
     [HideInInspector] public int playerCurrentRoundScore;
     [HideInInspector] public List<GameObject> playerCurrentHoldingCheeses;
     [HideInInspector] public int playerTotalRoundScore = 0;
-    [HideInInspector] public GameObject weaponEquippedObject;
-    [HideInInspector] public GameObject possibleWeaponPickup;
+    [HideInInspector] public GameObject itemPickupObject;
+    [HideInInspector] public GameObject possibleItemPickup;
     [HideInInspector] public StatTracker stats = new StatTracker();
+    public PlayerUIHandler playerUIHandler;
 
-    private GameStateManager.GameState gameStateBeforePause;
-    private string actionMapBeforePause;
+    [HideInInspector] public GameStateManager.GameState gameStateBeforePause;
+    [HideInInspector] public string actionMapBeforePause;
 
+    //public event Action OnStaminaUse;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -79,6 +86,7 @@ public class PlayerHandler : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+        playerUIHandler = GetComponent<PlayerUIHandler>();
         rb = GetComponent<Rigidbody>();
         rb.isKinematic = false;
 
@@ -89,12 +97,10 @@ public class PlayerHandler : MonoBehaviour
 
         _playerState = PlayerState.Idle;
         playerCanMove = false;
+        //currentSpawnPosition = transform;
         SetupDefaultAttack();
 
         gameStateBeforePause = GameStateManager.GameState.notInGame;
-        //weaponEquippedObject = defaultAttackWeapon;
-        //weaponEquippedObject.GetComponent<DefaultAttack>().owner = this.gameObject;
-        //animator.SetFloat("WeaponSwingSpeed", weaponEquippedObject.GetComponent<DefaultAttack>().swingSpeed);
     }
 
     // Update is called once per frame
@@ -105,22 +111,24 @@ public class PlayerHandler : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //if (GameStateManager.instance._gameState == GameStateManager.GameState.inGame || GameStateManager.instance._gameState == GameStateManager.GameState.intermission)
-        //{
-        //    MovementHandlerRigidbody();
-        //}
+        if (_playerState == PlayerState.Dead || !playerCanMove || GameStateManager.instance._gameState == GameStateManager.GameState.isLoading || GameStateManager.instance._gameState == GameStateManager.GameState.isPaused)
+        {
+            return;
+        }
 
-        MovementHandlerRigidbody();
+        if (_playerState == PlayerState.Aiming)
+        {
+            AimHandler();
+        }
+        else
+        {
+            MovementHandlerRigidbody();
+        }
     }
 
     private void MovementHandlerRigidbody()
     {
         //rb.AddForce(Physics.gravity);
-
-        if (_playerState == PlayerState.Dead || !playerCanMove)
-        {
-            return;
-        }
 
         //if (!playerCanMove)
         //{
@@ -182,12 +190,19 @@ public class PlayerHandler : MonoBehaviour
 
     private void AnimationHandler()
     {
-        if (_playerState == PlayerState.Dead) return;
+        if (_playerState == PlayerState.Dead)
+        {
+            return;
+        }
 
         switch (_playerState)
         {
             case PlayerState.Idle:
                 animator.SetBool("Running", false);
+                animator.SetBool("Aiming", false);
+                break;
+            case PlayerState.Aiming:
+                animator.SetBool("Aiming", true);
                 break;
             case PlayerState.Running:
                 animator.SetBool("Running", true);
@@ -198,86 +213,91 @@ public class PlayerHandler : MonoBehaviour
     public void OnMove(InputValue value)
     {
         moveAmount = value.Get<Vector2>();
+        Debug.Log("Knockback: " + knockedBack);
     }
 
-    public void OnAttack()
+    public void OnAim(InputValue value)
     {
-        if (weaponEquippedObject != null)
+        if (value.isPressed)
         {
-            weaponEquippedObject.GetComponent<IWeapon>().Attack();
+            _playerState = PlayerState.Aiming;
+            if (!knockedBack)
+            {
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
+        }
+        else
+        {
+            _playerState = PlayerState.Idle;
+        }
+    }
+
+    private void AimHandler()
+    {
+        if (moveAmount.magnitude > 0.001f)
+        {
+            this.transform.rotation = Quaternion.LookRotation(new Vector3(moveAmount.x, 0, moveAmount.y));
+        }
+    }
+
+    public void OnUse()
+    {
+        if (GameStateManager.instance._gameState == GameStateManager.GameState.isLoading || GameStateManager.instance._gameState == GameStateManager.GameState.isPaused)
+        {
+            return;
+        }
+
+        if (itemPickupObject != null)
+        {
+            animator.SetBool("Aiming", false);
+            animator.SetBool("Running", false);
+            itemPickupObject.GetComponent<PickupableItem>().Use();
             stats.timesAttack++;
         }
     }
+
     public void OnInteract()
     {
-        if (possibleWeaponPickup == null)
+        if (GameStateManager.instance._gameState == GameStateManager.GameState.isLoading || GameStateManager.instance._gameState == GameStateManager.GameState.isPaused)
+        {
+            return;
+        }
+
+        if (possibleItemPickup == null)
         {
             Debug.Log("Nothing to pick up.");
             return;
         }
 
-        if (weaponEquippedObject != null)
+        if (itemPickupObject != null)
         {
-            if (weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine != null)       // stop swinging a previous weapon
+            if (itemPickupObject.GetComponent<DefaultAttack>() != null)
             {
-                StopCoroutine(weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine);
+                itemPickupObject.GetComponent<DefaultAttack>().equippedCollider.enabled = false;
             }
-            OnDropWeapon();
+            else
+            {
+                itemPickupObject.GetComponent<PickupableItem>().DropItem();
+            }
         }
 
-        weaponEquippedObject = possibleWeaponPickup;
-        possibleWeaponPickup = null;
-
-        MeleeHandler weaponMeleeHandler = weaponEquippedObject.GetComponent<MeleeHandler>();
-        weaponMeleeHandler.owner = this.gameObject;
-        weaponMeleeHandler.unequippedCollider.enabled = false;
-        weaponMeleeHandler.meshRenderer.materials = weaponMeleeHandler.defaultMaterialList;
-
-        weaponMeleeHandler._ItemState = IItem.ItemState.Collected;
-        GameStateManager.instance.itemSpawnDictionary[weaponMeleeHandler.initialSpawnPosition] = null;
-
-        playerWeight += weaponEquippedObject.GetComponent<Rigidbody>().mass;
-        animator.SetFloat("WeaponSwingSpeed", weaponMeleeHandler.swingSpeed);
-
-        weaponEquippedObject.transform.parent = weaponPlaceholderTransform;
-        weaponEquippedObject.transform.localPosition = Vector3.zero;
-        weaponEquippedObject.transform.localRotation = Quaternion.Euler(30.864f, -8.384f, -38.901f);
+        itemPickupObject = possibleItemPickup;
+        itemPickupObject.GetComponent<PickupableItem>().PickupItem(this.gameObject);
+        possibleItemPickup = null;
 
         return;
     }
 
-    public void OnDropWeapon()
+    public void OnDropItem()
     {
-        if (weaponEquippedObject == null || weaponEquippedObject.GetComponent<DefaultAttack>() != null)
+        if (itemPickupObject == null || itemPickupObject.GetComponent<DefaultAttack>() != null)
         {
             return;
         }
 
-        if (weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine != null)       // stop swinging a previous weapon
-        {
-            StopCoroutine(weaponEquippedObject.GetComponent<IWeapon>().attackCoroutine);
-        }
-
-        Rigidbody weaponRB = weaponEquippedObject.GetComponent<Rigidbody>();
-        weaponEquippedObject = null;
-        weaponRB.transform.parent = null;
-
-        //weaponRB.transform.position += transform.right * 0.25f;       // i was trying to get the player to throw the weapon slightly ahead of them, but it feels janky
-        weaponRB.GetComponent<MeleeHandler>().unequippedCollider.isTrigger = false;
-        weaponRB.GetComponent<MeleeHandler>().unequippedCollider.enabled = true;
-        weaponRB.isKinematic = false;
-        weaponRB.useGravity = true;
-        //weaponRB.AddForce(transform.up / 3, ForceMode.Force);
-        playerWeight -= weaponRB.mass;
-
-        StartCoroutine(DespawnWeapon(weaponRB.gameObject));
+        itemPickupObject.GetComponent<PickupableItem>().DropItem();
         SetupDefaultAttack();
-    }
-
-    private IEnumerator DespawnWeapon(GameObject weapon)
-    {
-        yield return new WaitForSeconds(1.0f);
-        Destroy(weapon);
     }
 
     private IEnumerator HitFlash()
@@ -295,6 +315,18 @@ public class PlayerHandler : MonoBehaviour
         rb.constraints = RigidbodyConstraints.None;
         animator.ResetTrigger("Idle");
         animator.SetTrigger("Death");
+
+        if (itemPickupObject != null)
+        {
+            if (itemPickupObject.GetComponent<DefaultAttack>() != null)
+            {
+                itemPickupObject.GetComponent<DefaultAttack>().equippedCollider.enabled = false;
+            }
+            else
+            {
+                itemPickupObject.GetComponent<PickupableItem>().DropItem();
+            }
+        }
 
         DropCheeses();
         yield return new WaitForSeconds(respawnTime);
@@ -314,17 +346,18 @@ public class PlayerHandler : MonoBehaviour
         animator.SetTrigger("Idle");
         knockedBack = false;
         playerHealth = 50.0f;
+        playerUIHandler.HealthUpdate(50.0f);
         maxPlayerSpeed = 25.0f;
         playerWeight = 0.0f;
         _playerState = PlayerState.Idle;
         playerCurrentHoldingCheeses.Clear();
 
-        possibleWeaponPickup = null;
-        if (weaponEquippedObject != null)
+        possibleItemPickup = null;
+        if (itemPickupObject != null)
         {
-            if (weaponEquippedObject.GetComponent<DefaultAttack>() == null)
+            if (itemPickupObject.GetComponent<DefaultAttack>() == null)
             {
-                Destroy(weaponEquippedObject);
+                Destroy(itemPickupObject);
             }
         }
         SetupDefaultAttack();
@@ -337,25 +370,26 @@ public class PlayerHandler : MonoBehaviour
 
     public void SetupDefaultAttack()
     {
-        weaponEquippedObject = defaultAttackWeapon;
-        weaponEquippedObject.GetComponent<DefaultAttack>().owner = this.gameObject;
-        animator.SetFloat("WeaponSwingSpeed", weaponEquippedObject.GetComponent<DefaultAttack>().swingSpeed);
+        Debug.Log("default weapon: " + defaultAttackWeapon.name);
+        itemPickupObject = defaultAttackWeapon;
+        itemPickupObject.GetComponent<DefaultAttack>().owner = this.gameObject;
+        animator.SetFloat("WeaponSwingSpeed", itemPickupObject.GetComponent<DefaultAttack>().swingSpeed);
     }
 
     public void TakeDamage(float damageAmount)
     {
-        if (_playerState == PlayerState.Dead)
+        if (_playerState == PlayerState.Dead || invincible)
         {
-            Debug.Log("Player is already dead.");
             return;
         }
-       
-        if (dmgSFX != null && AudioManager.instance.audioSource != null)
-        {
-            AudioManager.instance.audioSource.PlayOneShot(dmgSFX);
-        }
+
+        AudioManager.instance.PlaySFX(AudioManager.SFXType.Damage);
 
         playerHealth -= damageAmount;
+        if (playerUIHandler != null)
+        {
+            playerUIHandler.HealthUpdate(playerHealth);
+        }
         StartCoroutine(HitFlash());
 
         if (playerHealth <= 0.0f)
@@ -380,8 +414,33 @@ public class PlayerHandler : MonoBehaviour
         while (playerHealth < 50.0f)
         {
             playerHealth += healthRegenPerSecond;
+            playerUIHandler.HealthUpdate(playerHealth);
             yield return new WaitForSeconds(1.0f);
         }
+    }
+    public void TakeKnockback(Vector3 direction, float duration, float strength)
+    {
+        if (knockbackCoroutine != null)
+        {
+            StopCoroutine(knockbackCoroutine);
+        }
+        knockbackCoroutine = KnockbackCoroutine(direction, duration, strength);
+        StartCoroutine(knockbackCoroutine);
+    }
+
+    public IEnumerator KnockbackCoroutine(Vector3 direction, float duration, float strength)
+    {
+        knockedBack = true;
+
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        rb.AddForce(direction * strength, ForceMode.Impulse);
+        rb.angularVelocity = Vector3.zero;
+
+        yield return new WaitForSeconds(duration);
+
+        knockedBack = false;
     }
 
     public void DropCheeses()
@@ -433,6 +492,10 @@ public class PlayerHandler : MonoBehaviour
         {
             return;
         }
+        if (InputManager.instance.playerInPauseMenu != null && InputManager.instance.playerInPauseMenu != this.playerInput)
+        {
+            return;
+        }
 
         if (GameStateManager.instance._gameState == GameStateManager.GameState.isPaused)
         {
@@ -451,7 +514,7 @@ public class PlayerHandler : MonoBehaviour
             InputManager.instance.playerInPauseMenu = this.playerInput;
             gameStateBeforePause = GameStateManager.instance._gameState;
             GameStateManager.instance._gameState = GameStateManager.GameState.isPaused;
-            UIManager.instance.ActivatePauseScreen();
+            StartCoroutine(UIManager.instance.ActivatePauseScreen());
             Time.timeScale = 0.0f;
         }
     }

@@ -9,7 +9,7 @@ public class DefaultAttack : MeleeHandler
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _ItemState = IItem.ItemState.Collected;
+        _ItemState = Item.ItemState.Collected;
         equippedCollider = GetComponent<CapsuleCollider>();
         equippedCollider.enabled = false;
     }
@@ -19,7 +19,7 @@ public class DefaultAttack : MeleeHandler
     {
         
     }
-    private void OnTriggerEnter(Collider collider)
+    public override void OnTriggerEnter(Collider collider)
     {
         PlayerHandler playerHitPlayerHandler = collider.gameObject.GetComponent<PlayerHandler>();
 
@@ -28,7 +28,7 @@ public class DefaultAttack : MeleeHandler
             return;
         }
 
-        if (_ItemState == IItem.ItemState.Collected)   // player is swinging the weapon
+        if (_ItemState == Item.ItemState.Collected)   // player is swinging the weapon
         {
             if (playerHitPlayerHandler.gameObject != owner && !playersHit.Contains(playerHitPlayerHandler.gameObject))
             {
@@ -38,13 +38,10 @@ public class DefaultAttack : MeleeHandler
 
                 playerHitPlayerHandler.TakeDamage(weaponDamage);
 
-                StartCoroutine(ApplyKnockback(playerHitPlayerHandler.GetComponent<Rigidbody>(), (playerHitPlayerHandler.transform.position - owner.transform.position).normalized));
-
-               
+                Vector3 knockbackDirection = (playerHitPlayerHandler.transform.position - owner.transform.position).normalized;
+                playerHitPlayerHandler.TakeKnockback(knockbackDirection, weaponknockbackDuration, weaponKnockbackStrength);
+                //StartCoroutine(ApplyKnockback(playerHitPlayerHandler.GetComponent<Rigidbody>(), (playerHitPlayerHandler.transform.position - owner.transform.position).normalized));
             }
         }
-    }
-    private void OnTriggerExit(Collider collider)
-    {
     }
 }

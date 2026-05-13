@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine.InputSystem;
 using NUnit.Framework;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class UIManager : MonoBehaviour
 {
@@ -24,14 +25,21 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI roundWinText;
     public TextMeshProUGUI roundTimerText;
     public TextMeshProUGUI preRoundTimerText;
+    public GameObject itemSpawnIndicator;
+    public GameObject PlayerOneUI;
+    public GameObject PlayerTwoUI;
 
     [Header("Pause Menu")]
     public GameObject PauseMenuUI;
+    public GameObject ContinueButton;
+    public GameObject QuitButton;
 
     [Header("Other")]
     public RawImage loadingScreen;
     public float loadingScreenFadeDuration = 1.0f;
     public Camera mainMenuCamera;
+
+    private GameObject selectedGameObjectBeforePause;
     
     void Awake()
     {
@@ -58,88 +66,53 @@ public class UIManager : MonoBehaviour
     {
         if (GameStateManager.instance._gameState == GameStateManager.GameState.inGame)
         {
-            int minutes = (int)(GameStateManager.instance.currentRoundTime / 60);
-            int seconds = (int)(GameStateManager.instance.currentRoundTime % 60);
-            roundTimerText.text = $"{minutes}:{seconds:D2}";
+            Timer();
         }
+    }
+
+    private void Timer()
+    {
+        int minutes = (int)(GameStateManager.instance.currentRoundTime / 60);
+        int seconds = (int)(GameStateManager.instance.currentRoundTime % 60);
+        roundTimerText.text = $"{minutes}:{seconds:D2}";
     }
 
     public void InitialUISetup()
     {
-        startGameButton.gameObject.SetActive(false);
+        StartMenuUI.SetActive(true);
         startMenuButton.gameObject.SetActive(true);
         loadingScreen.gameObject.SetActive(false);
-        StartMenuUI.SetActive(true);
         GameplayUI.SetActive(false);
         PauseMenuUI.SetActive(false);
         roundWinText.gameObject.SetActive(false);
 
-        // setup training area button to be faded and non-interactable until enabled
+        startGameButton.gameObject.SetActive(false);
+        startGameButton.interactable = false;
+
         trainingAreaButton.gameObject.SetActive(false);
         trainingAreaButton.interactable = false;
-        Color transparent = trainingAreaButton.image.color;
-        transparent.a = 0.3f;
-        trainingAreaButton.image.color = transparent;
     }
-    public void ActivateTrainingAreaButton()
+
+    public IEnumerator ActivateStartGameButton() // This is in a coroutine because we need to pause one frame before enabling the start button. This is because clicking A on my Xbox controller to join the game also instantly presses the start button. 
     {
+        EventSystem.current.SetSelectedGameObject(null);
+        yield return null;
+        startGameButton.interactable = true;
+        EventSystem.current.SetSelectedGameObject(UIManager.instance.startGameButton.gameObject);
+    }
+
+    public IEnumerator ActivateTrainingAreaButton()
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+        yield return null;
         trainingAreaButton.interactable = true;
-        Color fullAlpha = trainingAreaButton.image.color;
-        fullAlpha.a = 1.0f;
-        trainingAreaButton.image.color = fullAlpha;
+        EventSystem.current.SetSelectedGameObject(UIManager.instance.trainingAreaButton.gameObject);
     }
 
     public void OnTrainingAreaButton()
     {
-        StartCoroutine(LoadTrainingArea());
-    }
-
-    private IEnumerator LoadTrainingArea()
-    {
-        ActivateLoadingScreen();
-
-        GameStateManager.instance._gameState = GameStateManager.GameState.isLoading;
-        InputManager.instance.playerInputManager.DisableJoining();
-
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("TrainingArea", LoadSceneMode.Additive);
-        asyncLoad.allowSceneActivation = false;
-
-        while (!asyncLoad.isDone)
-        {
-            Debug.Log("Progress: " + asyncLoad.progress * 100 + "%");
-
-            if (asyncLoad.progress >= 0.9f)
-            {
-                Debug.Log("Loaded! Switching scene in 2 seconds...");
-
-                yield return new WaitForSeconds(2.0f);
-                asyncLoad.allowSceneActivation = true;
-
-                yield return null;
-
-                PlayerInput playerOneInput = InputManager.instance.PlayerInputs[0];
-
-                SceneManager.MoveGameObjectToScene(InputManager.instance.PlayerInputs[0].gameObject, SceneManager.GetSceneByName("TrainingArea"));
-
-                SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
-                LightProbes.Tetrahedralize();
-
-                var refs = GameplaySceneReferences.instance;
-                
-                Transform playerSpawnPosition = refs.playerSpawnLocations[0];
-
-                PlayerHandler playerOnePlayerHandler = playerOneInput.GetComponent<PlayerHandler>();
-                playerOnePlayerHandler.rb.position = playerSpawnPosition.position;
-                playerOnePlayerHandler.currentSpawnPosition = playerSpawnPosition;
-                playerOnePlayerHandler.playerCanMove = true;
-                playerOneInput.SwitchCurrentActionMap("Player");
-
-                DeactivateLoadingScreen();
-                GameStateManager.instance._gameState = GameStateManager.GameState.inGame;
-            }
-            
-            yield return null;
-        }
+        trainingAreaButton.gameObject.SetActive(false);
+        StartCoroutine(GameStateManager.instance.LoadTrainingArea());
     }
 
     public void OnStartButton()
@@ -147,6 +120,7 @@ public class UIManager : MonoBehaviour
         Debug.Log("Start Menu button pressed.");
 
         startMenuButton.gameObject.SetActive(false);
+        startGameButton.gameObject.SetActive(true);
         trainingAreaButton.gameObject.SetActive(true);
 
         GameStateManager.instance.waitingForPlayersToJoin = true;
@@ -239,36 +213,39 @@ public class UIManager : MonoBehaviour
         roundWinText.gameObject.SetActive(false);
     }
 
-    public void ActivatePauseScreen()
+    public IEnumerator ActivatePauseScreen()
     {
+        selectedGameObjectBeforePause = EventSystem.current.currentSelectedGameObject;
+        EventSystem.current.SetSelectedGameObject(null);
+        yield return null;
         PauseMenuUI.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(ContinueButton);
     }
+
 
     public void DeactivatePauseScreen()
     {
         PauseMenuUI.SetActive(false);
+        EventSystem.current.SetSelectedGameObject(selectedGameObjectBeforePause);
     }
 
-    
+    public void OnContinueButton()
+    {
+        if(GameStateManager.instance._gameState == GameStateManager.GameState.isPaused) {
+            PlayerInput playerInput = InputManager.instance.playerInPauseMenu;
+            PlayerHandler playerHandler = playerInput.GetComponent<PlayerHandler>();
+
+            playerInput.SwitchCurrentActionMap(playerHandler.actionMapBeforePause);
+            playerInput = null;
+
+            GameStateManager.instance._gameState = playerHandler.gameStateBeforePause;
+            UIManager.instance.DeactivatePauseScreen();
+            Time.timeScale = 1.0f;
+        }
+    }
 
     public void OnQuitButton()
     {
-        //InputManager.instance.StopAllCoroutines();
-
-        //foreach (PlayerInput playerInput in InputManager.instance.PlayerInputs)
-        //{
-        //    Destroy(playerInput.gameObject);
-        //}
-
-        //InputManager.instance.PlayerInputs.Clear();
-        //InputManager.instance.player1Joined = false;
-        //InputManager.instance.player2Joined = false;
-
-        //GameStateManager.instance.StopAllCoroutines();
-        //GameStateManager.instance.waitingForPlayersToJoin = false;
-        //GameStateManager.instance._gameState = GameStateManager.GameState.notInGame;
-        //GameStateManager.instance.itemSpawnDictionary.Clear();
-
         foreach (PlayerInput playerInput in InputManager.instance.PlayerInputs)
         {
             Destroy(playerInput.gameObject);
@@ -278,5 +255,24 @@ public class UIManager : MonoBehaviour
         Time.timeScale = 1.0f;
         SceneManager.LoadScene("StartScene");
         Destroy(this.gameObject);
+    }
+
+    public IEnumerator activateItemSpawnIndicator(float length, Vector3 itemPosition)
+    {
+        yield return null;
+        Vector3 screenPos = GameObject.FindAnyObjectByType<Camera>().WorldToScreenPoint(itemPosition);
+
+        GameObject newIndicator = Instantiate(itemSpawnIndicator, screenPos, Quaternion.identity, GameplayUI.transform);
+        TextMeshProUGUI lengthText = newIndicator.GetComponentInChildren<TextMeshProUGUI>();
+
+        int timeLeft = (int)length;
+        while (timeLeft > 0)
+        {
+            lengthText.text = timeLeft.ToString();
+            yield return new WaitForSeconds(1.0f);
+            timeLeft -= 1;
+            yield return null;
+        }
+        Destroy(newIndicator);
     }
 }
