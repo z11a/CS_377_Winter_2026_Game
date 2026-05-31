@@ -14,7 +14,7 @@ public class ProjectileLauncherHandler : PickupableItem
     public GameObject projectileSpawnPlaceholder;
     public float projectileSpeed = 10.0f;
     public float shotCooldown = 0.5f;
-    public ParticleSystem muzzleFlashParticle;
+    public GameObject muzzleFlashParticle;
     private bool canShoot = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -35,7 +35,11 @@ public class ProjectileLauncherHandler : PickupableItem
             return;
         }
 
-        muzzleFlashParticle.Play();
+        foreach (ParticleSystem ps in muzzleFlashParticle.GetComponentsInChildren<ParticleSystem>())
+        {
+            ps.Play();
+        }
+
         useCoroutine = FireProjectile();
         StartCoroutine(useCoroutine);
     }
