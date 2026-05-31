@@ -221,6 +221,10 @@ public class PlayerHandler : MonoBehaviour
         if (value.isPressed)
         {
             _playerState = PlayerState.Aiming;
+            if (PlayerWalkingParticleSystem.isPlaying)
+            {
+                PlayerWalkingParticleSystem.Stop();
+            }
             if (!knockedBack)
             {
                 rb.linearVelocity = Vector3.zero;

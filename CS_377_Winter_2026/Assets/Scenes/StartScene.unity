@@ -2703,10 +2703,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
-      propertyPath: bulletPrefab
-      value: 
-      objectReference: {fileID: 6580394048794089087, guid: aab2f7ecc1d3a664f8325376dbe6a7ff, type: 3}
-    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
       propertyPath: commonItems.Array.size
       value: 1
       objectReference: {fileID: 0}

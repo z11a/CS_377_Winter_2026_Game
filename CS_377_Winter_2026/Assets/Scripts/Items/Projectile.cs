@@ -23,7 +23,8 @@ public class Projectile : MonoBehaviour
     }
     public void ProjectileMove(Vector3 direction, float strength)
     {
-        StartCoroutine(ProjectileMoveCoroutine(direction, strength));
+            StartCoroutine(ProjectileMoveCoroutine(direction, strength));
+        //rb.AddForce(direction * strength, ForceMode.Impulse);
     }
     public IEnumerator ProjectileMoveCoroutine(Vector3 direction, float strength)
     {

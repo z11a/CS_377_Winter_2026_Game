@@ -12,9 +12,9 @@ public class ProjectileLauncherHandler : PickupableItem
     [Header("Projectile Information")]
     public ProjectileType projectileType;
     public GameObject projectileSpawnPlaceholder;
-    public float projectileSpeed = 5.0f;
-    public float maxTravelTime = 15.0f;
-    public float shotCooldown = 0.15f;
+    public float projectileSpeed = 10.0f;
+    public float shotCooldown = 0.5f;
+    public ParticleSystem muzzleFlashParticle;
     private bool canShoot = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -30,16 +30,18 @@ public class ProjectileLauncherHandler : PickupableItem
 
     public override void Use()
     {
+        if (owner.GetComponent<PlayerHandler>()._playerState != PlayerHandler.PlayerState.Aiming || !canShoot)
+        {
+            return;
+        }
+
+        muzzleFlashParticle.Play();
         useCoroutine = FireProjectile();
         StartCoroutine(useCoroutine);
     }
 
     public IEnumerator FireProjectile()
     {
-        yield return null;
-
-        if (!canShoot) { StopCoroutine(useCoroutine); }
-
         GameObject projectilePrefab = null;
         switch (projectileType)
         {
@@ -51,16 +53,18 @@ public class ProjectileLauncherHandler : PickupableItem
                 break;
         }
         canShoot = false;
-        GameObject projectile = GameObject.Instantiate(projectilePrefab, projectileSpawnPlaceholder.transform.position, Quaternion.identity);
+        GameObject projectile = GameObject.Instantiate(projectilePrefab, projectileSpawnPlaceholder.transform.position, projectileSpawnPlaceholder.transform.rotation);
         projectile.GetComponent<Projectile>().ProjectileMove(owner.transform.forward, projectileSpeed);
 
         float length = 0.0f;
         while (!canShoot)
         {
+            yield return null;
             length += Time.deltaTime;
             if (length >= shotCooldown)
             {
                 canShoot = true;
+                yield break;
             }
         }
     }

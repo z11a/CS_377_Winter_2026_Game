@@ -75,7 +75,7 @@ MonoBehaviour:
   itemsSpawning: 0
   cheesePity: 0
   uncommonPity: 0
-  bulletPrefab: {fileID: 0}
+  bulletPrefab: {fileID: 2069648277148417028, guid: c1c44ffdca8e23d4f88e21fadc454a56, type: 3}
   rocketPrefab: {fileID: 0}
   waitingForPlayersToJoin: 0
   playerGameplaySpawnPositions: []
