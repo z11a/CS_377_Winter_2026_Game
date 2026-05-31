@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PickupableItem : Item
 {
+    [Header("Pickupable Item Information")]
     [HideInInspector] public GameObject owner;
     [HideInInspector] public IEnumerator useCoroutine;
     [HideInInspector] public BoxCollider unequippedCollider;

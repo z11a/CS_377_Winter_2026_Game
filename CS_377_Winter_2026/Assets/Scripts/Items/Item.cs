@@ -8,11 +8,11 @@ public class Item : MonoBehaviour
         NotCollected,
         Collected
     }
-
-    public ItemState _ItemState;  // item state should only be "NotCollected" if it just spawned and hasn't been interacted with. An item will not switch back to being "Uncollected".
-    public Vector3 initialSpawnPosition;
+    [Header("Basic Item Information")]
+    [HideInInspector] public ItemState _ItemState;  // item state should only be "NotCollected" if it just spawned and hasn't been interacted with. An item will not switch back to being "Uncollected".
+    [HideInInspector] public Vector3 initialSpawnPosition;
     public float floatingAnimationRotationSpeed = 30.0f;
-    public Rigidbody rb;
+    [HideInInspector] public Rigidbody rb;
     protected IEnumerator floatingAnimationCoroutine;
 
     void Start()

@@ -9,11 +9,14 @@ public class ProjectileLauncherHandler : PickupableItem
         Bullet,
         Rocket
     }
+    [Header("Projectile Information")]
     public ProjectileType projectileType;
     public GameObject projectileSpawnPlaceholder;
     public float projectileSpeed = 5.0f;
     public float maxTravelTime = 15.0f;
-   
+    public float shotCooldown = 0.15f;
+    private bool canShoot = true;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -22,9 +25,9 @@ public class ProjectileLauncherHandler : PickupableItem
     // Update is called once per frame
     void Update()
     {
-        
+
     }
-    
+
     public override void Use()
     {
         useCoroutine = FireProjectile();
@@ -34,6 +37,9 @@ public class ProjectileLauncherHandler : PickupableItem
     public IEnumerator FireProjectile()
     {
         yield return null;
+
+        if (!canShoot) { StopCoroutine(useCoroutine); }
+
         GameObject projectilePrefab = null;
         switch (projectileType)
         {
@@ -44,7 +50,18 @@ public class ProjectileLauncherHandler : PickupableItem
                 projectilePrefab = GameStateManager.instance.rocketPrefab;
                 break;
         }
+        canShoot = false;
         GameObject projectile = GameObject.Instantiate(projectilePrefab, projectileSpawnPlaceholder.transform.position, Quaternion.identity);
         projectile.GetComponent<Projectile>().ProjectileMove(owner.transform.forward, projectileSpeed);
+
+        float length = 0.0f;
+        while (!canShoot)
+        {
+            length += Time.deltaTime;
+            if (length >= shotCooldown)
+            {
+                canShoot = true;
+            }
+        }
     }
 }
