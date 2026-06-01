@@ -22,6 +22,11 @@ public class ProjectileLauncherHandler : PickupableItem
     {
         InitItem();
     }
+    public override void InitItem()
+    {
+        base.InitItem();
+        canShoot = true;
+    }
     // Update is called once per frame
     void Update()
     {
@@ -59,6 +64,11 @@ public class ProjectileLauncherHandler : PickupableItem
         canShoot = false;
         GameObject projectile = GameObject.Instantiate(projectilePrefab, projectileSpawnPlaceholder.transform.position, projectileSpawnPlaceholder.transform.rotation);
         projectile.GetComponent<Projectile>().ProjectileMove(owner.transform.forward, projectileSpeed);
+       
+        owner.GetComponent<PlayerUIHandler>().StartStaminaCooldown(shotCooldown);
+
+        itemDurability -= 1.0f;
+        DurabilityCheck();
 
         float length = 0.0f;
         while (!canShoot)

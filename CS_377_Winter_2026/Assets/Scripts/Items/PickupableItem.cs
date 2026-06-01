@@ -13,6 +13,7 @@ public class PickupableItem : Item
     [HideInInspector] public Material[] defaultMaterialList;
     public Material highlightMaterial;
     public ParticleSystem despawnParticleSystem;
+    public float itemDurability = 1.0f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -128,5 +129,22 @@ public class PickupableItem : Item
         Debug.Log("No longer able to pick up " + this.gameObject.name);
         meshRenderer.materials = defaultMaterialList;
         playerHitPlayerHandler.possibleItemPickup = null;
+    }
+
+    public virtual void DurabilityCheck()
+    {
+        PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
+
+        if (itemDurability <= 0.0f && this.GetComponent<DefaultAttack>() == null)
+        {
+            if (this.GetComponent<MeshRenderer>().enabled == true)
+            {
+                ParticleSystem despawnParticle = Instantiate(despawnParticleSystem, transform.position, Quaternion.identity);
+                despawnParticle.Play();
+                ownerPlayerHandler.playerWeight -= this.rb.mass;
+                ownerPlayerHandler.SetupDefaultAttack();
+            }
+            Destroy(this.gameObject);
+        }
     }
 }

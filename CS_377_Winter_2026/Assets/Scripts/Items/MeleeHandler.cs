@@ -15,7 +15,6 @@ public class MeleeHandler : PickupableItem
     public float weaponDamage = 15.0f;
     public float weaponKnockbackStrength = 25.0f;
     public float weaponknockbackDuration = 1.0f;
-    public float weaponDurability = 5;
 
     [Header("Other")]
     protected bool canSwing = true;
@@ -90,7 +89,7 @@ public class MeleeHandler : PickupableItem
 
         if (playersHit.Count == 0)
         {
-            weaponDurability -= 0.5f;
+            itemDurability -= 0.5f;
             DurabilityCheck();
         }
 
@@ -118,40 +117,14 @@ public class MeleeHandler : PickupableItem
 
                 playerHitPlayerHandler.TakeDamage(weaponDamage);
 
-                weaponDurability -= 1.0f;
-
                 Vector3 knockbackDirection = (playerHitPlayerHandler.transform.position - owner.transform.position).normalized;
                 playerHitPlayerHandler.TakeKnockback(knockbackDirection, weaponknockbackDuration, weaponKnockbackStrength);
 
+                itemDurability -= 1.0f;
                 DurabilityCheck();
-
-                //if (weaponDurability <= 0.0f)
-                //{
-                //    //this.GetComponent<MeshRenderer>().enabled = false;
-                //    //ParticleSystem despawnParticle = Instantiate(despawnParticleSystem, transform.position, Quaternion.identity);
-                //    //despawnParticle.Play();
-                //    //PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
-                //    //ownerPlayerHandler.playerWeight -= this.rb.mass;
-                //    //ownerPlayerHandler.SetupDefaultAttack();
-                //}
             }
         }
     }
 
-    private void DurabilityCheck()
-    {
-        PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
-
-        if (weaponDurability <= 0.0f && this.GetComponent<DefaultAttack>() == null)
-        {
-            if (this.GetComponent<MeshRenderer>().enabled == true)
-            {
-                ParticleSystem despawnParticle = Instantiate(despawnParticleSystem, transform.position, Quaternion.identity);
-                despawnParticle.Play();
-                ownerPlayerHandler.playerWeight -= this.rb.mass;
-                ownerPlayerHandler.SetupDefaultAttack();
-            }
-            Destroy(this.gameObject);
-        }
-    }
+    
 }
