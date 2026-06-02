@@ -8,6 +8,7 @@ public class Projectile : MonoBehaviour
     public float knockbackStrength = 20.0f;
     public float knockbackDuration = 0.25f;
     public float maxTravelTime = 15.0f;
+    public ParticleSystem particleOnHit;
     private Rigidbody rb;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -52,6 +53,8 @@ public class Projectile : MonoBehaviour
             Vector3 knockbackDirection = (other.transform.position - transform.position).normalized;
             playerHit.TakeKnockback(knockbackDirection, knockbackDuration, knockbackStrength);
         }
+        Vector3 closestPoint = other.ClosestPoint(transform.position);
+        ParticleSystem ps = Instantiate(particleOnHit, closestPoint, Quaternion.LookRotation(-transform.forward));
         StopAllCoroutines();
         Destroy(gameObject);
     }
