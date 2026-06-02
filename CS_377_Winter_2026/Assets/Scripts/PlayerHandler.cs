@@ -503,12 +503,9 @@ public class PlayerHandler : MonoBehaviour
 
         if (GameStateManager.instance._gameState == GameStateManager.GameState.isPaused)
         {
+            UIManager.instance.OnContinueButton();
             playerInput.SwitchCurrentActionMap(actionMapBeforePause);
-
             InputManager.instance.playerInPauseMenu = null;
-            GameStateManager.instance._gameState = gameStateBeforePause;
-            UIManager.instance.DeactivatePauseScreen();
-            Time.timeScale = 1.0f;
         }
         else
         {

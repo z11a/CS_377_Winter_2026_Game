@@ -31,15 +31,15 @@ public class UIManager : MonoBehaviour
 
     [Header("Pause Menu")]
     public GameObject PauseMenuUI;
-    public GameObject ContinueButton;
-    public GameObject QuitButton;
+    public Button ContinueButton;
+    public Button QuitButton;
 
     [Header("Other")]
     public RawImage loadingScreen;
     public float loadingScreenFadeDuration = 1.0f;
     public Camera mainMenuCamera;
 
-    private GameObject selectedGameObjectBeforePause;
+    private Button selectedButtonBeforePause;
     
     void Awake()
     {
@@ -95,18 +95,20 @@ public class UIManager : MonoBehaviour
 
     public IEnumerator ActivateStartGameButton() // This is in a coroutine because we need to pause one frame before enabling the start button. This is because clicking A on my Xbox controller to join the game also instantly presses the start button. 
     {
-        EventSystem.current.SetSelectedGameObject(null);
+        //EventSystem.current.SetSelectedGameObject(null);
         yield return null;
         startGameButton.interactable = true;
-        EventSystem.current.SetSelectedGameObject(UIManager.instance.startGameButton.gameObject);
+        startGameButton.Select();
+        //EventSystem.current.SetSelectedGameObject(UIManager.instance.startGameButton.gameObject);
     }
 
     public IEnumerator ActivateTrainingAreaButton()
     {
-        EventSystem.current.SetSelectedGameObject(null);
+        //EventSystem.current.SetSelectedGameObject(null);
         yield return null;
-        trainingAreaButton.interactable = true;
-        EventSystem.current.SetSelectedGameObject(UIManager.instance.trainingAreaButton.gameObject);
+        //trainingAreaButton.interactable = true;
+        //trainingAreaButton.Select();
+        //EventSystem.current.SetSelectedGameObject(UIManager.instance.trainingAreaButton.gameObject);
     }
 
     public void OnTrainingAreaButton()
@@ -215,23 +217,52 @@ public class UIManager : MonoBehaviour
 
     public IEnumerator ActivatePauseScreen()
     {
-        selectedGameObjectBeforePause = EventSystem.current.currentSelectedGameObject;
+        GameObject currentSelectGB = EventSystem.current.currentSelectedGameObject;
+        if (currentSelectGB != null) 
+        { 
+            selectedButtonBeforePause = currentSelectGB.GetComponent<Button>();
+        }
+
         EventSystem.current.SetSelectedGameObject(null);
-        yield return null;
         PauseMenuUI.SetActive(true);
-        EventSystem.current.SetSelectedGameObject(ContinueButton);
+        yield return null;
+        ContinueButton.Select();
+        //EventSystem.current.SetSelectedGameObject(ContinueButton);
+        yield break;
     }
 
 
-    public void DeactivatePauseScreen()
+    public IEnumerator DeactivatePauseScreen()
     {
+        EventSystem.current.SetSelectedGameObject(null);
+
+        foreach (Animator anim in PauseMenuUI.GetComponentsInChildren<Animator>())
+        {
+            anim.Play("Normal", 0, 0f);
+            anim.Update(0f);
+        }
+
+        yield return null;
+
         PauseMenuUI.SetActive(false);
-        EventSystem.current.SetSelectedGameObject(selectedGameObjectBeforePause);
+
+        yield return null;
+
+        if (selectedButtonBeforePause != null)
+        {
+            selectedButtonBeforePause.Select();
+        }
+        else
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+        }
+
+        Canvas.ForceUpdateCanvases();
     }
 
     public void OnContinueButton()
     {
-        if(GameStateManager.instance._gameState == GameStateManager.GameState.isPaused) {
+        if (GameStateManager.instance._gameState == GameStateManager.GameState.isPaused) {
             PlayerInput playerInput = InputManager.instance.playerInPauseMenu;
             PlayerHandler playerHandler = playerInput.GetComponent<PlayerHandler>();
 
@@ -239,7 +270,7 @@ public class UIManager : MonoBehaviour
             playerInput = null;
 
             GameStateManager.instance._gameState = playerHandler.gameStateBeforePause;
-            UIManager.instance.DeactivatePauseScreen();
+            StartCoroutine(DeactivatePauseScreen());
             Time.timeScale = 1.0f;
         }
     }
