@@ -243,6 +243,7 @@ public class PlayerHandler : MonoBehaviour
         {
             this.transform.rotation = Quaternion.LookRotation(new Vector3(moveAmount.x, 0, moveAmount.y));
         }
+        rb.angularVelocity = Vector3.zero;
     }
 
     public void OnUse()

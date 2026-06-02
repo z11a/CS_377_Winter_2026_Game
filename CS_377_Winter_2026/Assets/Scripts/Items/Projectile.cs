@@ -5,8 +5,8 @@ using static UnityEngine.UI.GridLayoutGroup;
 public class Projectile : MonoBehaviour
 {
     public float damage = 10.0f;
-    public float knockbackStrength = 20.0f;
-    public float knockbackDuration = 0.25f;
+    public float knockbackStrength = 35.0f;
+    public float knockbackDuration = 0.1f;
     public float maxTravelTime = 15.0f;
     public ParticleSystem particleOnHit;
     private Rigidbody rb;
