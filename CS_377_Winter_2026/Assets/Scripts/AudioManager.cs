@@ -63,4 +63,11 @@ public class AudioManager : MonoBehaviour
             }
         }
     }
+
+    public void PlayRandomSFX(AudioClip[] clips)
+    {
+        int random = Random.Range(0, clips.Length);
+
+        audioSource.PlayOneShot(clips[random]);
+    }
 }

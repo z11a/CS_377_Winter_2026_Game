@@ -14,6 +14,8 @@ public class PickupableItem : Item
     public Material highlightMaterial;
     public ParticleSystem despawnParticleSystem;
     public float itemDurability = 1.0f;
+    public AudioClip PickupSFX;
+    public AudioClip[] UseSFXArray;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -88,6 +90,11 @@ public class PickupableItem : Item
         transform.parent = ownerPlayerHandler.weaponPlaceholderTransform;
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;
+
+        if (PickupSFX != null)
+        {
+            AudioManager.instance.audioSource.PlayOneShot(PickupSFX);
+        }
     }
     public override void OnTriggerEnter(Collider collider)
     {

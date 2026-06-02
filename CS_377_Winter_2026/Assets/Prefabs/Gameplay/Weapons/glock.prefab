@@ -140,6 +140,10 @@ MonoBehaviour:
   highlightMaterial: {fileID: 2100000, guid: f6826286dcb636347a39ccece15b0647, type: 2}
   despawnParticleSystem: {fileID: 8245051818807280991, guid: 560e3512ac625c548ad8f7e6fbfdab2a, type: 3}
   itemDurability: 8
+  PickupSFX: {fileID: 8300000, guid: 3f740d057cdaa2443a1dced64173e42c, type: 3}
+  UseSFXArray:
+  - {fileID: 8300000, guid: 896ff2da2174c9c459ed7b03a4e90d7c, type: 3}
+  - {fileID: 8300000, guid: 7e7957a70392fcd418b482b0a90dd63e, type: 3}
   projectileType: 0
   projectileSpawnPlaceholder: {fileID: 1284063776913538979}
   projectileSpeed: 16

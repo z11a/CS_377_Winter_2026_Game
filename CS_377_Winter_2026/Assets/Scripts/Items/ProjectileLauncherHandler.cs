@@ -45,6 +45,8 @@ public class ProjectileLauncherHandler : PickupableItem
             ps.Play();
         }
 
+        AudioManager.instance.PlayRandomSFX(UseSFXArray);
+
         useCoroutine = FireProjectile();
         StartCoroutine(useCoroutine);
     }
