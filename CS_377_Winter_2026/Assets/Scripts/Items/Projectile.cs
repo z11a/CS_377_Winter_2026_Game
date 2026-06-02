@@ -44,8 +44,9 @@ public class Projectile : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
+        if (other.GetComponent<Item>() != null) { return; }
+
         PlayerHandler playerHit = other.GetComponent<PlayerHandler>();
-        Debug.Log("Hit something");
         if (playerHit != null)
         {
             playerHit.TakeDamage(damage);
