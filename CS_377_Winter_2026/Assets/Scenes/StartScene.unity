@@ -1497,7 +1497,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9010770781842452192, guid: cad0a0c84abcc544189e607965cab49f, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -2906,7 +2906,19 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
+      propertyPath: uncommonItems.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
       propertyPath: 'commonItems.Array.data[0]'
+      value: 
+      objectReference: {fileID: 7846301342053070152, guid: 0d5e0f8b678bd834284ca64556531823, type: 3}
+    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
+      propertyPath: 'uncommonItems.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1105016911129954132, guid: 1eb00ec42c4e535449837b895c3c9229, type: 3}
+    - target: {fileID: 5654639146840180686, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
+      propertyPath: 'uncommonItems.Array.data[3]'
       value: 
       objectReference: {fileID: 616649939978906854, guid: d1a946653e2161940ba309f0e2079c2d, type: 3}
     - target: {fileID: 8269917051868093485, guid: 1b0d9663ecba6df44bb3c07a9679c214, type: 3}
@@ -4454,7 +4466,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5467029160174413128, guid: 0958ad13eda347848a6b8150906f7b49, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

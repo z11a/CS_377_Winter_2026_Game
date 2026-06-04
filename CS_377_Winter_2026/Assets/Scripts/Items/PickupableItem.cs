@@ -5,14 +5,12 @@ using UnityEngine;
 public class PickupableItem : Item
 {
     [Header("Pickupable Item Information")]
-    [HideInInspector] public GameObject owner;
     [HideInInspector] public IEnumerator useCoroutine;
     [HideInInspector] public BoxCollider unequippedCollider;
     [HideInInspector] public MeshRenderer meshRenderer;
     [HideInInspector] public Material[] highlightMaterialList;
     [HideInInspector] public Material[] defaultMaterialList;
     public Material highlightMaterial;
-    public ParticleSystem despawnParticleSystem;
     public float itemDurability = 1.0f;
     public AudioClip PickupSFX;
     public AudioClip[] UseSFXArray;
@@ -67,16 +65,9 @@ public class PickupableItem : Item
         rb.isKinematic = false;
         rb.useGravity = true;
 
-        StartCoroutine(DespawnWeapon());
+        StartCoroutine(DespawnItem());
     }
-
-    private IEnumerator DespawnWeapon()
-    {
-        yield return new WaitForSeconds(1.0f);
-        ParticleSystem despawnParticle = Instantiate(despawnParticleSystem, transform.position, Quaternion.identity);
-        despawnParticle.Play();
-        Destroy(this.gameObject);
-    }
+    
     public virtual void PickupItem(GameObject _owner)
     {
         StopCoroutine(floatingAnimationCoroutine);
@@ -87,7 +78,7 @@ public class PickupableItem : Item
         GameStateManager.instance.itemSpawnDictionary[initialSpawnPosition] = null;
         PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
         ownerPlayerHandler.playerWeight += rb.mass;
-        transform.parent = ownerPlayerHandler.weaponPlaceholderTransform;
+        transform.parent = ownerPlayerHandler.weaponPlaceholder.transform;
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;
 
@@ -96,12 +87,12 @@ public class PickupableItem : Item
             AudioManager.instance.audioSource.PlayOneShot(PickupSFX);
         }
     }
-    public override void OnTriggerEnter(Collider collider)
+    public virtual void OnTriggerEnter(Collider collider)
     {
         ItemTriggerEnterCheck(collider);
     }
 
-    public override PlayerHandler ItemTriggerEnterCheck(Collider collider)
+    public virtual PlayerHandler ItemTriggerEnterCheck(Collider collider)
     {
         PlayerHandler playerHitPlayerHandler = collider.gameObject.GetComponent<PlayerHandler>();
 
@@ -125,7 +116,7 @@ public class PickupableItem : Item
         ItemTriggerExitCheck(collider);
     }
 
-    public void ItemTriggerExitCheck(Collider collider)
+    public virtual void ItemTriggerExitCheck(Collider collider)
     {
         PlayerHandler playerHitPlayerHandler = collider.gameObject.GetComponent<PlayerHandler>();
 

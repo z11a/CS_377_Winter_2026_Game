@@ -44,7 +44,7 @@ public class CheeseHandler : Item
     {
         isGrounded = Physics.Raycast(transform.position, Vector3.down, 0.75f);
     }
-    public override void OnTriggerEnter(Collider collider)
+    public void OnTriggerEnter(Collider collider)
     {
         // player collecting cheeses
         PlayerHandler playerHandler = collider.GetComponent<PlayerHandler>();
@@ -68,7 +68,10 @@ public class CheeseHandler : Item
                 break;
         }
 
+        _ItemState = Item.ItemState.Collected;
         rb.position = new Vector3(-100.0f, -100.0f, -100.0f);
+        GameStateManager.instance.itemSpawnDictionary[initialSpawnPosition] = null;
+        owner = playerHandler.gameObject;
         playerHandler.playerCurrentHoldingCheeses.Add(this.gameObject); // store it far away, we can bring it back if the player loses all their health and drops them.
         playerHandler.playerWeight += rb.mass;
         playerHandler.playerUIHandler.CheeseUpdate(playerHandler.playerCurrentHoldingCheeses.Count);

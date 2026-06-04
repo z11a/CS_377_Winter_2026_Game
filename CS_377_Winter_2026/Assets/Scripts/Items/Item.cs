@@ -12,7 +12,9 @@ public class Item : MonoBehaviour
     [HideInInspector] public ItemState _ItemState;  // item state should only be "NotCollected" if it just spawned and hasn't been interacted with. An item will not switch back to being "Uncollected".
     [HideInInspector] public Vector3 initialSpawnPosition;
     public float floatingAnimationRotationSpeed = 30.0f;
+    public ParticleSystem despawnParticleSystem;
     [HideInInspector] public Rigidbody rb;
+    [HideInInspector] public GameObject owner;
     protected IEnumerator floatingAnimationCoroutine;
 
     void Start()
@@ -54,30 +56,37 @@ public class Item : MonoBehaviour
         }
     }
 
-    public virtual void OnTriggerEnter(Collider collider)
+    public IEnumerator DespawnItem()
     {
-        PlayerHandler playerHitPlayerHandler = ItemTriggerEnterCheck(collider);
-
-        if (playerHitPlayerHandler == null)
-        {
-            return;
-        }
+        yield return new WaitForSeconds(1.0f);
+        ParticleSystem despawnParticle = Instantiate(despawnParticleSystem, transform.position, Quaternion.identity);
+        despawnParticle.Play();
+        Destroy(this.gameObject);
     }
-    public virtual PlayerHandler ItemTriggerEnterCheck(Collider collider)
-    {
-        PlayerHandler playerHitPlayerHandler = collider.gameObject.GetComponent<PlayerHandler>();
 
-        if (playerHitPlayerHandler == null || playerHitPlayerHandler._playerState == PlayerHandler.PlayerState.Dead)
-        {
-            return null;
-        }
+    //public virtual void OnTriggerEnter(Collider collider)
+    //{
+    //    PlayerHandler playerHitPlayerHandler = ItemTriggerEnterCheck(collider);
 
-        if (_ItemState == Item.ItemState.NotCollected)
-        {
-            Debug.Log("Able to pick up " + this.gameObject.name);
-            playerHitPlayerHandler.possibleItemPickup = this.gameObject;
-        }
+    //    if (playerHitPlayerHandler == null)
+    //    {
+    //        return;
+    //    }
+    //}
+    //public virtual PlayerHandler ItemTriggerEnterCheck(Collider collider)
+    //{
+    //    PlayerHandler playerHitPlayerHandler = collider.gameObject.GetComponent<PlayerHandler>();
 
-        return playerHitPlayerHandler;
-    }
+    //    if (playerHitPlayerHandler == null || playerHitPlayerHandler._playerState == PlayerHandler.PlayerState.Dead)
+    //    {
+    //        return null;
+    //    }
+
+    //    if (_ItemState == Item.ItemState.NotCollected)
+    //    {
+    //        return playerHitPlayerHandler;
+    //    }
+
+    //    return null;
+    //}
 }

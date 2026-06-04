@@ -19,7 +19,7 @@ public class FPSManager : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
         }
 
-        QualitySettings.vSyncCount = 0;
+        QualitySettings.vSyncCount = 1;
         Application.targetFrameRate = targetFPS;
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created

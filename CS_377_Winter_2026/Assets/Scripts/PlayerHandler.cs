@@ -45,23 +45,22 @@ public class PlayerHandler : MonoBehaviour
     public float playerWeight = 0.0f;
     public float respawnTime = 3.0f;
     public bool invincible = false;
-    public float invincibilityTime = 3.0f;
+    //public float invincibilityTime = 3.0f;
     public float healthRegenDelay = 4.0f;
     public float healthRegenPerSecond = 5.0f;
     private IEnumerator healthRegenCoroutine;
     private IEnumerator knockbackCoroutine;
 
     [Header("Weapon Info")]
-    public Transform weaponPlaceholderTransform;
+    public GameObject weaponPlaceholder;
     public GameObject defaultAttackWeapon;
-    public GameObject staminaBar;  
     public float attackStamina = 1.0f;
-    //public ParticleSystem weaponBreakParticleSystem;
 
     [Header("Appearance")]
     public Material flashMaterial;
     private Material defaultMaterial;
     public ParticleSystem PlayerWalkingParticleSystem;
+    public GameObject chestPlaceholder;
     private float maxWalkingParticleSpeed;
     private float maxEmissionRateOverTime;
 
@@ -73,8 +72,11 @@ public class PlayerHandler : MonoBehaviour
     [HideInInspector] public GameObject itemPickupObject;
     [HideInInspector] public GameObject possibleItemPickup;
     [HideInInspector] public StatTracker stats = new StatTracker();
-    public PlayerUIHandler playerUIHandler;
+    [HideInInspector] public ArmorHandler armorItem;
 
+    [HideInInspector] public PlayerUIHandler playerUIHandler;
+
+    // pause
     [HideInInspector] public GameStateManager.GameState gameStateBeforePause;
     [HideInInspector] public string actionMapBeforePause;
 
@@ -213,7 +215,6 @@ public class PlayerHandler : MonoBehaviour
     public void OnMove(InputValue value)
     {
         moveAmount = value.Get<Vector2>();
-        Debug.Log("Knockback: " + knockedBack);
     }
 
     public void OnAim(InputValue value)
@@ -356,7 +357,7 @@ public class PlayerHandler : MonoBehaviour
         playerWeight = 0.0f;
         _playerState = PlayerState.Idle;
         playerCurrentHoldingCheeses.Clear();
-
+        armorItem = null;
         possibleItemPickup = null;
         if (itemPickupObject != null)
         {
@@ -385,6 +386,12 @@ public class PlayerHandler : MonoBehaviour
     {
         if (_playerState == PlayerState.Dead || invincible)
         {
+            return;
+        }
+
+        if (armorItem != null)
+        {
+            armorItem.TakeDamage();
             return;
         }
 
