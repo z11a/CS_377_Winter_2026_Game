@@ -15,6 +15,7 @@ public class PlayerUIHandler : MonoBehaviour
     public TextMeshProUGUI CheeseText;
     public Slider HealthBar;
     public Slider StaminaBar;
+    public RawImage Armor;
 
     [HideInInspector] private IEnumerator staminaCoroutine;
 
@@ -43,6 +44,8 @@ public class PlayerUIHandler : MonoBehaviour
         HealthBar = playerUIReferences.HealthBar;
         StaminaBar = playerUIReferences.StaminaBar;
         StaminaBar.gameObject.SetActive(false);
+        Armor = playerUIReferences.Armor;
+        Armor.gameObject.SetActive(false);
     }
 
     void Update()
@@ -126,5 +129,10 @@ public class PlayerUIHandler : MonoBehaviour
         StaminaBar.value = 1.0f;
         StaminaBar.gameObject.SetActive(false);
         yield return null;
+    }
+
+    public void ArmorUpdate(bool activate)
+    {
+        Armor.gameObject.SetActive(activate);
     }
 }

@@ -34,12 +34,22 @@ public class ArmorHandler : Item
 
     public void DropArmor()
     {
-        owner.GetComponent<PlayerHandler>().armorItem = null;
+        PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
+        ownerPlayerHandler.armorItem = null;
+        ownerPlayerHandler.playerUIHandler.ArmorUpdate(false);
+
         transform.parent = null;
+        this.gameObject.layer = 6;
         capsuleCollider.enabled = true;
         capsuleCollider.isTrigger = false;
+
         rb.isKinematic = false;
         rb.useGravity = true;
+        Vector3 throwDirection = Random.onUnitSphere;
+        throwDirection.y = 0.9f;
+        rb.AddForce(throwDirection * 6.5f, ForceMode.VelocityChange);
+        rb.AddTorque(new Vector3(0.0f, 1.25f, 0.0f), ForceMode.VelocityChange);
+        
         StartCoroutine(DespawnItem());
     }
 
@@ -69,5 +79,6 @@ public class ArmorHandler : Item
         transform.localRotation = Quaternion.identity;
         transform.localPosition = Vector3.zero;
         capsuleCollider.enabled = false;
+        playerHandler.playerUIHandler.ArmorUpdate(true);
     }
 }

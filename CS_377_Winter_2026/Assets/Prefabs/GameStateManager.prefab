@@ -51,9 +51,9 @@ MonoBehaviour:
   roundLength: 120
   currentRoundTime: 0
   intermissionLength: 4
-  roundOneScoreRequirement: 70
-  roundTwoScoreRequirement: 100
-  roundThreeScoreRequirement: 120
+  roundOneScoreRequirement: 50
+  roundTwoScoreRequirement: 70
+  roundThreeScoreRequirement: 70
   itemSpawnCooldown: 3.5
   uncommonItemSpawnChance: 45
   rareItemSpawnChance: 15

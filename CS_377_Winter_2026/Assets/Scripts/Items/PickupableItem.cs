@@ -59,6 +59,7 @@ public class PickupableItem : Item
 
         PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
         ownerPlayerHandler.playerWeight -= rb.mass;
+        this.gameObject.layer = 6;
         rb.transform.parent = null;
         unequippedCollider.isTrigger = false;
         unequippedCollider.enabled = true;

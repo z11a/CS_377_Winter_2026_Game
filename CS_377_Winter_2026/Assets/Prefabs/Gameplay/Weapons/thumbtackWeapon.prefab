@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6616275235631523847}
   - component: {fileID: 6851329412536825272}
   - component: {fileID: 6281656443114385522}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: thumbtackWeapon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -130,6 +130,7 @@ MonoBehaviour:
   _ItemState: 0
   initialSpawnPosition: {x: 0, y: 0, z: 0}
   floatingAnimationRotationSpeed: 30
+  despawnParticleSystem: {fileID: 8245051818807280991, guid: 560e3512ac625c548ad8f7e6fbfdab2a, type: 3}
   rb: {fileID: 0}
   owner: {fileID: 0}
   unequippedCollider: {fileID: 0}
@@ -137,8 +138,9 @@ MonoBehaviour:
   highlightMaterialList: []
   defaultMaterialList: []
   highlightMaterial: {fileID: 2100000, guid: f6826286dcb636347a39ccece15b0647, type: 2}
-  despawnParticleSystem: {fileID: 8245051818807280991, guid: 560e3512ac625c548ad8f7e6fbfdab2a, type: 3}
   itemDurability: 8
+  PickupSFX: {fileID: 0}
+  UseSFXArray: []
   equippedCollider: {fileID: 0}
   swingSpeed: 1.25
   swingCooldown: 0.05
@@ -206,6 +208,10 @@ PrefabInstance:
     - target: {fileID: 5733386950421862553, guid: 9ace2662705cf3c4a93f400593cd9736, type: 3}
       propertyPath: m_Name
       value: ItemSpawnParticle
+      objectReference: {fileID: 0}
+    - target: {fileID: 5733386950421862553, guid: 9ace2662705cf3c4a93f400593cd9736, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5780920390749569660, guid: 9ace2662705cf3c4a93f400593cd9736, type: 3}
       propertyPath: m_LocalPosition.x

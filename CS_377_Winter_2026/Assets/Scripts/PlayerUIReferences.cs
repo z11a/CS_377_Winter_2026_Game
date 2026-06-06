@@ -10,4 +10,5 @@ public class PlayerUIReferences : MonoBehaviour
     public TextMeshProUGUI CheeseText;
     public Slider HealthBar;
     public Slider StaminaBar;
+    public RawImage Armor;
 }
