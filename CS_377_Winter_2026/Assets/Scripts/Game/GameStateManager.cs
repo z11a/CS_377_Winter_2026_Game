@@ -1,0 +1,504 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Xml;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
+
+public class GameStateManager : MonoBehaviour
+{
+    public static GameStateManager instance;
+
+    public enum GameState
+    {
+        notInGame,
+        isLoading,
+        inGame,
+        isPaused,
+        inCharacterCustomization
+    }
+    public enum RoundNumber
+    {
+        One,
+        Two,
+        Three
+    }
+    public enum RoundState
+    {
+        preRound,
+        inRound,
+        postRound
+    }
+
+    [Header("Game State Tracking")]
+    public GameState _gameState;
+    public RoundNumber _currentRound;
+    public RoundState _currentRoundState;
+
+    [Header("Timing")]
+    public float countdownLength = 3.0f;
+    public float roundLength = 120.0f;
+    [HideInInspector] public float currentRoundTime = 120.0f;
+    public float intermissionLength = 4.0f;
+    private IEnumerator roundTimerCoroutine;
+
+    [Header("Scoring")]
+    public int roundOneScoreRequirement = 50;
+    public int roundTwoScoreRequirement = 100;
+    public int roundThreeScoreRequirement = 150;
+    private IEnumerator activateIntermissionCoroutine;
+
+    [Header("Item Spawning")]
+    public float itemSpawnCooldown = 3.0f;
+    public float uncommonItemSpawnChance = 40.0f;
+    public float rareItemSpawnChance = 15.0f;
+    public float itemSpawnIndicationLength = 2.0f;
+    public List<GameObject> possibleItemSpawners;    // first transform in the list will spawn at the start of the round, this list is set by the "GameplayReferences" gameObject in each round scene.
+    public List<GameObject> commonItems;
+    public List<GameObject> uncommonItems;
+    public List<GameObject> rareItems;
+    [HideInInspector] public Dictionary<Vector3, ItemSpawnerHandler> itemSpawnDictionary = new Dictionary<Vector3, ItemSpawnerHandler>();
+    [HideInInspector] public bool itemsSpawning;
+    private IEnumerator itemSpawningCoroutine;
+    [HideInInspector] public int commonPity = 0;
+    [HideInInspector] public int uncommonPity = 0;
+
+    [Header("Projectiles")]
+    public GameObject bulletPrefab;
+    public GameObject rocketPrefab;
+
+    [HideInInspector] public bool waitingForPlayersToJoin = false;
+    [HideInInspector] public List<Transform> playerGameplaySpawnPositions;
+    //[HideInInspector] public Transform player1GameplaySpawnPosition;
+    //[HideInInspector] public Transform player2GameplaySpawnPosition;
+
+    void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(this.gameObject);
+            Debug.Log("Destroyed extra GameStateManager");
+        }
+        else
+        {
+            instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+    }
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("roundOne"))    // this is for when we don't start the game from the MainMenu scene.
+        {
+            _gameState = GameState.inGame;
+            itemsSpawning = true;
+            itemSpawningCoroutine = itemSpawning();
+            StartCoroutine(itemSpawningCoroutine);
+        }
+        else
+        {
+            _gameState = GameState.notInGame;
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+    public void PlayerWonRound(PlayerHandler playerHandler)
+    {
+        AudioManager.instance.PlaySFX(AudioManager.SFXType.WinRound);
+
+        if (itemSpawningCoroutine != null)
+        {
+            StopCoroutine(itemSpawningCoroutine);
+        }
+        if (roundTimerCoroutine != null)
+        {
+            StopCoroutine(roundTimerCoroutine);
+        }
+
+        playerHandler.playerTotalRoundScore++;
+        playerHandler.playerUIHandler.RoundWinUpdate(playerHandler.playerTotalRoundScore);
+        UIManager.instance.ActivateRoundWinText(playerHandler);
+
+        if (playerHandler.playerTotalRoundScore >= 2)
+        {
+            Debug.Log(playerHandler.playerNumber + " won the game!");
+            UIManager.instance.roundWinText.text = $"{playerHandler.playerNumber} wins the game!";
+            UIManager.instance.roundWinText.gameObject.SetActive(true);
+            GameStateManager.instance._gameState = GameStateManager.GameState.notInGame;
+            Time.timeScale = 0.0f;
+        }
+        else
+        {
+            activateIntermissionCoroutine = ActivateIntermission(GameStateManager.instance._currentRound + 1);
+            StartCoroutine(activateIntermissionCoroutine);
+        }
+
+        return;
+    }
+    private IEnumerator ActivateIntermission(GameStateManager.RoundNumber nextRoundNumber)
+    {
+        //.instance._gameState = GameStateManager.GameState.intermission;
+
+        yield return new WaitForSeconds(GameStateManager.instance.intermissionLength);
+
+        StartCoroutine(GameStateManager.instance.LoadGameplaySceneAsync(nextRoundNumber));
+    }
+
+    private IEnumerator StartRoundTimer()
+    {
+        _gameState = GameState.inGame;
+        _currentRoundState = RoundState.inRound;
+
+        currentRoundTime = roundLength;
+
+        int minutes = (int)(GameStateManager.instance.currentRoundTime / 60);
+        int seconds = (int)(GameStateManager.instance.currentRoundTime % 60);
+        UIManager.instance.roundTimerText.text = $"{minutes}:{seconds:D2}";
+
+        while (true)
+        {
+            yield return new WaitForSeconds(1.0f);
+
+            currentRoundTime -= 1.0f;
+
+            if (currentRoundTime <= 0.0f)
+            {
+                Debug.Log("Round over.");
+
+                _currentRoundState = RoundState.postRound;
+
+                // check for cheese tie here, if they have the same cheeses maybe we check who hit more attacks
+                PlayerHandler playerOneHandler = InputManager.instance.PlayerInputs[0].GetComponent<PlayerHandler>();
+                PlayerHandler playerTwoHandler = InputManager.instance.PlayerInputs[1].GetComponent<PlayerHandler>();
+
+                if (playerOneHandler.playerCurrentRoundScore > playerTwoHandler.playerCurrentRoundScore)
+                {
+                    PlayerWonRound(playerOneHandler);
+                }
+                else if (playerTwoHandler.playerCurrentRoundScore > playerOneHandler.playerCurrentRoundScore)
+                {
+                    PlayerWonRound(playerTwoHandler);
+                }
+                else if (playerOneHandler.playerCurrentRoundScore == playerTwoHandler.playerCurrentRoundScore)
+                {
+
+                }
+                yield break;
+            }
+        }
+    }
+
+    private IEnumerator StartPreRoundCountdown()
+    {
+        _currentRoundState = RoundState.preRound;
+
+        float _countdownTime = countdownLength;
+
+        Color fullAlpha = UIManager.instance.preRoundTimerText.color;
+        fullAlpha.a = 1.0f;
+        UIManager.instance.preRoundTimerText.color = fullAlpha;
+        UIManager.instance.preRoundTimerText.gameObject.SetActive(true);
+
+        Debug.Log("Countdown started.");
+
+        while (true)
+        {
+            //yield return null;
+
+            Debug.Log("Countdown: " + _countdownTime);
+
+            UIManager.instance.preRoundTimerText.text = _countdownTime.ToString();
+
+            yield return new WaitForSeconds(1.0f);
+
+            _countdownTime -= 1.0f;
+
+            if (_countdownTime <= 0.0f)
+            {
+                Debug.Log("Countdown ended.");
+
+                foreach (PlayerInput playerInput in InputManager.instance.PlayerInputs)
+                {
+                    playerInput.SwitchCurrentActionMap("Player");
+                    playerInput.GetComponent<PlayerHandler>().playerCanMove = true;
+                }
+                //InputManager.instance.PlayerInputs[0].SwitchCurrentActionMap("Player");
+                //InputManager.instance.PlayerInputs[1].SwitchCurrentActionMap("Player");
+
+                itemsSpawning = true;
+                itemSpawningCoroutine = itemSpawning();
+                StartCoroutine(itemSpawningCoroutine);
+
+                roundTimerCoroutine = StartRoundTimer();
+                StartCoroutine(roundTimerCoroutine);
+
+                UIManager.instance.preRoundTimerText.text = "Play!";
+
+                // fade out preRoundTimerText
+                float elapsedTime = 0.0f;
+                float duration = 2.0f;
+                Color col = UIManager.instance.preRoundTimerText.color;
+
+                while (elapsedTime < duration)
+                {
+                    elapsedTime += Time.deltaTime;
+                    col.a = 1.0f - Mathf.Clamp01(elapsedTime / duration);
+                    UIManager.instance.preRoundTimerText.color = col;
+                    yield return null;
+                }
+                UIManager.instance.preRoundTimerText.gameObject.SetActive(false);
+                yield break;
+            }
+        }
+    }
+
+    private void GameplaySceneSetup()
+    {
+        for (int i = 0; i < InputManager.instance.PlayerInputs.Count; i++) 
+        {
+            PlayerInput playerInput = InputManager.instance.PlayerInputs[i];
+            playerInput.GetComponent<Rigidbody>().position = playerGameplaySpawnPositions[i].position;
+            playerInput.GetComponent<PlayerHandler>().currentSpawnPosition = playerGameplaySpawnPositions[i];
+            playerInput.GetComponent<PlayerHandler>().playerCurrentHoldingCheeses = new List<GameObject>();
+            playerInput.GetComponent<PlayerHandler>().playerCurrentRoundScore = 0;
+            playerInput.GetComponent<PlayerHandler>().ResetPlayerValues();
+        }
+
+        currentRoundTime = roundLength;
+        int minutes = (int)(GameStateManager.instance.currentRoundTime / 60);
+        int seconds = (int)(GameStateManager.instance.currentRoundTime % 60);
+        UIManager.instance.roundTimerText.text = $"{minutes}:{seconds:D2}";
+
+        UIManager.instance.GameplayUI.SetActive(true);
+        UIManager.instance.DeactivateLoadingScreen();
+        StartCoroutine(StartPreRoundCountdown());
+    }
+    public IEnumerator LoadGameplaySceneAsync(RoundNumber roundNumber)
+    {
+        _gameState = GameState.isLoading;
+
+        foreach (PlayerInput playerInput in InputManager.instance.PlayerInputs)
+        {
+            playerInput.StopAllCoroutines();
+            playerInput.GetComponent<PlayerHandler>().playerCanMove = false;
+        }
+
+        UIManager.instance.ActivateLoadingScreen();
+        yield return null;
+
+        int sceneIndex = 1; 
+
+        switch (roundNumber)
+        {
+            case RoundNumber.One:
+                sceneIndex = 1;
+                _currentRound = RoundNumber.One;
+                break;
+            case RoundNumber.Two:
+                sceneIndex = 2;
+                _currentRound = RoundNumber.Two;
+                break;
+            case RoundNumber.Three:
+                sceneIndex = 3;
+                _currentRound = RoundNumber.Three;
+                break;
+        }
+
+        _gameState = GameState.notInGame;
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive);
+        asyncLoad.allowSceneActivation = false;
+
+        while (!asyncLoad.isDone)
+        {
+            Debug.Log("Progress: " + asyncLoad.progress * 100 + "%");
+
+            if (asyncLoad.progress >= 0.9f)
+            {
+                Debug.Log("Loaded! Starting game in 2 seconds...");
+
+                yield return new WaitForSeconds(2.0f);
+                asyncLoad.allowSceneActivation = true;
+
+                yield return null;
+
+                foreach (PlayerInput playerInput in InputManager.instance.PlayerInputs)
+                {
+                    SceneManager.MoveGameObjectToScene(playerInput.gameObject, SceneManager.GetSceneByBuildIndex(sceneIndex));
+                }
+
+                SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
+                LightProbes.Tetrahedralize();
+
+                var refs = GameplaySceneReferences.instance;
+                playerGameplaySpawnPositions = refs.playerSpawnLocations;
+                possibleItemSpawners = refs.itemSpawners;
+
+                GameplaySceneSetup();
+            }
+
+            yield return null;
+        }
+    }
+    private IEnumerator itemSpawning()
+    {
+        // setup itemSpawnDictionary
+        itemSpawnDictionary.Clear();
+        for (int i = 0; i < possibleItemSpawners.Count; i++)
+        {
+            ItemSpawnerHandler itemSpawnerHandler = possibleItemSpawners[i].GetComponent<ItemSpawnerHandler>();
+
+            itemSpawnDictionary[possibleItemSpawners[i].transform.position] = itemSpawnerHandler;
+        }
+
+        // spawn random common item at first location
+        GameObject firstItem = Instantiate(commonItems[UnityEngine.Random.Range(0, commonItems.Count)], possibleItemSpawners[0].transform.position, Quaternion.identity);
+
+        ItemSpawnerHandler firstSpawnHandler = possibleItemSpawners[0].GetComponent<ItemSpawnerHandler>();
+        itemSpawnDictionary[possibleItemSpawners[0].transform.position] = firstSpawnHandler;
+        firstSpawnHandler.isFull = true;
+
+        while (itemsSpawning)
+        {
+            yield return null;
+
+            bool allLocationsFull = itemSpawnDictionary.Values.All(value => value.isFull);
+
+            if (allLocationsFull)
+            {
+                yield return new WaitForSeconds(4.0f);
+                continue;
+            }
+            else
+            {
+                yield return new WaitForSeconds(itemSpawnCooldown - itemSpawnIndicationLength);
+            }
+
+            // find empty and valid locations
+            float rarityRoll = UnityEngine.Random.Range(0f, 1f);
+
+            Item.ItemRarity randomRarity;
+
+            if (rarityRoll < 0.45f)
+                randomRarity = Item.ItemRarity.Common;
+            else if (rarityRoll < 0.75f)
+                randomRarity = Item.ItemRarity.Uncommon;
+            else
+                randomRarity = Item.ItemRarity.Rare;
+
+            List<Vector3> emptyValidLocations = itemSpawnDictionary
+                            .Where(kvp => !kvp.Value.isFull && kvp.Value.IsRarityAllowed(randomRarity))
+                            .Select(kvp => kvp.Key)
+                            .ToList();
+
+            if (emptyValidLocations.Count > 0)
+            {
+                Vector3 newSpawnIndex = emptyValidLocations[UnityEngine.Random.Range(0, emptyValidLocations.Count)];
+                GameObject randomObject = ChooseRandomItem(randomRarity);
+
+                StartCoroutine(UIManager.instance.activateItemSpawnIndicator(itemSpawnIndicationLength, newSpawnIndex));
+                yield return new WaitForSeconds(itemSpawnIndicationLength);
+
+                Instantiate(randomObject, newSpawnIndex, randomObject.transform.rotation);
+
+                itemSpawnDictionary[newSpawnIndex].isFull = true;
+            }
+            Debug.Log("No valid item spawn locations.");
+        }
+    }
+
+    private GameObject ChooseRandomItem(Item.ItemRarity itemRarity)
+    {
+        GameObject randomItem = null;
+
+        if (commonPity >= 3)
+        {
+            randomItem = commonItems[UnityEngine.Random.Range(0, commonItems.Count)];
+            commonPity = 0;
+            return randomItem;
+        }
+
+        if (uncommonPity >= 3)
+        {
+            randomItem = uncommonItems[UnityEngine.Random.Range(0, uncommonItems.Count)];
+            uncommonPity = 0;
+            return randomItem;
+        }
+
+        switch (itemRarity)
+        {
+            case Item.ItemRarity.Common:
+                randomItem = commonItems[UnityEngine.Random.Range(0, commonItems.Count)];
+                commonPity = 0;
+                uncommonPity++;
+                break;
+            case Item.ItemRarity.Uncommon:
+                randomItem = uncommonItems[UnityEngine.Random.Range(0, uncommonItems.Count)];
+                commonPity++;
+                uncommonPity = 0;
+                break;
+            case Item.ItemRarity.Rare:
+                randomItem = rareItems[UnityEngine.Random.Range(0, rareItems.Count)];
+                commonPity++;
+                uncommonPity = 0;
+                break;
+        }
+
+        return randomItem;
+    }
+
+    public IEnumerator LoadTrainingArea()
+    {
+        UIManager.instance.ActivateLoadingScreen();
+
+        GameStateManager.instance._gameState = GameStateManager.GameState.isLoading;
+        InputManager.instance.playerInputManager.DisableJoining();
+
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("TrainingArea", LoadSceneMode.Additive);
+        asyncLoad.allowSceneActivation = false;
+
+        while (!asyncLoad.isDone)
+        {
+            Debug.Log("Progress: " + asyncLoad.progress * 100 + "%");
+
+            if (asyncLoad.progress >= 0.9f)
+            {
+                Debug.Log("Loaded! Switching scene in 2 seconds...");
+
+                yield return new WaitForSeconds(2.0f);
+                asyncLoad.allowSceneActivation = true;
+
+                yield return null;
+
+                SceneManager.MoveGameObjectToScene(InputManager.instance.PlayerInputs[0].gameObject, SceneManager.GetSceneByName("TrainingArea"));
+
+                SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
+                LightProbes.Tetrahedralize();
+
+                var refs = GameplaySceneReferences.instance;
+
+                Transform playerSpawnPosition = refs.playerSpawnLocations[0];
+
+                PlayerHandler playerOnePlayerHandler = InputManager.instance.PlayerInputs[0].GetComponent<PlayerHandler>();
+                playerOnePlayerHandler.rb.position = playerSpawnPosition.position;
+                playerOnePlayerHandler.currentSpawnPosition = playerSpawnPosition;
+                playerOnePlayerHandler.playerCanMove = true;
+                playerOnePlayerHandler.GetComponent<PlayerInput>().SwitchCurrentActionMap("Player");
+
+                UIManager.instance.DeactivateLoadingScreen();
+                GameStateManager.instance._gameState = GameStateManager.GameState.inGame;
+            }
+
+            yield return null;
+        }
+    }
+}

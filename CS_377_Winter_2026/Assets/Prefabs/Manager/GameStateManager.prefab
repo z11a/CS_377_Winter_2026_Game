@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8269917051868093485
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1601661094718865307}
+  - component: {fileID: 5654639146840180686}
+  m_Layer: 0
+  m_Name: GameStateManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1601661094718865307
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8269917051868093485}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.51065, y: 0, z: -3.62871}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5654639146840180686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8269917051868093485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b6747b1eeb588b4c92289a4158f3700, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneManager
+  _gameState: 0
+  _currentRound: 0
+  _currentRoundState: 0
+  countdownLength: 3
+  roundLength: 120
+  currentRoundTime: 0
+  intermissionLength: 4
+  roundOneScoreRequirement: 50
+  roundTwoScoreRequirement: 70
+  roundThreeScoreRequirement: 70
+  itemSpawnCooldown: 3.5
+  uncommonItemSpawnChance: 45
+  rareItemSpawnChance: 15
+  itemSpawnIndicationLength: 2
+  possibleItemSpawnLocations:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  commonItems:
+  - {fileID: 7846301342053070152, guid: 0d5e0f8b678bd834284ca64556531823, type: 3}
+  - {fileID: 769477063499096365, guid: 781909e1c826449489e1ba48e3d6b321, type: 3}
+  uncommonItems:
+  - {fileID: 2498599946575675284, guid: 4ea1a632372797d41b490283b91c1ae0, type: 3}
+  - {fileID: 1206104607816383204, guid: 0e1b8e1303f362a4489ed67f31c6244a, type: 3}
+  rareItems:
+  - {fileID: 2186262415711309002, guid: f4a06f44735f9124a889b39c08ab6f8d, type: 3}
+  itemsSpawning: 0
+  cheesePity: 0
+  uncommonPity: 0
+  bulletPrefab: {fileID: 2069648277148417028, guid: c1c44ffdca8e23d4f88e21fadc454a56, type: 3}
+  rocketPrefab: {fileID: 0}
+  waitingForPlayersToJoin: 0
+  playerGameplaySpawnPositions: []

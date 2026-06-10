@@ -158,7 +158,7 @@ Transform:
   m_GameObject: {fileID: 3084827248702809869}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.139003, y: 0.05000019, z: -6.770639}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -233,7 +233,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHandler
   rb: {fileID: 0}
   animator: {fileID: 0}
-  dmgSFX: {fileID: 8300000, guid: 82bc2d27ef0401d4191657b95293d43e, type: 3}
   _playerState: 0
   playerNumber: 0
   playerHealth: 50
@@ -242,23 +241,25 @@ MonoBehaviour:
   playerWeight: 0
   respawnTime: 3
   invincible: 0
-  invincibilityTime: 3
   healthRegenDelay: 4
   healthRegenPerSecond: 5
-  weaponPlaceholderTransform: {fileID: 6494924168312210611}
+  weaponPlaceholder: {fileID: 4673763011552328204}
   defaultAttackWeapon: {fileID: 5053856000708882500}
-  staminaBar: {fileID: 0}
   attackStamina: 1
   flashMaterial: {fileID: 2100000, guid: 50a3b01df15b0e246a6d9e0cfd562d65, type: 2}
   PlayerWalkingParticleSystem: {fileID: 3809866935063315642}
+  chestPlaceholder: {fileID: 9022611263469069565}
   knockedBack: 0
   currentSpawnPosition: {fileID: 0}
   playerCurrentRoundScore: 0
   playerCurrentHoldingCheeses: []
   playerTotalRoundScore: 0
-  weaponEquippedObject: {fileID: 0}
-  possibleWeaponPickup: {fileID: 0}
+  itemPickupObject: {fileID: 0}
+  possibleItemPickup: {fileID: 0}
+  armorItem: {fileID: 0}
   playerUIHandler: {fileID: 0}
+  gameStateBeforePause: 0
+  actionMapBeforePause: 
 --- !u!114 &-8189590822036264170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -277,6 +278,7 @@ MonoBehaviour:
   PointsText: {fileID: 0}
   CheeseText: {fileID: 0}
   HealthBar: {fileID: 0}
+  StaminaBar: {fileID: 0}
 --- !u!54 &4897142971705418802
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -359,6 +361,7 @@ Transform:
   - {fileID: 2592432203433435671}
   - {fileID: 2501780332754988839}
   - {fileID: 6932906842185365051}
+  - {fileID: 3237425859903793403}
   m_Father: {fileID: 712530152441642518}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3705924765249371693
@@ -880,6 +883,37 @@ Transform:
   - {fileID: 6494924168312210611}
   m_Father: {fileID: 7780581354332930498}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &9022611263469069565
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3237425859903793403}
+  m_Layer: 7
+  m_Name: ChestPlaceholder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3237425859903793403
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9022611263469069565}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.066634506, y: -0.000000008731149, z: -0.000000117579475, w: 0.99777746}
+  m_LocalPosition: {x: 0.000000085216016, y: 0.3563258, z: 0.40028578}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7490318388955209541}
+  m_LocalEulerAnglesHint: {x: 11.677, y: 0, z: 0}
 --- !u!1001 &262088351124426252
 PrefabInstance:
   m_ObjectHideFlags: 0

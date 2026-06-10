@@ -1,0 +1,309 @@
+using System.Collections.Generic;
+using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using UnityEngine.InputSystem;
+using NUnit.Framework;
+using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
+
+public class UIManager : MonoBehaviour
+{
+    public static UIManager instance;
+
+    [Header("Start Menu")]
+    public GameObject StartMenuUI;
+    public Button startMenuButton;
+    public Button startGameButton;
+    public Button trainingAreaButton;
+    public TextMeshProUGUI playerJoinTextPrefab;
+    [HideInInspector] public List<TextMeshProUGUI> playerJoinTextList;
+
+    [Header("Gameplay")]
+    public GameObject GameplayUI;
+    public TextMeshProUGUI roundWinText;
+    public TextMeshProUGUI roundTimerText;
+    public TextMeshProUGUI preRoundTimerText;
+    public GameObject itemSpawnIndicator;
+    public GameObject PlayerOneUI;
+    public GameObject PlayerTwoUI;
+
+    [Header("Pause Menu")]
+    public GameObject PauseMenuUI;
+    public Button ContinueButton;
+    public Button QuitButton;
+
+    [Header("Other")]
+    public RawImage loadingScreen;
+    public float loadingScreenFadeDuration = 1.0f;
+    public Camera mainMenuCamera;
+
+    private Button selectedButtonBeforePause;
+    
+    void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(this.gameObject);
+            Debug.Log("Destroyed extra UIManager");
+        }
+        else
+        {
+            instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+    }
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        InitialUISetup();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (GameStateManager.instance._gameState == GameStateManager.GameState.inGame)
+        {
+            Timer();
+        }
+    }
+
+    private void Timer()
+    {
+        int minutes = (int)(GameStateManager.instance.currentRoundTime / 60);
+        int seconds = (int)(GameStateManager.instance.currentRoundTime % 60);
+        roundTimerText.text = $"{minutes}:{seconds:D2}";
+    }
+
+    public void InitialUISetup()
+    {
+        StartMenuUI.SetActive(true);
+        startMenuButton.gameObject.SetActive(true);
+        loadingScreen.gameObject.SetActive(false);
+        GameplayUI.SetActive(false);
+        PauseMenuUI.SetActive(false);
+        roundWinText.gameObject.SetActive(false);
+
+        startGameButton.gameObject.SetActive(false);
+        startGameButton.interactable = false;
+
+        trainingAreaButton.gameObject.SetActive(false);
+        trainingAreaButton.interactable = false;
+    }
+
+    public IEnumerator ActivateStartGameButton() // This is in a coroutine because we need to pause one frame before enabling the start button. This is because clicking A on my Xbox controller to join the game also instantly presses the start button. 
+    {
+        //EventSystem.current.SetSelectedGameObject(null);
+        yield return null;
+        startGameButton.interactable = true;
+        startGameButton.Select();
+        //EventSystem.current.SetSelectedGameObject(UIManager.instance.startGameButton.gameObject);
+    }
+
+    public IEnumerator ActivateTrainingAreaButton()
+    {
+        //EventSystem.current.SetSelectedGameObject(null);
+        yield return null;
+        //trainingAreaButton.interactable = true;
+        //trainingAreaButton.Select();
+        //EventSystem.current.SetSelectedGameObject(UIManager.instance.trainingAreaButton.gameObject);
+    }
+
+    public void OnTrainingAreaButton()
+    {
+        trainingAreaButton.gameObject.SetActive(false);
+        StartCoroutine(GameStateManager.instance.LoadTrainingArea());
+    }
+
+    public void OnStartButton()
+    {
+        Debug.Log("Start Menu button pressed.");
+
+        startMenuButton.gameObject.SetActive(false);
+        startGameButton.gameObject.SetActive(true);
+        trainingAreaButton.gameObject.SetActive(true);
+
+        GameStateManager.instance.waitingForPlayersToJoin = true;
+        GameStateManager.instance._gameState = GameStateManager.GameState.inCharacterCustomization;
+
+        for (int i = 0; i < 2; i++)
+        {
+            Vector3 worldPos = InputManager.instance.playerStartSceneSpawnPositions[i].position;
+            Vector3 screenPos = mainMenuCamera.WorldToScreenPoint(worldPos);
+
+            TextMeshProUGUI newPlayerJoinText = Instantiate(playerJoinTextPrefab, screenPos, Quaternion.identity, StartMenuUI.transform);
+            playerJoinTextList.Add(newPlayerJoinText);
+        }
+
+        InputManager.instance.playerInputManager.EnableJoining();
+    }
+
+    public void OnStartGameButton()
+    {
+        startGameButton.gameObject.SetActive(false);
+        StartCoroutine(GameStateManager.instance.LoadGameplaySceneAsync(GameStateManager.RoundNumber.One));
+    }
+    public void ActivateLoadingScreen()
+    {
+        loadingScreen.gameObject.SetActive(true);
+        Color noAlpha = loadingScreen.color;
+        noAlpha.a = 0.0f;
+        loadingScreen.color = noAlpha;
+        StartCoroutine(RawImageFadeIn(loadingScreen, loadingScreenFadeDuration));
+    }
+    public void DeactivateLoadingScreen()
+    {
+        StartMenuUI.SetActive(false);
+        loadingScreen.gameObject.SetActive(true);
+
+        Color fullAlpha = loadingScreen.color;
+        fullAlpha.a = 1.0f;
+        loadingScreen.color = fullAlpha;
+        StartCoroutine(RawImageFadeOut(loadingScreen, loadingScreenFadeDuration));
+    }
+    private IEnumerator RawImageFadeIn(RawImage rawImage, float duration)
+    {
+        float elapsedTime = 0.0f;
+        Color col = rawImage.color;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            col.a = Mathf.Clamp01(elapsedTime / duration);
+            rawImage.color = col;
+            yield return null;
+        }
+        DeactivateRoundWinText();
+        yield break;
+    }
+
+    private IEnumerator RawImageFadeOut(RawImage rawImage, float duration)
+    {
+        float elapsedTime = 0.0f;
+        Color col = rawImage.color;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            col.a = 1.0f - Mathf.Clamp01(elapsedTime / duration);
+            rawImage.color = col;
+            yield return null;
+        }
+        yield break;
+    }
+
+    public void ActivateRoundWinText(PlayerHandler playerHandler)
+    {
+        string playerNumberString = "";
+        switch (playerHandler.playerNumber)
+        {
+            case PlayerHandler.PlayerNumber.PlayerOne:
+                playerNumberString = "Player One";
+                break;
+            case PlayerHandler.PlayerNumber.PlayerTwo:
+                playerNumberString = "Player Two";
+                break;
+        }
+        roundWinText.text = playerNumberString + " wins Round " + GameStateManager.instance._currentRound.ToString() + "!";
+        roundWinText.gameObject.SetActive(true);
+    }
+
+    public void DeactivateRoundWinText()
+    {
+        roundWinText.gameObject.SetActive(false);
+    }
+
+    public IEnumerator ActivatePauseScreen()
+    {
+        GameObject currentSelectGB = EventSystem.current.currentSelectedGameObject;
+        if (currentSelectGB != null) 
+        { 
+            selectedButtonBeforePause = currentSelectGB.GetComponent<Button>();
+        }
+
+        EventSystem.current.SetSelectedGameObject(null);
+        PauseMenuUI.SetActive(true);
+        yield return null;
+        ContinueButton.Select();
+        //EventSystem.current.SetSelectedGameObject(ContinueButton);
+        yield break;
+    }
+
+
+    public IEnumerator DeactivatePauseScreen()
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+
+        foreach (Animator anim in PauseMenuUI.GetComponentsInChildren<Animator>())
+        {
+            anim.Play("Normal", 0, 0f);
+            anim.Update(0f);
+        }
+
+        yield return null;
+
+        PauseMenuUI.SetActive(false);
+
+        yield return null;
+
+        if (selectedButtonBeforePause != null)
+        {
+            selectedButtonBeforePause.Select();
+        }
+        else
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+        }
+
+        Canvas.ForceUpdateCanvases();
+    }
+
+    public void OnContinueButton()
+    {
+        if (GameStateManager.instance._gameState == GameStateManager.GameState.isPaused) {
+            PlayerInput playerInput = InputManager.instance.playerInPauseMenu;
+            PlayerHandler playerHandler = playerInput.GetComponent<PlayerHandler>();
+
+            playerInput.SwitchCurrentActionMap(playerHandler.actionMapBeforePause);
+            playerInput = null;
+
+            GameStateManager.instance._gameState = playerHandler.gameStateBeforePause;
+            StartCoroutine(DeactivatePauseScreen());
+            Time.timeScale = 1.0f;
+        }
+    }
+
+    public void OnQuitButton()
+    {
+        foreach (PlayerInput playerInput in InputManager.instance.PlayerInputs)
+        {
+            Destroy(playerInput.gameObject);
+        }
+        Destroy(InputManager.instance.gameObject);
+        Destroy(GameStateManager.instance.gameObject);
+        Time.timeScale = 1.0f;
+        SceneManager.LoadScene("StartScene");
+        Destroy(this.gameObject);
+    }
+
+    public IEnumerator activateItemSpawnIndicator(float length, Vector3 itemPosition)
+    {
+        yield return null;
+        Vector3 screenPos = GameObject.FindAnyObjectByType<Camera>().WorldToScreenPoint(itemPosition);
+
+        GameObject newIndicator = Instantiate(itemSpawnIndicator, screenPos, Quaternion.identity, GameplayUI.transform);
+        TextMeshProUGUI lengthText = newIndicator.GetComponentInChildren<TextMeshProUGUI>();
+
+        int timeLeft = (int)length;
+        while (timeLeft > 0)
+        {
+            lengthText.text = timeLeft.ToString();
+            yield return new WaitForSeconds(1.0f);
+            timeLeft -= 1;
+            yield return null;
+        }
+        Destroy(newIndicator);
+    }
+}
