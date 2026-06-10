@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using static IItem;
 
 public class ProjectileLauncherHandler : PickupableItem
 {

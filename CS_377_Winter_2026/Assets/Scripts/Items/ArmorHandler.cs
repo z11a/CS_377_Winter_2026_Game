@@ -71,7 +71,7 @@ public class ArmorHandler : Item
         }
 
         owner = playerHandler.gameObject;
-        GameStateManager.instance.itemSpawnDictionary[initialSpawnPosition] = null;
+        GameStateManager.instance.itemSpawnDictionary[initialSpawnPosition].isFull = false;
         playerHandler.armorItem = GetComponent<ArmorHandler>();
         StopCoroutine(floatingAnimationCoroutine);
         playerHandler.playerWeight += rb.mass;

@@ -54,6 +54,7 @@ public class CheeseCollector : MonoBehaviour
             playerHandler.playerCurrentHoldingCheeses = new List<GameObject>();
             Debug.Log("New " + playerHandler.playerNumber + " score: " + playerHandler.playerCurrentRoundScore);
             playerHandler.playerUIHandler.PointsUpdate(playerHandler.playerCurrentRoundScore);
+            playerHandler.playerUIHandler.CheeseUpdate(0);
             RoundWinCheck(playerHandler);
         }
     }

@@ -70,7 +70,7 @@ public class CheeseHandler : Item
 
         _ItemState = Item.ItemState.Collected;
         rb.position = new Vector3(-100.0f, -100.0f, -100.0f);
-        GameStateManager.instance.itemSpawnDictionary[initialSpawnPosition] = null;
+        GameStateManager.instance.itemSpawnDictionary[initialSpawnPosition].isFull = false;
         owner = playerHandler.gameObject;
         playerHandler.playerCurrentHoldingCheeses.Add(this.gameObject); // store it far away, we can bring it back if the player loses all their health and drops them.
         playerHandler.playerWeight += rb.mass;

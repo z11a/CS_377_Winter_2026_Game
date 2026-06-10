@@ -9,7 +9,7 @@ public class GameplaySceneReferences : MonoBehaviour
     public Transform player1Spawn;
     public Transform player2Spawn;
     public List<Transform> playerSpawnLocations;
-    public List<Transform> itemSpawnLocations;
+    public List<GameObject> itemSpawners;
 
     private void Awake()
     {

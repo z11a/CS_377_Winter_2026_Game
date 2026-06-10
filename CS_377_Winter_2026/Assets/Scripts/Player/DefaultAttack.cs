@@ -36,7 +36,7 @@ public class DefaultAttack : MeleeHandler
 
                 playersHit.Add(playerHitPlayerHandler.gameObject);
 
-                playerHitPlayerHandler.TakeDamage(weaponDamage);
+                playerHitPlayerHandler.TakeDamage(weaponDamage, (transform.position - playerHitPlayerHandler.transform.position).normalized);
 
                 Vector3 knockbackDirection = (playerHitPlayerHandler.transform.position - owner.transform.position).normalized;
                 playerHitPlayerHandler.TakeKnockback(knockbackDirection, weaponknockbackDuration, weaponKnockbackStrength);

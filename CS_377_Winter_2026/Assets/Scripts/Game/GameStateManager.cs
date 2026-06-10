@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Xml;
 using UnityEngine;
@@ -14,10 +16,6 @@ public class GameStateManager : MonoBehaviour
 
     public enum GameState
     {
-        //mainMenu,
-        //pauseMenu,
-        //loadingScreen,
-        //intermission, // in between rounds / before the first round starts.
         notInGame,
         isLoading,
         inGame,
@@ -53,7 +51,6 @@ public class GameStateManager : MonoBehaviour
     public int roundOneScoreRequirement = 50;
     public int roundTwoScoreRequirement = 100;
     public int roundThreeScoreRequirement = 150;
-    //[SerializeField] private AudioClip winSFX;
     private IEnumerator activateIntermissionCoroutine;
 
     [Header("Item Spawning")]
@@ -61,14 +58,14 @@ public class GameStateManager : MonoBehaviour
     public float uncommonItemSpawnChance = 40.0f;
     public float rareItemSpawnChance = 15.0f;
     public float itemSpawnIndicationLength = 2.0f;
-    public List<Transform> possibleItemSpawnLocations;     // first transform in the list will spawn at the start of the round, this list is set by the "GameplayReferences" gameObject in each round scene.
+    public List<GameObject> possibleItemSpawners;    // first transform in the list will spawn at the start of the round, this list is set by the "GameplayReferences" gameObject in each round scene.
     public List<GameObject> commonItems;
     public List<GameObject> uncommonItems;
     public List<GameObject> rareItems;
-    [HideInInspector] public Dictionary<Vector3, GameObject> itemSpawnDictionary = new Dictionary<Vector3, GameObject>();
+    [HideInInspector] public Dictionary<Vector3, ItemSpawnerHandler> itemSpawnDictionary = new Dictionary<Vector3, ItemSpawnerHandler>();
     [HideInInspector] public bool itemsSpawning;
     private IEnumerator itemSpawningCoroutine;
-    [HideInInspector] public int cheesePity = 0;
+    [HideInInspector] public int commonPity = 0;
     [HideInInspector] public int uncommonPity = 0;
 
     [Header("Projectiles")]
@@ -276,17 +273,6 @@ public class GameStateManager : MonoBehaviour
             playerInput.GetComponent<PlayerHandler>().playerCurrentRoundScore = 0;
             playerInput.GetComponent<PlayerHandler>().ResetPlayerValues();
         }
-        //InputManager.instance.player1Input.GetComponent<Rigidbody>().position = player1GameplaySpawnPosition.position;
-        //InputManager.instance.player1Input.GetComponent<PlayerHandler>().currentSpawnPosition = player1GameplaySpawnPosition;
-        //InputManager.instance.player1Input.GetComponent<PlayerHandler>().playerCurrentHoldingCheeses = new List<GameObject>();
-        //InputManager.instance.player1Input.GetComponent<PlayerHandler>().playerCurrentRoundScore = 0;
-        //InputManager.instance.player1Input.GetComponent<PlayerHandler>().ResetPlayerValues();
-
-        //InputManager.instance.player2Input.GetComponent<Rigidbody>().position = player2GameplaySpawnPosition.position;
-        //InputManager.instance.player2Input.GetComponent<PlayerHandler>().currentSpawnPosition = player2GameplaySpawnPosition;
-        //InputManager.instance.player2Input.GetComponent<PlayerHandler>().playerCurrentHoldingCheeses = new List<GameObject>();
-        //InputManager.instance.player2Input.GetComponent<PlayerHandler>().playerCurrentRoundScore = 0;
-        //InputManager.instance.player2Input.GetComponent<PlayerHandler>().ResetPlayerValues();
 
         currentRoundTime = roundLength;
         int minutes = (int)(GameStateManager.instance.currentRoundTime / 60);
@@ -304,14 +290,8 @@ public class GameStateManager : MonoBehaviour
         foreach (PlayerInput playerInput in InputManager.instance.PlayerInputs)
         {
             playerInput.StopAllCoroutines();
-            //playerInput.SwitchCurrentActionMap("UI");
             playerInput.GetComponent<PlayerHandler>().playerCanMove = false;
         }
-
-        //InputManager.instance.player1Input.StopAllCoroutines();
-        //InputManager.instance.player2Input.StopAllCoroutines();
-        //InputManager.instance.player1Input.SwitchCurrentActionMap("UI");
-        //InputManager.instance.player2Input.SwitchCurrentActionMap("UI");
 
         UIManager.instance.ActivateLoadingScreen();
         yield return null;
@@ -360,10 +340,8 @@ public class GameStateManager : MonoBehaviour
                 LightProbes.Tetrahedralize();
 
                 var refs = GameplaySceneReferences.instance;
-                //player1GameplaySpawnPosition = refs.player1Spawn;
-                //player2GameplaySpawnPosition = refs.player2Spawn;
                 playerGameplaySpawnPositions = refs.playerSpawnLocations;
-                possibleItemSpawnLocations = refs.itemSpawnLocations;
+                possibleItemSpawners = refs.itemSpawners;
 
                 GameplaySceneSetup();
             }
@@ -375,20 +353,25 @@ public class GameStateManager : MonoBehaviour
     {
         // setup itemSpawnDictionary
         itemSpawnDictionary.Clear();
-        for (int i = 0; i < possibleItemSpawnLocations.Count; i++)
+        for (int i = 0; i < possibleItemSpawners.Count; i++)
         {
-            itemSpawnDictionary[possibleItemSpawnLocations[i].position] = null;
+            ItemSpawnerHandler itemSpawnerHandler = possibleItemSpawners[i].GetComponent<ItemSpawnerHandler>();
+
+            itemSpawnDictionary[possibleItemSpawners[i].transform.position] = itemSpawnerHandler;
         }
 
         // spawn random common item at first location
-        GameObject firstItem = Instantiate(commonItems[Random.Range(0, commonItems.Count)], possibleItemSpawnLocations[0].position, Quaternion.identity);
-        itemSpawnDictionary[possibleItemSpawnLocations[0].position] = firstItem;
+        GameObject firstItem = Instantiate(commonItems[UnityEngine.Random.Range(0, commonItems.Count)], possibleItemSpawners[0].transform.position, Quaternion.identity);
+
+        ItemSpawnerHandler firstSpawnHandler = possibleItemSpawners[0].GetComponent<ItemSpawnerHandler>();
+        itemSpawnDictionary[possibleItemSpawners[0].transform.position] = firstSpawnHandler;
+        firstSpawnHandler.isFull = true;
 
         while (itemsSpawning)
         {
             yield return null;
 
-            bool allLocationsFull = itemSpawnDictionary.Values.All(value => value != null);
+            bool allLocationsFull = itemSpawnDictionary.Values.All(value => value.isFull);
 
             if (allLocationsFull)
             {
@@ -400,69 +383,74 @@ public class GameStateManager : MonoBehaviour
                 yield return new WaitForSeconds(itemSpawnCooldown - itemSpawnIndicationLength);
             }
 
-            var emptyLocations = itemSpawnDictionary
-                                .Where(kvp => kvp.Value == null)
-                                .Select(kvp => kvp.Key)
-                                .ToList();
+            // find empty and valid locations
+            float rarityRoll = UnityEngine.Random.Range(0f, 1f);
 
-            if (emptyLocations.Count > 0)
+            Item.ItemRarity randomRarity;
+
+            if (rarityRoll < 0.45f)
+                randomRarity = Item.ItemRarity.Common;
+            else if (rarityRoll < 0.75f)
+                randomRarity = Item.ItemRarity.Uncommon;
+            else
+                randomRarity = Item.ItemRarity.Rare;
+
+            List<Vector3> emptyValidLocations = itemSpawnDictionary
+                            .Where(kvp => !kvp.Value.isFull && kvp.Value.IsRarityAllowed(randomRarity))
+                            .Select(kvp => kvp.Key)
+                            .ToList();
+
+            if (emptyValidLocations.Count > 0)
             {
-                Vector3 newSpawnIndex = emptyLocations[Random.Range(0, emptyLocations.Count)];
-                GameObject randomObject = ChooseRandomItem();
+                Vector3 newSpawnIndex = emptyValidLocations[UnityEngine.Random.Range(0, emptyValidLocations.Count)];
+                GameObject randomObject = ChooseRandomItem(randomRarity);
 
                 StartCoroutine(UIManager.instance.activateItemSpawnIndicator(itemSpawnIndicationLength, newSpawnIndex));
                 yield return new WaitForSeconds(itemSpawnIndicationLength);
 
-                itemSpawnDictionary[newSpawnIndex] = Instantiate(randomObject, newSpawnIndex, randomObject.transform.rotation);
+                Instantiate(randomObject, newSpawnIndex, randomObject.transform.rotation);
+
+                itemSpawnDictionary[newSpawnIndex].isFull = true;
             }
-
+            Debug.Log("No valid item spawn locations.");
         }
     }
 
-    private void printDictionary()
+    private GameObject ChooseRandomItem(Item.ItemRarity itemRarity)
     {
-        Debug.Log("itemSpawnDictionary:");
-        foreach (KeyValuePair<Vector3, GameObject> entry in itemSpawnDictionary)
-        {
-            Debug.Log("Key: " + entry.Key + ", Value: " + entry.Value);
-        }
-    }
-
-    private GameObject ChooseRandomItem()
-    {
-        float randomValue = Random.Range(0.0f, 100f);
         GameObject randomItem = null;
-        //Debug.Log(uncommonPity);
-        if (cheesePity >= 3)
+
+        if (commonPity >= 3)
         {
-            randomItem = commonItems[Random.Range(0, commonItems.Count)];
-            cheesePity = 0;
+            randomItem = commonItems[UnityEngine.Random.Range(0, commonItems.Count)];
+            commonPity = 0;
             return randomItem;
         }
+
         if (uncommonPity >= 3)
         {
-            randomItem = uncommonItems[Random.Range(0, uncommonItems.Count)];
+            randomItem = uncommonItems[UnityEngine.Random.Range(0, uncommonItems.Count)];
             uncommonPity = 0;
             return randomItem;
         }
 
-        if (randomValue < rareItemSpawnChance)
+        switch (itemRarity)
         {
-            randomItem = rareItems[Random.Range(0, rareItems.Count)];
-            cheesePity++;
-            uncommonPity = 0;
-        }
-        else if (randomValue < uncommonItemSpawnChance)
-        {
-            randomItem = uncommonItems[Random.Range(0, uncommonItems.Count)];
-            cheesePity++;
-            uncommonPity = 0;
-        }
-        else
-        {
-            randomItem = commonItems[Random.Range(0, commonItems.Count)];
-            cheesePity = 0;
-            uncommonPity++;
+            case Item.ItemRarity.Common:
+                randomItem = commonItems[UnityEngine.Random.Range(0, commonItems.Count)];
+                commonPity = 0;
+                uncommonPity++;
+                break;
+            case Item.ItemRarity.Uncommon:
+                randomItem = uncommonItems[UnityEngine.Random.Range(0, uncommonItems.Count)];
+                commonPity++;
+                uncommonPity = 0;
+                break;
+            case Item.ItemRarity.Rare:
+                randomItem = rareItems[UnityEngine.Random.Range(0, rareItems.Count)];
+                commonPity++;
+                uncommonPity = 0;
+                break;
         }
 
         return randomItem;

@@ -376,13 +376,12 @@ public class PlayerHandler : MonoBehaviour
 
     public void SetupDefaultAttack()
     {
-        Debug.Log("default weapon: " + defaultAttackWeapon.name);
         itemPickupObject = defaultAttackWeapon;
         itemPickupObject.GetComponent<DefaultAttack>().owner = this.gameObject;
         animator.SetFloat("WeaponSwingSpeed", itemPickupObject.GetComponent<DefaultAttack>().swingSpeed);
     }
 
-    public void TakeDamage(float damageAmount)
+    public void TakeDamage(float damageAmount, Vector3 direction)
     {
         if (_playerState == PlayerState.Dead || invincible)
         {
@@ -408,6 +407,10 @@ public class PlayerHandler : MonoBehaviour
         {
             _playerState = PlayerState.Dead;
             Debug.Log("Setting player to dead.");
+
+            rb.AddForce(direction.normalized * 5.0f, ForceMode.Acceleration);
+            rb.AddTorque(Random.onUnitSphere, ForceMode.Acceleration);
+
             StartCoroutine(RespawnHandler());
         }
 

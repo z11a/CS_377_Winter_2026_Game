@@ -114,7 +114,7 @@ public class MeleeHandler : PickupableItem
 
                 playersHit.Add(playerHitPlayerHandler.gameObject);
 
-                playerHitPlayerHandler.TakeDamage(weaponDamage);
+                playerHitPlayerHandler.TakeDamage(weaponDamage, (playerHitPlayerHandler.transform.position - transform.position).normalized);
 
                 Vector3 knockbackDirection = (playerHitPlayerHandler.transform.position - owner.transform.position).normalized;
                 playerHitPlayerHandler.TakeKnockback(knockbackDirection, weaponknockbackDuration, weaponKnockbackStrength);

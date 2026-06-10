@@ -76,7 +76,7 @@ public class PickupableItem : Item
         unequippedCollider.enabled = false;
         meshRenderer.materials = defaultMaterialList;
         _ItemState = Item.ItemState.Collected;
-        GameStateManager.instance.itemSpawnDictionary[initialSpawnPosition] = null;
+        GameStateManager.instance.itemSpawnDictionary[initialSpawnPosition].isFull = false;
         PlayerHandler ownerPlayerHandler = owner.GetComponent<PlayerHandler>();
         ownerPlayerHandler.playerWeight += rb.mass;
         transform.parent = ownerPlayerHandler.weaponPlaceholder.transform;

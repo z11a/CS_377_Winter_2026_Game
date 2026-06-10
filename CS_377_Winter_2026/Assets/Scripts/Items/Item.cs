@@ -8,6 +8,14 @@ public class Item : MonoBehaviour
         NotCollected,
         Collected
     }
+
+    public enum ItemRarity
+    {
+        Common,
+        Uncommon,
+        Rare
+    }
+
     [Header("Basic Item Information")]
     [HideInInspector] public ItemState _ItemState;  // item state should only be "NotCollected" if it just spawned and hasn't been interacted with. An item will not switch back to being "Uncollected".
     [HideInInspector] public Vector3 initialSpawnPosition;
@@ -48,10 +56,10 @@ public class Item : MonoBehaviour
         while (true)
         {
             transform.position = new Vector3(animationStartingPosition.x,
-                                             animationStartingPosition.y + (Mathf.Sin(Time.time) * 0.25f),
+                                             animationStartingPosition.y + (Mathf.Sin(Time.time) * 0.2f),
                                              animationStartingPosition.z);
 
-            transform.Rotate(Vector3.up * floatingAnimationRotationSpeed * Time.deltaTime);
+            transform.Rotate(Vector3.up * floatingAnimationRotationSpeed * Time.fixedDeltaTime);
             yield return null;
         }
     }

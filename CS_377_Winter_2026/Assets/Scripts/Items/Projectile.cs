@@ -49,7 +49,7 @@ public class Projectile : MonoBehaviour
         PlayerHandler playerHit = other.GetComponent<PlayerHandler>();
         if (playerHit != null)
         {
-            playerHit.TakeDamage(damage);
+            playerHit.TakeDamage(damage, transform.forward);
 
             Vector3 knockbackDirection = (other.transform.position - transform.position).normalized;
             playerHit.TakeKnockback(knockbackDirection, knockbackDuration, knockbackStrength);
