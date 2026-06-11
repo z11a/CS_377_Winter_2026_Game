@@ -229,11 +229,10 @@ public class GameStateManager : MonoBehaviour
 
                 foreach (PlayerInput playerInput in InputManager.instance.PlayerInputs)
                 {
+                    playerInput.ActivateInput();
                     playerInput.SwitchCurrentActionMap("Player");
                     playerInput.GetComponent<PlayerHandler>().playerCanMove = true;
                 }
-                //InputManager.instance.PlayerInputs[0].SwitchCurrentActionMap("Player");
-                //InputManager.instance.PlayerInputs[1].SwitchCurrentActionMap("Player");
 
                 itemsSpawning = true;
                 itemSpawningCoroutine = itemSpawning();
@@ -264,6 +263,7 @@ public class GameStateManager : MonoBehaviour
 
     private void GameplaySceneSetup()
     {
+
         for (int i = 0; i < InputManager.instance.PlayerInputs.Count; i++) 
         {
             PlayerInput playerInput = InputManager.instance.PlayerInputs[i];
@@ -289,6 +289,7 @@ public class GameStateManager : MonoBehaviour
 
         foreach (PlayerInput playerInput in InputManager.instance.PlayerInputs)
         {
+            playerInput.DeactivateInput();
             playerInput.StopAllCoroutines();
             playerInput.GetComponent<PlayerHandler>().playerCanMove = false;
         }
@@ -361,11 +362,9 @@ public class GameStateManager : MonoBehaviour
         }
 
         // spawn random common item at first location
+        itemSpawnDictionary[possibleItemSpawners[0].transform.position] = possibleItemSpawners[0].GetComponent<ItemSpawnerHandler>();
+        itemSpawnDictionary[possibleItemSpawners[0].transform.position].isFull = true;
         GameObject firstItem = Instantiate(commonItems[UnityEngine.Random.Range(0, commonItems.Count)], possibleItemSpawners[0].transform.position, Quaternion.identity);
-
-        ItemSpawnerHandler firstSpawnHandler = possibleItemSpawners[0].GetComponent<ItemSpawnerHandler>();
-        itemSpawnDictionary[possibleItemSpawners[0].transform.position] = firstSpawnHandler;
-        firstSpawnHandler.isFull = true;
 
         while (itemsSpawning)
         {
@@ -402,15 +401,15 @@ public class GameStateManager : MonoBehaviour
 
             if (emptyValidLocations.Count > 0)
             {
-                Vector3 newSpawnIndex = emptyValidLocations[UnityEngine.Random.Range(0, emptyValidLocations.Count)];
+                Vector3 newSpawn = emptyValidLocations[UnityEngine.Random.Range(0, emptyValidLocations.Count)];
+                itemSpawnDictionary[newSpawn].isFull = true;
+
                 GameObject randomObject = ChooseRandomItem(randomRarity);
 
-                StartCoroutine(UIManager.instance.activateItemSpawnIndicator(itemSpawnIndicationLength, newSpawnIndex));
+                StartCoroutine(UIManager.instance.activateItemSpawnIndicator(itemSpawnIndicationLength, newSpawn));
                 yield return new WaitForSeconds(itemSpawnIndicationLength);
 
-                Instantiate(randomObject, newSpawnIndex, randomObject.transform.rotation);
-
-                itemSpawnDictionary[newSpawnIndex].isFull = true;
+                Instantiate(randomObject, newSpawn, randomObject.transform.rotation);
             }
             Debug.Log("No valid item spawn locations.");
         }

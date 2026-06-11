@@ -10,7 +10,6 @@ using static UnityEngine.UI.GridLayoutGroup;
 using System.Security.Claims;
 using static UnityEngine.Rendering.DebugUI;
 using TMPro;
-//using System;
 
 
 public delegate void PlayerAction();
@@ -408,8 +407,10 @@ public class PlayerHandler : MonoBehaviour
             _playerState = PlayerState.Dead;
             Debug.Log("Setting player to dead.");
 
-            rb.AddForce(direction.normalized * 5.0f, ForceMode.Acceleration);
-            rb.AddTorque(Random.onUnitSphere, ForceMode.Acceleration);
+            Vector3 randomTorque = new Vector3(0.0f, Random.Range(-1, 2) * 10.0f, 0.0f);
+
+            rb.AddTorque(randomTorque, ForceMode.Acceleration);
+            rb.AddForce(direction.normalized * 6.5f, ForceMode.Acceleration);
 
             StartCoroutine(RespawnHandler());
         }
