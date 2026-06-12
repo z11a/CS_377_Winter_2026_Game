@@ -26,6 +26,10 @@ public class CheeseCollector : MonoBehaviour
 
     private void OnTriggerEnter(Collider collider)
     {
+        if (GameStateManager.instance._currentRoundState != GameStateManager.RoundState.inRound)
+        {
+            return;
+        }
         // cheese delivery
         PlayerHandler playerHandler = collider.gameObject.GetComponent<PlayerHandler>();
 

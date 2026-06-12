@@ -388,11 +388,15 @@ public class GameStateManager : MonoBehaviour
             Item.ItemRarity randomRarity;
 
             if (rarityRoll < 0.45f)
+            {
                 randomRarity = Item.ItemRarity.Common;
-            else if (rarityRoll < 0.75f)
-                randomRarity = Item.ItemRarity.Uncommon;
+            }
             else
-                randomRarity = Item.ItemRarity.Rare;
+            {
+                randomRarity = Item.ItemRarity.Uncommon;
+            }
+            //else
+            //    randomRarity = Item.ItemRarity.Rare;
 
             List<Vector3> emptyValidLocations = itemSpawnDictionary
                             .Where(kvp => !kvp.Value.isFull && kvp.Value.IsRarityAllowed(randomRarity))
@@ -426,7 +430,7 @@ public class GameStateManager : MonoBehaviour
             return randomItem;
         }
 
-        if (uncommonPity >= 3)
+        if (uncommonPity >= 2)
         {
             randomItem = uncommonItems[UnityEngine.Random.Range(0, uncommonItems.Count)];
             uncommonPity = 0;
@@ -448,7 +452,7 @@ public class GameStateManager : MonoBehaviour
             case Item.ItemRarity.Rare:
                 randomItem = rareItems[UnityEngine.Random.Range(0, rareItems.Count)];
                 commonPity++;
-                uncommonPity = 0;
+                uncommonPity++;
                 break;
         }
 

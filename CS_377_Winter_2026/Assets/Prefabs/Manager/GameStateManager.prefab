@@ -53,17 +53,12 @@ MonoBehaviour:
   intermissionLength: 4
   roundOneScoreRequirement: 50
   roundTwoScoreRequirement: 70
-  roundThreeScoreRequirement: 70
+  roundThreeScoreRequirement: 50
   itemSpawnCooldown: 3.5
   uncommonItemSpawnChance: 45
   rareItemSpawnChance: 15
   itemSpawnIndicationLength: 2
-  possibleItemSpawnLocations:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  possibleItemSpawners: []
   commonItems:
   - {fileID: 7846301342053070152, guid: 0d5e0f8b678bd834284ca64556531823, type: 3}
   - {fileID: 769477063499096365, guid: 781909e1c826449489e1ba48e3d6b321, type: 3}
@@ -73,7 +68,7 @@ MonoBehaviour:
   rareItems:
   - {fileID: 2186262415711309002, guid: f4a06f44735f9124a889b39c08ab6f8d, type: 3}
   itemsSpawning: 0
-  cheesePity: 0
+  commonPity: 0
   uncommonPity: 0
   bulletPrefab: {fileID: 2069648277148417028, guid: c1c44ffdca8e23d4f88e21fadc454a56, type: 3}
   rocketPrefab: {fileID: 0}
