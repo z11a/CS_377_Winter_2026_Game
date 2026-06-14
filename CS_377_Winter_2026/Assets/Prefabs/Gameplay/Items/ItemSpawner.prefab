@@ -159,6 +159,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   isFull: 0
+  allowSpawn: 1
   spawnCommonItems: 1
   spawnUncommonItems: 1
   spawnRareItems: 0
