@@ -47,8 +47,8 @@ public class PlayerHandler : MonoBehaviour
     //public float invincibilityTime = 3.0f;
     public float healthRegenDelay = 4.0f;
     public float healthRegenPerSecond = 5.0f;
-    private IEnumerator healthRegenCoroutine;
-    private IEnumerator knockbackCoroutine;
+    private Coroutine healthRegenCoroutine;
+    private Coroutine knockbackCoroutine;
 
     [Header("Weapon Info")]
     public GameObject weaponPlaceholder;
@@ -148,7 +148,7 @@ public class PlayerHandler : MonoBehaviour
         {
             if (knockedBack)
             {
-                rb.AddForce(movement * newPlayerSpeed * Time.fixedDeltaTime * 1.5f * 9f, ForceMode.Force);
+                rb.AddForce(movement * newPlayerSpeed * Time.fixedDeltaTime * 9.5f, ForceMode.Force);
             }
             else
             {
@@ -356,7 +356,12 @@ public class PlayerHandler : MonoBehaviour
         playerWeight = 0.0f;
         _playerState = PlayerState.Idle;
         playerCurrentHoldingCheeses.Clear();
-        armorItem = null;
+
+        if (armorItem != null)
+        {
+            armorItem.DropArmor();
+        }
+
         possibleItemPickup = null;
         if (itemPickupObject != null)
         {
@@ -419,8 +424,7 @@ public class PlayerHandler : MonoBehaviour
         {
             StopCoroutine(healthRegenCoroutine);
         }
-        healthRegenCoroutine = HealthRegen();
-        StartCoroutine(healthRegenCoroutine);
+        healthRegenCoroutine = StartCoroutine(HealthRegen());
     }
 
     private IEnumerator HealthRegen()
@@ -440,18 +444,17 @@ public class PlayerHandler : MonoBehaviour
         {
             StopCoroutine(knockbackCoroutine);
         }
-        knockbackCoroutine = KnockbackCoroutine(direction, duration, strength);
-        StartCoroutine(knockbackCoroutine);
+        knockbackCoroutine = StartCoroutine(KnockbackCoroutine(direction, duration, strength));
     }
 
     public IEnumerator KnockbackCoroutine(Vector3 direction, float duration, float strength)
     {
         knockedBack = true;
 
-        rb.linearVelocity = Vector3.zero;
+        rb.linearVelocity = direction * strength;
         rb.angularVelocity = Vector3.zero;
 
-        rb.AddForce(direction * strength, ForceMode.Impulse);
+       // rb.AddForce(direction * strength, ForceMode.Impulse);
         rb.angularVelocity = Vector3.zero;
 
         yield return new WaitForSeconds(duration);

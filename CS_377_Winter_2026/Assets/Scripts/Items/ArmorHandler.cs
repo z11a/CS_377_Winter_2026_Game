@@ -3,13 +3,11 @@ using static UnityEngine.UI.GridLayoutGroup;
 
 public class ArmorHandler : Item
 {
-    private bool broken = false;
     public AudioClip armorHitSFX;
     private CapsuleCollider capsuleCollider;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        broken = false;
         capsuleCollider = GetComponent<CapsuleCollider>();
         InitItem();
     }
@@ -22,8 +20,6 @@ public class ArmorHandler : Item
 
     public void TakeDamage()
     {
-        broken = true;
-
         if (armorHitSFX != null)
         {
             AudioManager.instance.audioSource.PlayOneShot(armorHitSFX);
@@ -55,12 +51,12 @@ public class ArmorHandler : Item
 
     public void OnTriggerEnter(Collider collider)
     {
-        if (_ItemState == ItemState.Collected || broken) { return; }
+        if (_ItemState == ItemState.Collected) { return; }
 
         Debug.Log("picking up armor...");
         PlayerHandler playerHandler = collider.GetComponent<PlayerHandler>();
 
-        if (playerHandler == null)
+        if (playerHandler == null || playerHandler._playerState == PlayerHandler.PlayerState.Dead)
         {
             return;
         }

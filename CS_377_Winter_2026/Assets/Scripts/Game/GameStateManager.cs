@@ -191,7 +191,17 @@ public class GameStateManager : MonoBehaviour
                 }
                 else if (playerOneHandler.playerCurrentRoundScore == playerTwoHandler.playerCurrentRoundScore)
                 {
+                    int rand = UnityEngine.Random.Range(0, 2);
 
+                    switch (rand)
+                    {
+                        case 0:
+                            PlayerWonRound(playerOneHandler);
+                            break;
+                        case 1:
+                            PlayerWonRound(playerTwoHandler);
+                            break;
+                    }
                 }
                 yield break;
             }
@@ -379,7 +389,7 @@ public class GameStateManager : MonoBehaviour
             }
             else
             {
-                yield return new WaitForSeconds(itemSpawnCooldown - itemSpawnIndicationLength);
+                yield return new WaitForSeconds(itemSpawnCooldown + itemSpawnIndicationLength);
             }
 
             // find empty and valid locations
@@ -399,7 +409,7 @@ public class GameStateManager : MonoBehaviour
             //    randomRarity = Item.ItemRarity.Rare;
 
             List<Vector3> emptyValidLocations = itemSpawnDictionary
-                            .Where(kvp => !kvp.Value.isFull && kvp.Value.IsRarityAllowed(randomRarity))
+                            .Where(kvp => kvp.Value.allowSpawn && !kvp.Value.isFull && kvp.Value.IsRarityAllowed(randomRarity))
                             .Select(kvp => kvp.Key)
                             .ToList();
 
@@ -415,7 +425,6 @@ public class GameStateManager : MonoBehaviour
 
                 Instantiate(randomObject, newSpawn, randomObject.transform.rotation);
             }
-            Debug.Log("No valid item spawn locations.");
         }
     }
 

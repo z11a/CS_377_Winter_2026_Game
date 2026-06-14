@@ -252,7 +252,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 0f73a2f1869a3864790830103c71862a, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
@@ -351,6 +351,7 @@ MonoBehaviour:
   CheeseText: {fileID: 0}
   HealthBar: {fileID: 0}
   StaminaBar: {fileID: 0}
+  Armor: {fileID: 0}
 --- !u!54 &7986193701225777442
 Rigidbody:
   m_ObjectHideFlags: 0

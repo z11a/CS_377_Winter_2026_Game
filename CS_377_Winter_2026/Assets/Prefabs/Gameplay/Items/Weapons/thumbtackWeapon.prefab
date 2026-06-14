@@ -145,8 +145,8 @@ MonoBehaviour:
   swingSpeed: 1.25
   swingCooldown: 0.05
   weaponDamage: 15
-  weaponKnockbackStrength: 20
-  weaponknockbackDuration: 0.1
+  weaponKnockbackStrength: 5
+  weaponknockbackDuration: 0.2
 --- !u!136 &6851329412536825272
 CapsuleCollider:
   m_ObjectHideFlags: 0

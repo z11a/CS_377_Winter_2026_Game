@@ -68,17 +68,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e951bf15741214c4c8ca755eb11b8f29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  _ItemState: 0
+  initialSpawnPosition: {x: 0, y: 0, z: 0}
+  floatingAnimationRotationSpeed: 30
+  despawnParticleSystem: {fileID: 0}
+  rb: {fileID: 0}
   owner: {fileID: 0}
   unequippedCollider: {fileID: 0}
-  equippedCollider: {fileID: 0}
   meshRenderer: {fileID: 0}
+  highlightMaterialList: []
+  defaultMaterialList: []
+  highlightMaterial: {fileID: 0}
+  itemDurability: 1
+  PickupSFX: {fileID: 0}
+  UseSFXArray: []
+  equippedCollider: {fileID: 0}
   swingSpeed: 1
   swingCooldown: 0.15
   weaponDamage: 5
-  weaponKnockbackStrength: 40
+  weaponKnockbackStrength: 5
   weaponknockbackDuration: 0.2
-  weaponDurability: 5
-  floatingAnimationRotationSpeed: 30
-  highlightMaterial: {fileID: 0}
-  highlightMaterialList: []
-  defaultMaterialList: []

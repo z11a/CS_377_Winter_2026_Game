@@ -88,8 +88,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Projectile
   damage: 10
-  knockbackStrength: 20
-  knockbackDuration: 0.1
+  knockbackStrength: 3.5
+  knockbackDuration: 0.2
   maxTravelTime: 15
   particleOnHit: {fileID: 8711322649541294589, guid: 4c6a723b2c70fce4685a5a1d94d595c4, type: 3}
 --- !u!54 &7956556571761548748

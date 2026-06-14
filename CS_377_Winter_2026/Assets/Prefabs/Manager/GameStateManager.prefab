@@ -52,9 +52,9 @@ MonoBehaviour:
   currentRoundTime: 0
   intermissionLength: 4
   roundOneScoreRequirement: 50
-  roundTwoScoreRequirement: 70
+  roundTwoScoreRequirement: 50
   roundThreeScoreRequirement: 50
-  itemSpawnCooldown: 3.5
+  itemSpawnCooldown: 2
   uncommonItemSpawnChance: 45
   rareItemSpawnChance: 15
   itemSpawnIndicationLength: 2

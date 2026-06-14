@@ -50,9 +50,7 @@ public class Projectile : MonoBehaviour
         if (playerHit != null)
         {
             playerHit.TakeDamage(damage, transform.forward);
-
-            Vector3 knockbackDirection = (other.transform.position - transform.position).normalized;
-            playerHit.TakeKnockback(knockbackDirection, knockbackDuration, knockbackStrength);
+            playerHit.TakeKnockback(transform.forward, knockbackDuration, knockbackStrength);
         }
         Vector3 closestPoint = other.ClosestPoint(transform.position);
         ParticleSystem ps = Instantiate(particleOnHit, closestPoint, Quaternion.LookRotation(-transform.forward));
