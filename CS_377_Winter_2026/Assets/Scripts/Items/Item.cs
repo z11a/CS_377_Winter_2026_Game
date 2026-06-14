@@ -71,30 +71,4 @@ public class Item : MonoBehaviour
         despawnParticle.Play();
         Destroy(this.gameObject);
     }
-
-    //public virtual void OnTriggerEnter(Collider collider)
-    //{
-    //    PlayerHandler playerHitPlayerHandler = ItemTriggerEnterCheck(collider);
-
-    //    if (playerHitPlayerHandler == null)
-    //    {
-    //        return;
-    //    }
-    //}
-    //public virtual PlayerHandler ItemTriggerEnterCheck(Collider collider)
-    //{
-    //    PlayerHandler playerHitPlayerHandler = collider.gameObject.GetComponent<PlayerHandler>();
-
-    //    if (playerHitPlayerHandler == null || playerHitPlayerHandler._playerState == PlayerHandler.PlayerState.Dead)
-    //    {
-    //        return null;
-    //    }
-
-    //    if (_ItemState == Item.ItemState.NotCollected)
-    //    {
-    //        return playerHitPlayerHandler;
-    //    }
-
-    //    return null;
-    //}
 }
